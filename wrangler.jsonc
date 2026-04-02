@@ -1,0 +1,36 @@
+{
+  "name": "presold-authority",
+  "compatibility_date": "2025-11-01",
+  "pages_build_output_dir": "./dist",
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "presold-authority-db",
+      "database_id": "fd49c9e9-d81b-45bc-9ebc-55f847bddf2e"
+    }
+  ],
+
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "76fc2a103a33487b8c1fa7db52460490",
+      "preview_id": "33c2ffcac29640488905ad2d9bcc9d9f"
+    }
+  ],
+
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "presold-authority-assets"
+    }
+  ],
+
+  "browser": {
+    "binding": "BROWSER"
+  },
+
+  "vars": {
+    "ENVIRONMENT": "development"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "presold-authority",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev dist --d1=presold-authority-db --local --ip 0.0.0.0 --port 3000",
+    "build": "vite build",
+    "preview": "wrangler pages dev dist",
+    "deploy": "npm run build && wrangler pages deploy dist",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "db:migrate:local": "wrangler d1 execute presold-authority-db --local --file=migrations/0001_initial_schema.sql && wrangler d1 execute presold-authority-db --local --file=migrations/0002_seed_data.sql",
+    "db:reset": "rm -rf .wrangler/state/v3/d1 && npm run db:migrate:local"
+  },
+  "dependencies": {
+    "hono": "^4.12.9",
+    "jose": "^5.9.6",
+    "bcryptjs": "^2.4.3"
+  },
+  "devDependencies": {
+    "@hono/vite-build": "^1.2.0",
+    "@hono/vite-dev-server": "^0.18.2",
+    "@types/bcryptjs": "^2.4.6",
+    "vite": "^6.3.5",
+    "wrangler": "^4.4.0"
+  }
+}
