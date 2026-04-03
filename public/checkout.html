@@ -208,7 +208,7 @@
       errorEl.style.display = 'none'
 
       try {
-        const res = await fetch('/api/billing/create-checkout-session', {
+        const res = await fetch('/api/billing/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' }
         })
