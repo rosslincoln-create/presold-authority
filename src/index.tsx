@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { serveStatic } from 'hono/cloudflare-workers'
 import auth from './routes/auth'
+import billing from './routes/billing'
 import { authMiddleware } from './middleware/authMiddleware'
 
 export type Env = {
@@ -15,6 +16,7 @@ export type Env = {
   JWT_SECRET: string
   ADMIN_EMAIL: string
   ENVIRONMENT: string
+  APP_URL: string
 }
 
 const app = new Hono<{ Bindings: Env }>()
@@ -30,6 +32,7 @@ app.get('/api/health', (c) => {
 
 // ─── Public API Routes ────────────────────────────────────────────────────────
 app.route('/api/auth', auth)
+app.route('/api/billing', billing)
 
 // ─── Page Redirects (static files served from public/) ───────────────────────
 app.get('/login', (c) => c.redirect('/login.html'))
@@ -45,7 +48,7 @@ app.get('/assets', authMiddleware, (c) => c.text('Assets — Sprint 8'))
 app.get('/account', authMiddleware, (c) => c.text('Account — Sprint 5'))
 
 // ─── Public Page Routes ───────────────────────────────────────────────────────
-app.get('/checkout', (c) => c.text('Checkout — Sprint 3'))
+app.get('/checkout', (c) => c.redirect('/checkout.html'))
 
 // ─── Static Files ─────────────────────────────────────────────────────────────
 app.use('/*', serveStatic({ root: './' }))

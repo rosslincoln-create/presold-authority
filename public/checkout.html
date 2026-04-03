@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — Pre-Sold Authority System</title>
+  <link rel="stylesheet" href="/css/style-premium.css">
+  <style>
+    .checkout-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .checkout-card {
+      width: 100%;
+      max-width: 520px;
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem;
+    }
+    .checkout-logo {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .checkout-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      color: var(--color-text-primary);
+    }
+    .checkout-subtitle {
+      text-align: center;
+      color: var(--color-text-secondary);
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+    .product-summary {
+      background: rgba(251,191,36,0.06);
+      border: 1px solid rgba(251,191,36,0.2);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.75rem;
+    }
+    .product-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: 0.35rem;
+    }
+    .product-includes {
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 0.75rem;
+    }
+    .product-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+    .product-price {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fbbf24;
+    }
+    .product-price-note {
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+    }
+    .guarantee-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(34,197,94,0.06);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: var(--radius-md);
+      padding: 0.875rem 1.25rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+      color: #86efac;
+    }
+    .guarantee-badge svg {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+    }
+    .checkout-btn {
+      width: 100%;
+      padding: 1.1rem;
+      background: linear-gradient(135deg, #fbbf24, #fcd34d);
+      color: #09090b;
+      border: none;
+      border-radius: var(--radius-full);
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: -0.01em;
+    }
+    .checkout-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(251,191,36,0.45);
+    }
+    .checkout-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .checkout-error {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: var(--radius-md);
+      padding: 0.875rem 1rem;
+      color: #fca5a5;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .checkout-footer {
+      text-align: center;
+      margin-top: 1.25rem;
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+    }
+    .secure-icons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--color-text-secondary);
+    }
+    /* Fallback CSS vars if stylesheet is missing */
+    body { background: #09090b; color: #f4f4f5; font-family: system-ui, sans-serif; margin: 0; }
+    .brand { font-size: 1.05rem; font-weight: 700; color: #f4f4f5; }
+    .brand-accent { color: #fbbf24; }
+    :root {
+      --color-bg-surface: #18181b;
+      --color-border: rgba(255,255,255,0.1);
+      --color-text-primary: #f4f4f5;
+      --color-text-secondary: #a1a1aa;
+      --color-accent-gold: #fbbf24;
+      --radius-xl: 1rem;
+      --radius-md: 0.5rem;
+      --radius-full: 9999px;
+    }
+  </style>
+</head>
+<body>
+  <div class="checkout-container">
+    <div class="checkout-card">
+
+      <div class="checkout-logo">
+        <h3 class="brand">The <span class="brand-accent">Pre-Sold Authority</span> System</h3>
+      </div>
+
+      <h1 class="checkout-title">Complete Your Order</h1>
+      <p class="checkout-subtitle">You're one step away from instant access</p>
+
+      <div class="product-summary">
+        <div class="product-name">The Pre-Sold Authority System for Real Estate Agents</div>
+        <div class="product-includes">Lifetime access · Full course + PDF playbook · Both bonuses</div>
+        <div class="product-price-row">
+          <span class="product-price">$147</span>
+          <span class="product-price-note">one-time · lifetime access</span>
+        </div>
+      </div>
+
+      <div class="guarantee-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span><strong>60-day money-back guarantee</strong> — if it's not for you, email within 60 days for a full refund.</span>
+      </div>
+
+      <div class="checkout-error" id="checkoutError"></div>
+
+      <button class="checkout-btn" id="checkoutBtn" type="button">
+        Get Instant Access — $147
+      </button>
+
+      <div class="checkout-footer">
+        You'll be redirected to Stripe's secure checkout page.<br>
+        Your payment is processed by Stripe — we never store card details.
+        <div class="secure-icons">
+          <span>🔒 SSL Encrypted</span>
+          <span>·</span>
+          <span>Powered by Stripe</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const btn = document.getElementById('checkoutBtn')
+    const errorEl = document.getElementById('checkoutError')
+
+    btn.addEventListener('click', async () => {
+      btn.disabled = true
+      btn.textContent = 'Redirecting to checkout…'
+      errorEl.style.display = 'none'
+
+      try {
+        const res = await fetch('/api/billing/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        })
+
+        const data = await res.json()
+
+        if (res.ok && data.url) {
+          window.location.href = data.url
+        } else {
+          errorEl.textContent = data.error || 'Something went wrong. Please try again.'
+          errorEl.style.display = 'block'
+          btn.disabled = false
+          btn.textContent = 'Get Instant Access — $147'
+        }
+      } catch (err) {
+        errorEl.textContent = 'Connection error. Please try again.'
+        errorEl.style.display = 'block'
+        btn.disabled = false
+        btn.textContent = 'Get Instant Access — $147'
+      }
+    })
+  </script>
+</body>
+</html>
