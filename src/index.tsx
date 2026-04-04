@@ -1,5 +1,4 @@
 import { Hono } from 'hono'
-import { serveStatic } from 'hono/cloudflare-workers'
 import auth from './routes/auth'
 import billing from './routes/billing'
 import { authMiddleware } from './middleware/authMiddleware'
