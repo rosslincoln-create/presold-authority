@@ -33,23 +33,11 @@ app.get('/api/health', (c) => {
 app.route('/api/auth', auth)
 app.route('/api/billing', billing)
 
-// ─── Page Redirects (static files served from public/) ───────────────────────
-app.get('/login', (c) => c.redirect('/login.html'))
-app.get('/signup', (c) => c.redirect('/signup.html'))
-app.get('/forgot-password', (c) => c.redirect('/forgot-password.html'))
-app.get('/reset-password', (c) => c.redirect('/reset-password.html'))
-
 // ─── Protected Routes ─────────────────────────────────────────────────────────
 app.get('/dashboard', authMiddleware, (c) => c.text('Dashboard — Sprint 5'))
 app.get('/onboarding', authMiddleware, (c) => c.text('Onboarding — Sprint 4'))
 app.get('/lessons', authMiddleware, (c) => c.text('Lessons — Sprint 5'))
 app.get('/assets', authMiddleware, (c) => c.text('Assets — Sprint 8'))
 app.get('/account', authMiddleware, (c) => c.text('Account — Sprint 5'))
-
-// ─── Public Page Routes ───────────────────────────────────────────────────────
-app.get('/checkout', (c) => c.redirect('/checkout.html'))
-
-// ─── Root Route ───────────────────────────────────────────────────────────────
-app.get('/', (c) => c.redirect('/index.html'))
 
 export default app
