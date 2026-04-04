@@ -28,17 +28,6 @@ app.get('/api/health', (c) => {
     timestamp: new Date().toISOString()
   })
 })
-// ─── Public Page Routes ───────────────────────────────────────────────────────
-app.get('/login', (c) => c.redirect('/login.html', 302))
-app.get('/signup', (c) => c.redirect('/signup.html', 302))
-app.get('/forgot-password', (c) => c.redirect('/forgot-password.html', 302))
-app.get('/reset-password', (c) => c.redirect('/reset-password.html', 302))
-app.get('/checkout', (c) => c.redirect('/checkout.html', 302))
-app.get('/', (c) => c.redirect('/index.html', 302))
-
-// ─── Pass-through for static HTML files ──────────────────────────────────────
-app.get('/*.html', async (c, next) => { await next() })
-app.get('/*.css', async (c, next) => { await next() })
 
 // ─── Public API Routes ────────────────────────────────────────────────────────
 app.route('/api/auth', auth)
