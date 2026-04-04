@@ -49,7 +49,7 @@ app.get('/account', authMiddleware, (c) => c.text('Account — Sprint 5'))
 // ─── Public Page Routes ───────────────────────────────────────────────────────
 app.get('/checkout', (c) => c.redirect('/checkout.html'))
 
-// ─── Static Files ─────────────────────────────────────────────────────────────
-app.use('/*', serveStatic({ root: './' }))
+// ─── Root Route ───────────────────────────────────────────────────────────────
+app.get('/', (c) => c.redirect('/index.html'))
 
 export default app
