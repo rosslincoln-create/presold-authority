@@ -40,4 +40,9 @@ app.get('/lessons', authMiddleware, (c) => c.text('Lessons — Sprint 5'))
 app.get('/assets', authMiddleware, (c) => c.text('Assets — Sprint 8'))
 app.get('/account', authMiddleware, (c) => c.text('Account — Sprint 5'))
 
+// ─── Fallthrough to Pages static assets ──────────────────────────────────────
+app.notFound((c) => {
+  return fetch(c.req.raw)
+})
+
 export default app
