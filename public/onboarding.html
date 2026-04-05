@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup Your Profile — Pre-Sold Authority System</title>
+  <link rel="icon" href="/favicon.ico">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #09090b;
+      --surface: #18181b;
+      --border: #27272a;
+      --border-input: #3f3f46;
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --gold: #fbbf24;
+      --gold-light: #fcd34d;
+      --red: #ef4444;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px 80px;
+    }
+
+    .wizard-wrap {
+      width: 100%;
+      max-width: 700px;
+    }
+
+    /* ── Logo ── */
+    .wizard-logo {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .wizard-logo img {
+      height: 40px;
+      object-fit: contain;
+    }
+
+    /* ── Card ── */
+    .wizard-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+    }
+
+    /* ── Progress ── */
+    .progress-wrap {
+      margin-bottom: 8px;
+    }
+    .progress-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .progress-track {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--gold);
+      border-radius: 99px;
+      transition: width 0.35s ease;
+    }
+
+    /* ── Step headings ── */
+    .step-heading {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 28px;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .step-subheading {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+    .step-note {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    /* ── Form elements ── */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #f4f4f5;
+      margin-bottom: 6px;
+    }
+    .form-label .required {
+      color: var(--gold);
+      margin-left: 2px;
+    }
+    .form-sublabel {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border-input);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: var(--text-muted);
+    }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+    .form-textarea {
+      resize: vertical;
+      line-height: 1.5;
+    }
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2371717a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    /* ── Inline group (2 columns) ── */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 560px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    /* ── Process steps sub-group ── */
+    .process-steps { display: flex; flex-direction: column; gap: 10px; }
+    .process-step-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    /* ── Checkbox / Radio groups ── */
+    .choice-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .choice-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 8px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border-input);
+      border-radius: var(--radius-md);
+      transition: border-color 0.2s, background 0.2s;
+      font-size: 14px;
+      color: var(--text-primary);
+      user-select: none;
+    }
+    .choice-item:hover {
+      border-color: var(--gold);
+    }
+    .choice-item input[type="checkbox"],
+    .choice-item input[type="radio"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border-input);
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .choice-item input[type="radio"] {
+      border-radius: 50%;
+    }
+    .choice-item input[type="checkbox"]:checked,
+    .choice-item input[type="radio"]:checked {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .choice-item input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 1px;
+      width: 5px;
+      height: 9px;
+      border: 2px solid #09090b;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+    }
+    .choice-item input[type="radio"]:checked::after {
+      content: '';
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 6px;
+      height: 6px;
+      background: #09090b;
+      border-radius: 50%;
+    }
+    .choice-item:has(input:checked) {
+      border-color: var(--gold);
+      background: rgba(251,191,36,0.06);
+    }
+
+    /* Radio as full-width stacked option */
+    .radio-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .radio-stack .choice-item {
+      width: 100%;
+    }
+    .radio-stack .choice-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* ── Proof points ── */
+    .proof-points { display: flex; flex-direction: column; gap: 10px; }
+    .proof-point-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .proof-point-num {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      min-width: 20px;
+    }
+
+    /* ── Compliance checkbox ── */
+    .compliance-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 14px;
+      background: var(--bg);
+      border: 1px solid var(--border-input);
+      border-radius: var(--radius-md);
+    }
+    .compliance-row input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border-input);
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 1px;
+      position: relative;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .compliance-row input[type="checkbox"]:checked {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .compliance-row input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 1px;
+      width: 6px;
+      height: 10px;
+      border: 2px solid #09090b;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+    }
+    .compliance-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      cursor: pointer;
+    }
+
+    /* ── Error message ── */
+    .step-error {
+      font-size: 13px;
+      color: var(--red);
+      margin-top: 12px;
+      display: none;
+      padding: 10px 14px;
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: var(--radius-md);
+    }
+
+    /* ── Buttons ── */
+    .btn-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 36px;
+    }
+    .btn-continue {
+      flex: 1;
+      padding: 13px 24px;
+      background: var(--gold);
+      color: #09090b;
+      font-weight: 700;
+      font-size: 15px;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      font-family: inherit;
+    }
+    .btn-continue:hover:not(:disabled) {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    .btn-continue:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .btn-back {
+      padding: 13px 20px;
+      background: transparent;
+      border: 1px solid var(--border-input);
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .btn-back:hover {
+      border-color: var(--text-secondary);
+      color: var(--text-primary);
+    }
+    .btn-back[style*="display:none"],
+    .btn-back[style*="display: none"] {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="wizard-wrap">
+    <!-- Logo -->
+    <div class="wizard-logo">
+      <img src="/assets/brand/logo-full.png" alt="Pre-Sold Authority">
+    </div>
+
+    <!-- Card -->
+    <div class="wizard-card">
+      <!-- Progress -->
+      <div class="progress-wrap">
+        <div class="progress-label" id="stepLabel">Step 1 of 6</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill" style="width:16.67%"></div>
+        </div>
+      </div>
+
+      <!-- Step content rendered here -->
+      <div id="stepContent"></div>
+
+      <!-- Error message -->
+      <div class="step-error" id="stepError"></div>
+
+      <!-- Button row -->
+      <div class="btn-row">
+        <button class="btn-back" id="btnBack" style="display:none" onclick="handleBack()">&#8592; Back</button>
+        <button class="btn-continue" id="btnContinue" onclick="handleContinue()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── State ──────────────────────────────────────────────────────────────────
+    let currentStep = 1
+    const TOTAL_STEPS = 6
+    let wizardData = {}
+
+    // ── Step definitions ───────────────────────────────────────────────────────
+    const steps = {
+      1: {
+        heading: "Let's start with the basics",
+        subheading: "This takes about 8 minutes and powers everything the platform builds for you.",
+        render: renderStep1
+      },
+      2: {
+        heading: "Who do you serve best?",
+        subheading: "Be specific — this shapes every asset the platform generates.",
+        render: renderStep2
+      },
+      3: {
+        heading: "What makes you the safe choice?",
+        subheading: "Your positioning starts here. Choose what feels genuinely true.",
+        render: renderStep3
+      },
+      4: {
+        heading: "What can you truthfully claim?",
+        subheading: "Social proof that will appear in your positioning and profile copy.",
+        render: renderStep4
+      },
+      5: {
+        heading: "One more thing — for your client-facing documents",
+        subheading: "This information appears on your branded PDFs so they're ready to deploy.",
+        render: renderStep5
+      },
+      6: {
+        heading: "How do you like to communicate?",
+        subheading: "Your tone shapes the voice of every asset the platform generates.",
+        render: renderStep6
+      }
+    }
+
+    // ── Render helpers ─────────────────────────────────────────────────────────
+    function inp(id, placeholder = '', value = '', type = 'text') {
+      return `<input class="form-input" type="${type}" id="${id}" placeholder="${escHtml(placeholder)}" value="${escHtml(value || '')}">`
+    }
+
+    function sel(id, options, value = '') {
+      const opts = options.map(([v, l]) =>
+        `<option value="${escHtml(v)}" ${v === value ? 'selected' : ''}>${escHtml(l)}</option>`
+      ).join('')
+      return `<select class="form-select" id="${id}"><option value="">— Select —</option>${opts}</select>`
+    }
+
+    function tex(id, rows, placeholder, value = '') {
+      return `<textarea class="form-textarea" id="${id}" rows="${rows}" placeholder="${escHtml(placeholder)}">${escHtml(value || '')}</textarea>`
+    }
+
+    function checkboxGroup(name, options, checked = []) {
+      return `<div class="choice-grid">` + options.map(([v, l]) => `
+        <label class="choice-item">
+          <input type="checkbox" name="${name}" value="${escHtml(v)}" ${checked.includes(v) ? 'checked' : ''}>
+          ${escHtml(l)}
+        </label>`).join('') + `</div>`
+    }
+
+    function radioGroup(name, options, checked = '', stacked = false) {
+      const cls = stacked ? 'radio-stack' : 'choice-grid'
+      return `<div class="${cls}">` + options.map(([v, l, desc]) => `
+        <label class="choice-item">
+          <input type="radio" name="${name}" value="${escHtml(v)}" ${v === checked ? 'checked' : ''}>
+          <span>${escHtml(l)}${desc ? `<span class="choice-desc">${escHtml(desc)}</span>` : ''}</span>
+        </label>`).join('') + `</div>`
+    }
+
+    function escHtml(s) {
+      if (s == null) return ''
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    }
+
+    // ── Step renderers ─────────────────────────────────────────────────────────
+    function renderStep1() {
+      const d = wizardData
+      return `
+        <div class="form-group">
+          <label class="form-label" for="full_name">Full name<span class="required">*</span></label>
+          ${inp('full_name', 'e.g. Ross Lincoln', d.full_name)}
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="brokerage_name">Brokerage / Team name<span class="required">*</span></label>
+            ${inp('brokerage_name', 'e.g. Ray White Inner West', d.brokerage_name)}
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="phone">Phone number<span class="required">*</span></label>
+            ${inp('phone', 'e.g. 0412 345 678', d.phone, 'tel')}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="market_location">Market / City / Region<span class="required">*</span></label>
+          ${inp('market_location', 'e.g. Inner West Sydney', d.market_location)}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Your role</label>
+          ${radioGroup('agent_role', [
+            ['buyer_agent', "Buyer's Agent"],
+            ['listing_agent', 'Listing Agent'],
+            ['hybrid', 'Hybrid — Both']
+          ], d.agent_role || 'hybrid')}
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="years_experience">Years of experience</label>
+          ${sel('years_experience', [
+            ['less_than_1', 'Less than 1 year'],
+            ['1_to_3', '1–3 years'],
+            ['3_to_7', '3–7 years'],
+            ['7_to_15', '7–15 years'],
+            ['15_plus', '15+ years']
+          ], d.years_experience)}
+        </div>`
+    }
+
+    function renderStep2() {
+      const d = wizardData
+      return `
+        <div class="form-group">
+          <label class="form-label">Client type focus<span class="required">*</span></label>
+          <span class="form-sublabel">Select all that apply</span>
+          ${checkboxGroup('client_types', [
+            ['first_time_buyers', 'First-time buyers'],
+            ['move_up_buyers', 'Move-up buyers'],
+            ['investors', 'Investors'],
+            ['sellers', 'Sellers'],
+            ['luxury', 'Luxury'],
+            ['commercial', 'Commercial']
+          ], d.client_types || [])}
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="price_range">Typical price range</label>
+          ${sel('price_range', [
+            ['under_500k', 'Under $500k'],
+            ['500k_1m', '$500k–$1M'],
+            ['1m_2m', '$1M–$2M'],
+            ['2m_5m', '$2M–$5M'],
+            ['5m_plus', '$5M+']
+          ], d.price_range)}
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="serious_client_definition">What does a "serious" client look like?</label>
+          ${tex('serious_client_definition', 3, "e.g. They've spoken to a lender, they have a clear timeline...", d.serious_client_definition)}
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="anti_client_description">Who do you NOT want to work with?</label>
+          ${tex('anti_client_description', 3, "e.g. Buyers who haven't spoken to a lender...", d.anti_client_description)}
+        </div>`
+    }
+
+    function renderStep3() {
+      const d = wizardData
+      return `
+        <div class="form-group">
+          <label class="form-label">Your top strengths</label>
+          <span class="form-sublabel">Pick up to 5</span>
+          ${checkboxGroup('strengths', [
+            ['local_market_knowledge', 'Local market knowledge'],
+            ['process_transparency', 'Process transparency'],
+            ['negotiation_skill', 'Negotiation skill'],
+            ['calm_under_pressure', 'Calm under pressure'],
+            ['off_market_access', 'Off-market access'],
+            ['education_first', 'Education-first approach']
+          ], d.strengths || [])}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Your core values</label>
+          <span class="form-sublabel">Pick up to 3</span>
+          ${checkboxGroup('values', [
+            ['honesty', 'Honesty'],
+            ['boundaries', 'Boundaries'],
+            ['education_first', 'Education-first'],
+            ['no_pressure', 'No pressure'],
+            ['long_term_thinking', 'Long-term thinking']
+          ], d.values || [])}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Your 3-step process</label>
+          <div class="process-steps">
+            <div>
+              <div class="process-step-label">Step 1</div>
+              ${inp('process_step_1', 'e.g. First, we clarify your criteria and non-negotiables...', d.process_step_1)}
+            </div>
+            <div>
+              <div class="process-step-label">Step 2</div>
+              ${inp('process_step_2', 'e.g. Then we search and shortlist based on your brief...', d.process_step_2)}
+            </div>
+            <div>
+              <div class="process-step-label">Step 3</div>
+              ${inp('process_step_3', 'e.g. Finally, we negotiate and manage the process so you...', d.process_step_3)}
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="boundary_statement">Your professional boundary</label>
+          ${tex('boundary_statement', 3, 'e.g. I work exclusively with buyers who have been pre-approved...', d.boundary_statement)}
+        </div>`
+    }
+
+    function renderStep4() {
+      const d = wizardData
+      const proofs = d.proof_points || []
+      const proofInputs = [1,2,3,4,5].map(n => `
+        <div class="proof-point-row">
+          <span class="proof-point-num">${n}</span>
+          <input class="form-input" type="text" id="proof_${n}"
+            placeholder="${n === 1 ? 'e.g. Helped 43 first-home buyers enter the market in the last 24 months' : `Proof point ${n}`}"
+            value="${escHtml(proofs[n-1] || '')}">
+        </div>`).join('')
+      return `
+        <div class="form-group">
+          <label class="form-label" for="transactions_range">Transactions completed</label>
+          ${sel('transactions_range', [
+            ['1_10', '1–10'],
+            ['10_25', '10–25'],
+            ['25_50', '25–50'],
+            ['50_100', '50–100'],
+            ['100_250', '100–250'],
+            ['250_plus', '250+']
+          ], d.transactions_range)}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Proof points</label>
+          <span class="form-sublabel">Up to 5 — specific, truthful claims you can back up</span>
+          <div class="proof-points">${proofInputs}</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="testimonial_snippets">Testimonial snippet <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+          ${tex('testimonial_snippets', 3, "'Ross was calm, thorough, and never made us feel rushed.' — Michael & Sarah T.", d.testimonial_snippets)}
+        </div>`
+    }
+
+    function renderStep5() {
+      const d = wizardData
+      return `
+        <p class="step-note">All fields on this step are optional. We recommend filling them in so your generated one-pagers are complete and professional.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="licence_number">Licence / Registration number</label>
+            ${inp('licence_number', 'e.g. 1234567', d.licence_number)}
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="state_province">State / Province</label>
+            ${sel('state_province', [
+              ['QLD','QLD'],['NSW','NSW'],['VIC','VIC'],['SA','SA'],
+              ['WA','WA'],['TAS','TAS'],['NT','NT'],['ACT','ACT'],
+              ['NZ','NZ'],['other','Other']
+            ], d.state_province)}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="website_url">Website URL</label>
+          ${inp('website_url', 'e.g. https://rosslincoln.com.au', d.website_url, 'url')}
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="social_profile_url">LinkedIn or primary social URL</label>
+          ${inp('social_profile_url', 'e.g. https://linkedin.com/in/yourname', d.social_profile_url, 'url')}
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="broker_disclaimer">Broker-required disclaimer text <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+          ${tex('broker_disclaimer', 3, 'e.g. Licensed under XYZ Real Estate. All care taken but no responsibility accepted.', d.broker_disclaimer)}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Compliance confirmation</label>
+          <div class="compliance-row">
+            <input type="checkbox" id="fair_housing_confirmed" ${d.fair_housing_confirmed ? 'checked' : ''}>
+            <label class="compliance-label" for="fair_housing_confirmed">I'll review all generated outputs for compliance with my brokerage's advertising guidelines before deploying</label>
+          </div>
+        </div>`
+    }
+
+    function renderStep6() {
+      const d = wizardData
+      return `
+        <div class="form-group">
+          <label class="form-label">Tone preference</label>
+          ${radioGroup('tone_preference', [
+            ['calm_advisor', 'Calm Advisor', 'Measured, professional, trusted expert'],
+            ['direct', 'Direct & No-Nonsense', 'Straight talking, no fluff'],
+            ['warm', 'Warm & Approachable', 'Friendly, personal, conversational']
+          ], d.tone_preference || 'calm_advisor', true)}
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="words_to_use">Words / phrases you like</label>
+          ${tex('words_to_use', 2, 'e.g. transparent, straightforward, no surprises, your advocate', d.words_to_use)}
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="words_to_avoid">Words / phrases to AVOID</label>
+          ${tex('words_to_avoid', 2, 'e.g. hustle, grind, crush it, dominate, game-changer', d.words_to_avoid)}
+        </div>
+        <div class="form-group">
+          <label class="form-label">CTA preference</label>
+          ${radioGroup('cta_preference', [
+            ['dm_keyword', "DM keyword", "e.g. DM me 'NEXT'"],
+            ['comment_keyword', 'Comment keyword', "e.g. Comment 'READY'"],
+            ['direct_link', 'Direct link', '']
+          ], d.cta_preference || 'dm_keyword', true)}
+        </div>`
+    }
+
+    // ── Collect step data ──────────────────────────────────────────────────────
+    function collectStep(step) {
+      const data = {}
+
+      const v = id => {
+        const el = document.getElementById(id)
+        return el ? el.value.trim() : null
+      }
+      const radVal = name => {
+        const el = document.querySelector(`[name="${name}"]:checked`)
+        return el ? el.value : null
+      }
+      const checks = name =>
+        Array.from(document.querySelectorAll(`[name="${name}"]:checked`)).map(el => el.value)
+      const cb = id => {
+        const el = document.getElementById(id)
+        return el ? el.checked : false
+      }
+
+      if (step === 1) {
+        data.full_name = v('full_name')
+        data.brokerage_name = v('brokerage_name')
+        data.phone = v('phone')
+        data.market_location = v('market_location')
+        data.agent_role = radVal('agent_role')
+        data.years_experience = v('years_experience')
+      }
+      if (step === 2) {
+        data.client_types = checks('client_types')
+        data.price_range = v('price_range')
+        data.serious_client_definition = v('serious_client_definition')
+        data.anti_client_description = v('anti_client_description')
+      }
+      if (step === 3) {
+        data.strengths = checks('strengths')
+        data.values = checks('values')
+        data.process_step_1 = v('process_step_1')
+        data.process_step_2 = v('process_step_2')
+        data.process_step_3 = v('process_step_3')
+        data.boundary_statement = v('boundary_statement')
+      }
+      if (step === 4) {
+        data.transactions_range = v('transactions_range')
+        data.proof_points = [1,2,3,4,5]
+          .map(n => { const el = document.getElementById(`proof_${n}`); return el ? el.value.trim() : '' })
+          .filter(val => val.length > 0)
+        data.testimonial_snippets = v('testimonial_snippets')
+      }
+      if (step === 5) {
+        data.licence_number = v('licence_number')
+        data.state_province = v('state_province')
+        data.website_url = v('website_url')
+        data.social_profile_url = v('social_profile_url')
+        data.broker_disclaimer = v('broker_disclaimer')
+        data.fair_housing_confirmed = cb('fair_housing_confirmed')
+      }
+      if (step === 6) {
+        data.tone_preference = radVal('tone_preference')
+        data.words_to_use = v('words_to_use')
+        data.words_to_avoid = v('words_to_avoid')
+        data.cta_preference = radVal('cta_preference')
+      }
+
+      return data
+    }
+
+    // ── Validate step ─────────────────────────────────────────────────────────
+    function validateStep(step, data) {
+      if (step === 1) {
+        const missing = []
+        if (!data.full_name) missing.push('Full name')
+        if (!data.brokerage_name) missing.push('Brokerage / Team name')
+        if (!data.phone) missing.push('Phone number')
+        if (!data.market_location) missing.push('Market / City / Region')
+        if (missing.length > 0) {
+          return `Please fill in: ${missing.join(', ')}`
+        }
+      }
+      return null
+    }
+
+    // ── API calls ─────────────────────────────────────────────────────────────
+    async function saveToAPI(payload) {
+      const res = await fetch('/api/context-card', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Save failed')
+      return data
+    }
+
+    // ── Render ────────────────────────────────────────────────────────────────
+    function renderCurrentStep() {
+      const step = steps[currentStep]
+      document.getElementById('stepLabel').textContent = `Step ${currentStep} of ${TOTAL_STEPS}`
+      document.getElementById('progressFill').style.width = `${(currentStep / TOTAL_STEPS) * 100}%`
+
+      const content = document.getElementById('stepContent')
+      content.innerHTML = `
+        <h1 class="step-heading">${escHtml(step.heading)}</h1>
+        <p class="step-subheading">${escHtml(step.subheading)}</p>
+        ${step.render()}
+      `
+
+      // Back button
+      const btnBack = document.getElementById('btnBack')
+      btnBack.style.display = currentStep > 1 ? 'block' : 'none'
+
+      // Continue / finish button
+      const btnContinue = document.getElementById('btnContinue')
+      btnContinue.textContent = currentStep === TOTAL_STEPS ? 'Save & Go to Dashboard' : 'Continue'
+
+      // Clear error
+      const errEl = document.getElementById('stepError')
+      errEl.style.display = 'none'
+      errEl.textContent = ''
+    }
+
+    // ── Prefill from wizardData ───────────────────────────────────────────────
+    // Note: data is pre-filled at render time via wizardData in render functions above
+
+    // ── Handlers ─────────────────────────────────────────────────────────────
+    async function handleContinue() {
+      const btn = document.getElementById('btnContinue')
+      const errEl = document.getElementById('stepError')
+
+      const stepData = collectStep(currentStep)
+      const validationError = validateStep(currentStep, stepData)
+
+      if (validationError) {
+        errEl.textContent = validationError
+        errEl.style.display = 'block'
+        return
+      }
+
+      // Merge into wizardData
+      Object.assign(wizardData, stepData)
+
+      const isLastStep = currentStep === TOTAL_STEPS
+      const payload = { ...wizardData, is_complete: isLastStep }
+
+      btn.disabled = true
+      btn.textContent = isLastStep ? 'Saving...' : 'Saving...'
+      errEl.style.display = 'none'
+
+      try {
+        await saveToAPI(payload)
+
+        if (isLastStep) {
+          window.location.href = '/dashboard'
+        } else {
+          currentStep++
+          renderCurrentStep()
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+      } catch (err) {
+        errEl.textContent = 'Save failed — please try again'
+        errEl.style.display = 'block'
+      } finally {
+        if (!isLastStep || document.getElementById('btnContinue')) {
+          btn.disabled = false
+          btn.textContent = currentStep === TOTAL_STEPS ? 'Save & Go to Dashboard' : 'Continue'
+        }
+      }
+    }
+
+    function handleBack() {
+      if (currentStep > 1) {
+        currentStep--
+        renderCurrentStep()
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    async function init() {
+      try {
+        const res = await fetch('/api/context-card')
+        if (res.ok) {
+          const data = await res.json()
+          if (data.contextCard) {
+            if (data.contextCard.is_complete) {
+              window.location.href = '/dashboard'
+              return
+            }
+            // Prefill wizardData from saved card
+            wizardData = { ...data.contextCard }
+          }
+        }
+      } catch (e) {
+        // Silently continue — user starts fresh
+      }
+
+      renderCurrentStep()
+    }
+
+    init()
+  </script>
+</body>
+</html>
