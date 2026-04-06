@@ -111,7 +111,7 @@ contextCard.post('/', async (c) => {
         serious_client_definition = COALESCE(?, serious_client_definition),
         anti_client_description = COALESCE(?, anti_client_description),
         strengths = COALESCE(?, strengths),
-        values = COALESCE(?, values),
+        "values" = COALESCE(?, "values"),
         process_step_1 = COALESCE(?, process_step_1),
         process_step_2 = COALESCE(?, process_step_2),
         process_step_3 = COALESCE(?, process_step_3),
@@ -163,7 +163,7 @@ contextCard.post('/', async (c) => {
       INSERT INTO context_cards (
         id, user_id, full_name, market_location, agent_role, years_experience,
         client_types, price_range, serious_client_definition, anti_client_description,
-        strengths, values, process_step_1, process_step_2, process_step_3,
+        strengths, "values", process_step_1, process_step_2, process_step_3,
         boundary_statement, transactions_range, proof_points, testimonial_snippets,
         brokerage_name, licence_number, phone, website_url,
         social_profile_url, broker_disclaimer, state_province,
