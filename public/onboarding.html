@@ -398,13 +398,18 @@
 </head>
 <body>
   <script>
-    (function() {
-      fetch('/api/auth/check', { credentials: 'include' })
-        .then(r => {
-          if (!r.ok) window.location.href = '/login';
-        })
-        .catch(() => { window.location.href = '/login'; });
-    })();
+   (function() {
+    // Auth guard: verify session before showing page
+    fetch('/api/context-card', { credentials: 'include' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403) {
+          window.location.href = '/login';
+        }
+      })
+      .catch(function() {
+        window.location.href = '/login';
+      });
+  })();
   </script>
   <div class="wizard-wrap">
     <!-- Logo -->
