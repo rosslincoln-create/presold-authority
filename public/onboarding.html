@@ -46,7 +46,7 @@
       margin-bottom: 28px;
     }
     .wizard-logo img {
-      height: 40px;
+      height: 80px;
       object-fit: contain;
     }
 
@@ -397,6 +397,15 @@
   </style>
 </head>
 <body>
+  <script>
+    (function() {
+      fetch('/api/auth/check', { credentials: 'include' })
+        .then(r => {
+          if (!r.ok) window.location.href = '/login';
+        })
+        .catch(() => { window.location.href = '/login'; });
+    })();
+  </script>
   <div class="wizard-wrap">
     <!-- Logo -->
     <div class="wizard-logo">
@@ -511,21 +520,21 @@
       return `
         <div class="form-group">
           <label class="form-label" for="full_name">Full name<span class="required">*</span></label>
-          ${inp('full_name', 'e.g. Ross Lincoln', d.full_name)}
+          ${inp('full_name', 'e.g. Valerie Morgan', d.full_name)}
         </div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="brokerage_name">Brokerage / Team name<span class="required">*</span></label>
-            ${inp('brokerage_name', 'e.g. Ray White Inner West', d.brokerage_name)}
+            ${inp('brokerage_name', 'e.g. Morgan Realty', d.brokerage_name)}
           </div>
           <div class="form-group">
             <label class="form-label" for="phone">Phone number<span class="required">*</span></label>
-            ${inp('phone', 'e.g. 0412 345 678', d.phone, 'tel')}
+            ${inp('phone', '(714) 928-4962', d.phone, 'tel')}
           </div>
         </div>
         <div class="form-group">
           <label class="form-label" for="market_location">Market / City / Region<span class="required">*</span></label>
-          ${inp('market_location', 'e.g. Inner West Sydney', d.market_location)}
+          ${inp('market_location', 'e.g. Costa Mesa, CA', d.market_location)}
         </div>
         <div class="form-group">
           <label class="form-label">Your role</label>

@@ -5,6 +5,7 @@ import {
   setSessionCookie, clearSessionCookie, getSessionCookie,
   verifyJWT, createSession, deleteSession, deleteAllUserSessions
 } from '../lib/auth'
+import { authMiddleware } from '../middleware/authMiddleware'
 
 const auth = new Hono<{ Bindings: Env }>()
 
@@ -323,6 +324,15 @@ auth.get('/check-activation', async (c) => {
   }
 
   return c.json({ valid: true, pending: false })
+})
+
+// ─── GET /api/auth/check ──────────────────────────────────────────────────────
+// Used by frontend auth guard scripts to verify session validity.
+// authMiddleware handles the actual check — if we reach here, user is authenticated.
+
+auth.get('/check', authMiddleware, async (c) => {
+  const userId = c.get('userId' as never) as string
+  return c.json({ authenticated: true, userId })
 })
 
 // ─── POST /api/auth/test-create-activation (DEVELOPMENT ONLY) ────────────────
