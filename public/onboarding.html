@@ -397,20 +397,24 @@
   </style>
 </head>
 <body>
-  <script>
-   (function() {
-    // Auth guard: verify session before showing page
-    fetch('/api/context-card', { credentials: 'include' })
-      .then(function(r) {
-        if (r.status === 401 || r.status === 403) {
-          window.location.href = '/login';
-        }
-      })
-      .catch(function() {
+ <script>
+  (function() {
+    fetch('/api/context-card', { 
+      credentials: 'include',
+      redirect: 'manual'
+    })
+    .then(function(r) {
+      // redirect: 'manual' means redirects return type 'opaqueredirect' with status 0
+      // A 401 or redirect both mean not authenticated
+      if (r.type === 'opaqueredirect' || r.status === 0 || r.status === 401 || r.status === 403) {
         window.location.href = '/login';
-      });
+      }
+    })
+    .catch(function() {
+      window.location.href = '/login';
+    });
   })();
-  </script>
+</script>
   <div class="wizard-wrap">
     <!-- Logo -->
     <div class="wizard-logo">
