@@ -10,6 +10,16 @@ export type AuthVariables = {
   sessionId: string
 }
 
+// Helper: return 401 JSON for API routes, redirect for page routes
+function authFailResponse(c: any, status: 401 | 403 = 401, message = 'Valid session required') {
+  const path = c.req.path
+  if (path.startsWith('/api/')) {
+    return c.json({ error: 'Unauthorized', message }, status)
+  } else {
+    return c.redirect('/login')
+  }
+}
+
 export const authMiddleware = createMiddleware<{
   Bindings: Env
   Variables: AuthVariables
@@ -18,27 +28,27 @@ export const authMiddleware = createMiddleware<{
 
   // No cookie present
   if (!token) {
-    return c.redirect('/login')
+    return authFailResponse(c)
   }
 
   // Validate JWT signature
   const payload = await verifyJWT(token, c.env.JWT_SECRET)
   if (!payload) {
     clearSessionCookie(c)
-    return c.redirect('/login')
+    return authFailResponse(c)
   }
 
   // Check KV session exists
   const session = await getSession(c.env.KV, payload.sessionId)
   if (!session) {
     clearSessionCookie(c)
-    return c.redirect('/login')
+    return authFailResponse(c)
   }
 
   // Check user_status = 'active'
   if (session.userStatus !== 'active') {
     clearSessionCookie(c)
-    return c.redirect('/login')
+    return authFailResponse(c)
   }
 
   // Check access_revoked_at IS NULL in D1
@@ -48,7 +58,7 @@ export const authMiddleware = createMiddleware<{
 
   if (!user || user.access_revoked_at !== null) {
     clearSessionCookie(c)
-    return c.redirect('/login')
+    return authFailResponse(c)
   }
 
   // All checks passed — set context variables

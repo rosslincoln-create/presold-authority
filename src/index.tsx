@@ -2,6 +2,8 @@ import { Hono } from 'hono'
 import auth from './routes/auth'
 import billing from './routes/billing'
 import contextCard from './routes/contextCard'
+import lessons from './routes/lessons'
+import dashboard from './routes/dashboard'
 import { authMiddleware } from './middleware/authMiddleware'
 
 export type Env = {
@@ -34,11 +36,17 @@ app.get('/api/health', (c) => {
 app.route('/api/auth', auth)
 app.route('/api/billing', billing)
 app.route('/api/context-card', contextCard)
+app.route('/api/lessons', lessons)
+app.route('/api/dashboard', dashboard)
 
 // ─── Protected Routes ─────────────────────────────────────────────────────────
-app.get('/dashboard', authMiddleware, (c) => c.text('Dashboard — Sprint 5'))
+app.get('/dashboard', authMiddleware, (c) => c.redirect('/dashboard.html'))
 app.get('/onboarding', authMiddleware, (c) => c.redirect('/onboarding.html'))
-app.get('/lessons', authMiddleware, (c) => c.text('Lessons — Sprint 5'))
+app.get('/lessons', authMiddleware, (c) => c.redirect('/lessons.html'))
+app.get('/lessons/:id', authMiddleware, (c) => {
+  const id = c.req.param('id')
+  return c.redirect(`/lessons/lesson.html?id=${id}`)
+})
 app.get('/assets', authMiddleware, (c) => c.text('Assets — Sprint 8'))
 app.get('/account', authMiddleware, (c) => c.text('Account — Sprint 5'))
 
