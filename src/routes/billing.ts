@@ -24,7 +24,7 @@ billing.post('/create-checkout-session', async (c) => {
       payment_method_types: ['card'],
       line_items: [
         {
-          price: 'price_1TIl2tCemJXt4wAMQjRC1Pwi',
+          price: c.env.STRIPE_PRICE_ID || 'price_1TJWloCdeMuozQNnswb8N2TZ',
           quantity: 1
         }
       ],
