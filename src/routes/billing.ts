@@ -24,15 +24,7 @@ billing.post('/create-checkout-session', async (c) => {
       payment_method_types: ['card'],
       line_items: [
         {
-          price_data: {
-            currency: 'usd',
-            unit_amount: 14700, // $147.00 in cents
-            product_data: {
-              name: 'The Pre-Sold Authority System for Real Estate Agents',
-              description: 'Lifetime access — full course, PDF playbook, and both bonuses. 60-day money-back guarantee.',
-              images: []
-            }
-          },
+          price: 'price_1TIl2tCemJXt4wAMQjRC1Pwi',
           quantity: 1
         }
       ],
