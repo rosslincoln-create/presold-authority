@@ -11,7 +11,7 @@ const billing = new Hono<{ Bindings: Env }>()
 // Creates a Stripe Checkout Session for the $147 one-time purchase.
 // Returns { url } which the frontend uses to redirect to Stripe.
 
-billing.post('/create-checkout-session', async (c) => {
+billing.post('/checkout', async (c) => {
   try {
     const stripe = new Stripe(c.env.STRIPE_SECRET_KEY, {
       apiVersion: '2025-03-31.basil'
