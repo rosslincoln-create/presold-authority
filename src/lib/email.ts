@@ -28,7 +28,7 @@ export async function sendActivationEmail({
     const resend = new Resend(resendApiKey)
 
     const { error } = await resend.emails.send({
-      from: 'Pre-Sold Authority System <access@presoldauthority.com>',
+      from: 'Pre-Sold Authority System <support@mail.presoldauthority.com>',
       to,
       subject: 'Your Pre-Sold Authority System — Set Your Password & Get Access',
       html: `
