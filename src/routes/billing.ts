@@ -28,7 +28,7 @@ billing.post('/checkout', async (c) => {
           quantity: 1
         }
       ],
-      success_url: `${appUrl}/signup?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${appUrl}/signup?token={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/checkout`,
       allow_promotion_codes: true,
       billing_address_collection: 'auto',
