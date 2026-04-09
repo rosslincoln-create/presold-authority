@@ -312,7 +312,14 @@ auth.get('/check-activation', async (c) => {
     return c.json({ valid: false, pending: false })
   }
 
-  const tokenData = await c.env.KV.get(`activation:${token}`)
+  let tokenData: string | null = null
+  for (let attempt = 0; attempt < 5; attempt++) {
+    if (attempt > 0) {
+      await new Promise<void>((resolve) => setTimeout(resolve, 1000))
+    }
+    tokenData = await c.env.KV.get(`activation:${token}`)
+    if (tokenData) break
+  }
 
   if (!tokenData) {
     return c.json({ valid: false, pending: true }) // pending=true triggers polling
