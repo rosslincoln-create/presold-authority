@@ -123,7 +123,7 @@ billing.post('/webhook', async (c) => {
       }
 
       // Generate activation token and store in KV (48 hour TTL)
-      const activationToken = generateId()
+      const activationToken = stripeSessionId
       const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString()
 
       await c.env.KV.put(
