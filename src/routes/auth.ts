@@ -235,11 +235,29 @@ auth.post('/forgot-password', async (c) => {
         { expirationTtl: 3600 }
       )
 
-      // Log for dev testing — Sprint 3 will wire actual email
-      if (c.env.ENVIRONMENT === 'development') {
-        console.log(`[DEV] Password reset token for ${email}: ${resetToken}`)
-        console.log(`[DEV] Reset URL: /reset-password?token=${resetToken}`)
-      }
+      // Send password reset email (Resend)
+      const appUrl = c.env.APP_URL || 'https://app.presoldauthority.com'
+      const resetUrl = `${appUrl}/reset-password?token=${resetToken}`
+
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${c.env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'Ross Lincoln <hello@mail.presoldauthority.com>',
+          to: user.email,
+          subject: 'Reset your Pre-Sold Authority password',
+          html: `
+      <p>Hi,</p>
+      <p>We received a request to reset your password for your Pre-Sold Authority account.</p>
+      <p><a href="${resetUrl}" style="color:#d4af37;">Click here to reset your password</a></p>
+      <p>This link expires in 1 hour. If you didn't request this, ignore this email.</p>
+      <p>— Ross</p>
+    `
+        })
+      })
     }
 
     return c.json({
