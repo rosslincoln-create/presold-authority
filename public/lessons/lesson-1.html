@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 1 — The Shift | Pre-Sold Authority</title>
+  <link rel="stylesheet" href="/style-premium.css" />
+  <link rel="icon" href="/favicon.ico" />
+  <style>
+    /* ── Layout ─────────────────────────────────────────── */
+    .lesson-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      min-height: 100vh;
+    }
+    @media (min-width: 1024px) {
+      .lesson-layout {
+        grid-template-columns: 260px 1fr;
+      }
+    }
+
+    /* ── Sidebar ─────────────────────────────────────────── */
+    .lesson-sidebar {
+      background: var(--color-bg-secondary, #111);
+      border-right: 1px solid var(--color-border, #2a2a2a);
+      padding: 2rem 1.25rem;
+      display: none;
+    }
+    @media (min-width: 1024px) {
+      .lesson-sidebar { display: block; }
+    }
+    .sidebar-logo { margin-bottom: 2rem; }
+    .sidebar-logo img { height: 32px; }
+    .sidebar-nav-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-muted, #666);
+      margin-bottom: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    .lesson-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: var(--color-text-muted, #999);
+      text-decoration: none;
+      margin-bottom: 0.25rem;
+      transition: all 0.15s;
+    }
+    .lesson-nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+    .lesson-nav-item.active { background: rgba(212,175,55,0.12); color: var(--color-gold, #d4af37); }
+    .lesson-nav-item .check {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid currentColor;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.6rem;
+    }
+    .lesson-nav-item.completed .check {
+      background: var(--color-gold, #d4af37);
+      border-color: var(--color-gold, #d4af37);
+      color: #000;
+    }
+
+    /* ── Main content ─────────────────────────────────────── */
+    .lesson-main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      width: 100%;
+    }
+
+    /* ── Top nav bar ─────────────────────────────────────── */
+    .lesson-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--color-border, #2a2a2a);
+    }
+    .lesson-breadcrumb {
+      font-size: 0.78rem;
+      color: var(--color-text-muted, #666);
+    }
+    .lesson-breadcrumb span { color: var(--color-gold, #d4af37); }
+    .btn-nav {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.45rem 1rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-next {
+      background: var(--color-gold, #d4af37);
+      color: #000;
+    }
+    .btn-next:hover { opacity: 0.9; }
+    .btn-next:disabled, .btn-next.disabled {
+      background: #333; color: #666; cursor: not-allowed; pointer-events: none;
+    }
+
+    /* ── Section heading ─────────────────────────────────── */
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-gold, #d4af37);
+      margin-bottom: 0.5rem;
+    }
+    .lesson-title {
+      font-size: 1.9rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+    .lesson-subtitle {
+      color: var(--color-text-muted, #999);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Video placeholder ───────────────────────────────── */
+    .video-wrapper {
+      background: #0d0d0d;
+      border: 1px solid var(--color-border, #2a2a2a);
+      border-radius: 10px;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .video-placeholder-inner {
+      text-align: center;
+      color: var(--color-text-muted, #666);
+    }
+    .video-placeholder-inner .play-icon {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: rgba(212,175,55,0.1);
+      border: 2px solid rgba(212,175,55,0.3);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .video-placeholder-inner p { font-size: 0.85rem; margin-top: 0.5rem; }
+
+    /* ── Builder section ─────────────────────────────────── */
+    .builder-card {
+      background: var(--color-bg-secondary, #111);
+      border: 1px solid var(--color-border, #2a2a2a);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .builder-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+    .builder-badge {
+      background: rgba(212,175,55,0.12);
+      color: var(--color-gold, #d4af37);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      border-radius: 20px;
+      border: 1px solid rgba(212,175,55,0.2);
+    }
+    .builder-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+    .builder-description {
+      font-size: 0.88rem;
+      color: var(--color-text-muted, #888);
+      line-height: 1.6;
+      margin-bottom: 1.75rem;
+    }
+
+    /* ── Dimension sliders ───────────────────────────────── */
+    .dimensions-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .dimension-item {}
+    .dimension-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.4rem;
+    }
+    .dimension-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .dimension-score {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-gold, #d4af37);
+      min-width: 2.5rem;
+      text-align: right;
+    }
+    .dimension-desc {
+      font-size: 0.78rem;
+      color: var(--color-text-muted, #777);
+      margin-bottom: 0.6rem;
+    }
+    .dimension-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #2a2a2a;
+      outline: none;
+      cursor: pointer;
+    }
+    .dimension-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--color-gold, #d4af37);
+      cursor: pointer;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.2);
+      transition: box-shadow 0.15s;
+    }
+    .dimension-slider::-webkit-slider-thumb:hover {
+      box-shadow: 0 0 0 6px rgba(212,175,55,0.25);
+    }
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      color: var(--color-text-muted, #666);
+      margin-top: 0.3rem;
+    }
+
+    /* ── Submit button ───────────────────────────────────── */
+    .btn-submit {
+      width: 100%;
+      padding: 0.85rem;
+      background: var(--color-gold, #d4af37);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      letter-spacing: 0.02em;
+    }
+    .btn-submit:hover { opacity: 0.9; }
+    .btn-submit:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+    /* ── Results panel ───────────────────────────────────── */
+    .results-panel {
+      display: none;
+      margin-top: 2rem;
+    }
+    .results-panel.visible { display: block; }
+
+    .score-summary {
+      background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(212,175,55,0.03));
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 10px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .score-label { font-size: 0.75rem; color: var(--color-text-muted, #777); text-transform: uppercase; letter-spacing: 0.08em; }
+    .score-number { font-size: 3.5rem; font-weight: 800; color: var(--color-gold, #d4af37); line-height: 1; margin: 0.3rem 0; }
+    .score-level { font-size: 1rem; color: #fff; font-weight: 600; }
+
+    .gap-map-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--color-text-muted, #888);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+    .gap-bars { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .gap-bar-row { display: flex; align-items: center; gap: 0.75rem; }
+    .gap-bar-label { font-size: 0.8rem; color: #ccc; width: 160px; flex-shrink: 0; }
+    .gap-bar-track {
+      flex: 1;
+      height: 8px;
+      background: #222;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .gap-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
+    }
+    .gap-bar-score { font-size: 0.8rem; font-weight: 700; color: #fff; width: 28px; text-align: right; flex-shrink: 0; }
+
+    .gaps-list { margin-top: 1.25rem; }
+    .gap-item {
+      background: rgba(255,80,80,0.06);
+      border: 1px solid rgba(255,80,80,0.15);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .gap-item-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; }
+    .gap-icon { color: #f87171; font-size: 0.9rem; }
+    .gap-name { font-size: 0.9rem; font-weight: 600; color: #fff; }
+    .gap-score-pill {
+      margin-left: auto;
+      background: rgba(255,80,80,0.15);
+      color: #f87171;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 20px;
+    }
+    .gap-desc { font-size: 0.8rem; color: var(--color-text-muted, #888); }
+
+    .no-gaps {
+      background: rgba(52,211,153,0.06);
+      border: 1px solid rgba(52,211,153,0.2);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      color: #6ee7b7;
+      font-size: 0.88rem;
+    }
+
+    .results-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+    .btn-retake {
+      flex: 1;
+      padding: 0.65rem 1rem;
+      border: 1px solid var(--color-border, #2a2a2a);
+      background: transparent;
+      color: var(--color-text-muted, #888);
+      border-radius: 7px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      min-width: 120px;
+    }
+    .btn-retake:hover { border-color: #555; color: #fff; }
+    .btn-continue {
+      flex: 2;
+      padding: 0.65rem 1.25rem;
+      background: var(--color-gold, #d4af37);
+      color: #000;
+      border: none;
+      border-radius: 7px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      text-align: center;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+    .btn-continue:hover { opacity: 0.9; }
+
+    /* ── Completion banner ───────────────────────────────── */
+    .completion-banner {
+      display: none;
+      background: rgba(52,211,153,0.07);
+      border: 1px solid rgba(52,211,153,0.2);
+      border-radius: 8px;
+      padding: 0.9rem 1.1rem;
+      color: #6ee7b7;
+      font-size: 0.88rem;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+    .completion-banner.visible { display: flex; }
+
+    /* ── Error state ─────────────────────────────────────── */
+    .error-msg {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 7px;
+      padding: 0.75rem 1rem;
+      color: #f87171;
+      font-size: 0.85rem;
+      margin-top: 0.75rem;
+      display: none;
+    }
+    .error-msg.visible { display: block; }
+
+    /* ── Loading spinner ─────────────────────────────────── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(0,0,0,0.3);
+      border-top-color: #000;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    /* ── Completion checkbox ─────────────────────────────── */
+    .lesson-complete-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.25rem;
+      background: var(--color-bg-secondary, #111);
+      border: 1px solid var(--color-border, #2a2a2a);
+      border-radius: 10px;
+      margin-top: 2rem;
+    }
+    .lesson-complete-row label {
+      font-size: 0.9rem;
+      color: #ccc;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .lesson-complete-row input[type="checkbox"] {
+      width: 18px; height: 18px; cursor: pointer;
+      accent-color: var(--color-gold, #d4af37);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Auth guard -->
+<script>
+  fetch('/api/auth/check', { credentials: 'include' })
+    .then(r => { if (!r.ok) window.location.href = '/login.html' })
+    .catch(() => { window.location.href = '/login.html' })
+</script>
+
+<div class="lesson-layout">
+
+  <!-- Sidebar -->
+  <aside class="lesson-sidebar">
+    <div class="sidebar-logo">
+      <a href="/dashboard.html">
+        <img src="/assets/brand/logo-full.png" alt="Pre-Sold Authority" onerror="this.style.display='none'" />
+      </a>
+    </div>
+
+    <div class="sidebar-nav-label">Module 1 — The Authority Shift</div>
+    <a href="/lessons/lesson-1.html" class="lesson-nav-item active" id="nav-l1">
+      <span class="check">1</span> The Shift
+    </a>
+    <a href="/lessons/lesson-2.html" class="lesson-nav-item" id="nav-l2">
+      <span class="check">2</span> Visibility vs. Authority
+    </a>
+    <a href="/lessons/lesson-3.html" class="lesson-nav-item" id="nav-l3">
+      <span class="check">3</span> The Context Card
+    </a>
+
+    <div class="sidebar-nav-label">Module 2 — The System</div>
+    <a href="/lessons/lesson-4.html" class="lesson-nav-item" id="nav-l4">
+      <span class="check">4</span> Authority Positioning
+    </a>
+    <a href="/lessons/lesson-5.html" class="lesson-nav-item" id="nav-l5">
+      <span class="check">5</span> Profile &amp; Pinned Post
+    </a>
+
+    <div class="sidebar-nav-label">Module 3 — Content</div>
+    <a href="/lessons/lesson-6.html" class="lesson-nav-item" id="nav-l6">
+      <span class="check">6</span> Content Pillars
+    </a>
+
+    <div class="sidebar-nav-label">Module 4 — Conversion</div>
+    <a href="/lessons/lesson-7.html" class="lesson-nav-item" id="nav-l7">
+      <span class="check">7</span> Posts &amp; DM Flow
+    </a>
+
+    <div class="sidebar-nav-label">Module 5 — Install</div>
+    <a href="/lessons/lesson-8.html" class="lesson-nav-item" id="nav-l8">
+      <span class="check">8</span> Boundary Language &amp; Rhythm
+    </a>
+  </aside>
+
+  <!-- Main -->
+  <main class="lesson-main">
+
+    <!-- Top bar -->
+    <div class="lesson-topbar">
+      <div class="lesson-breadcrumb">
+        <a href="/dashboard.html" style="color:inherit;text-decoration:none;">Dashboard</a>
+        &nbsp;/&nbsp;
+        <span>Lesson 1</span>
+      </div>
+      <a href="/lessons/lesson-2.html" class="btn-nav btn-next" id="btn-next-lesson">
+        Lesson 2 →
+      </a>
+    </div>
+
+    <!-- Lesson header -->
+    <div class="section-label">Module 1 · Lesson 1 of 8</div>
+    <h1 class="lesson-title">The Shift — Why Good Agents Still Look Interchangeable</h1>
+    <p class="lesson-subtitle">Install the core belief: the problem isn't effort — it's positioning. Understand why pre-sold clients exist and what creates them.</p>
+
+    <!-- Video section -->
+    <div class="video-wrapper">
+      <div class="video-placeholder-inner">
+        <div class="play-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5,3 19,12 5,21" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <p style="color:#555;font-size:0.8rem;">Lesson video — coming in Sprint 6E/post-recording</p>
+        <p style="color:#444;font-size:0.75rem;margin-top:0.25rem;">(OTS walkthrough will be embedded here via Bunny.net)</p>
+      </div>
+    </div>
+
+    <!-- Completion banner (shown when already submitted) -->
+    <div class="completion-banner" id="completion-banner">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+      Builder complete — your Positioning Gap Map is saved below.
+    </div>
+
+    <!-- ── BUILDER CARD ────────────────────────────────────── -->
+    <div class="builder-card" id="builder-section">
+      <div class="builder-header">
+        <div>
+          <div class="builder-title">Positioning Gap Assessment</div>
+          <div class="builder-description">
+            Rate your current positioning honestly across five dimensions. This becomes your baseline — your Positioning Gap Map. There are no wrong answers. The goal is an accurate starting point, not a perfect score.<br><br>
+            <strong style="color:#ccc;">Scale: 1 = Not true at all &nbsp;·&nbsp; 10 = Completely nailed</strong>
+          </div>
+        </div>
+        <span class="builder-badge">Non-AI Builder</span>
+      </div>
+
+      <!-- The 5 dimension sliders -->
+      <div class="dimensions-grid" id="dimensions-form">
+
+        <div class="dimension-item">
+          <div class="dimension-header">
+            <span class="dimension-label">Positioning Clarity</span>
+            <span class="dimension-score" id="score-clarity">5</span>
+          </div>
+          <div class="dimension-desc">Prospects instantly understand who you help and what you stand for.</div>
+          <input type="range" class="dimension-slider" id="slider-clarity" min="1" max="10" value="5" data-key="clarity" />
+          <div class="scale-labels"><span>1 — Not at all</span><span>10 — Crystal clear</span></div>
+        </div>
+
+        <div class="dimension-item">
+          <div class="dimension-header">
+            <span class="dimension-label">Differentiation</span>
+            <span class="dimension-score" id="score-differentiation">5</span>
+          </div>
+          <div class="dimension-desc">You stand out clearly from other agents in your market — not just "experienced and dedicated."</div>
+          <input type="range" class="dimension-slider" id="slider-differentiation" min="1" max="10" value="5" data-key="differentiation" />
+          <div class="scale-labels"><span>1 — Look identical to others</span><span>10 — Clearly distinctive</span></div>
+        </div>
+
+        <div class="dimension-item">
+          <div class="dimension-header">
+            <span class="dimension-label">Authority Signals</span>
+            <span class="dimension-score" id="score-authority_signals">5</span>
+          </div>
+          <div class="dimension-desc">Your profile, content, and messaging communicate trust before a prospect ever contacts you.</div>
+          <input type="range" class="dimension-slider" id="slider-authority_signals" min="1" max="10" value="5" data-key="authority_signals" />
+          <div class="scale-labels"><span>1 — No visible signals</span><span>10 — Strong trust signals</span></div>
+        </div>
+
+        <div class="dimension-item">
+          <div class="dimension-header">
+            <span class="dimension-label">Content Consistency</span>
+            <span class="dimension-score" id="score-content_consistency">5</span>
+          </div>
+          <div class="dimension-desc">Your content consistently attracts decision-stage buyers and sellers — not just likes.</div>
+          <input type="range" class="dimension-slider" id="slider-content_consistency" min="1" max="10" value="5" data-key="content_consistency" />
+          <div class="scale-labels"><span>1 — Inconsistent or absent</span><span>10 — Consistent and effective</span></div>
+        </div>
+
+        <div class="dimension-item">
+          <div class="dimension-header">
+            <span class="dimension-label">Boundary Confidence</span>
+            <span class="dimension-score" id="score-boundary_confidence">5</span>
+          </div>
+          <div class="dimension-desc">You clearly filter low-intent prospects without losing real business or feeling harsh.</div>
+          <input type="range" class="dimension-slider" id="slider-boundary_confidence" min="1" max="10" value="5" data-key="boundary_confidence" />
+          <div class="scale-labels"><span>1 — No clear filter</span><span>10 — Clear and confident</span></div>
+        </div>
+
+      </div>
+
+      <div class="error-msg" id="error-msg">Something went wrong. Please try again.</div>
+
+      <button class="btn-submit" id="btn-submit" onclick="submitAssessment()">
+        Generate My Positioning Gap Map
+      </button>
+    </div>
+
+    <!-- ── RESULTS PANEL ──────────────────────────────────── -->
+    <div class="results-panel" id="results-panel">
+
+      <div class="score-summary">
+        <div class="score-label">Your Authority Foundation Score</div>
+        <div class="score-number" id="result-score">—</div>
+        <div class="score-level" id="result-level">—</div>
+      </div>
+
+      <div class="gap-map-title">Positioning Gap Map</div>
+      <div class="gap-bars" id="gap-bars"></div>
+
+      <div class="gaps-list" id="gaps-list"></div>
+
+      <div class="results-actions">
+        <button class="btn-retake" onclick="retakeAssessment()">Retake Assessment</button>
+        <a href="/lessons/lesson-2.html" class="btn-continue">
+          Continue to Lesson 2 →
+        </a>
+      </div>
+    </div>
+
+    <!-- Lesson complete checkbox -->
+    <div class="lesson-complete-row" id="complete-row" style="display:none;">
+      <label>
+        <input type="checkbox" id="lesson-complete-check" onchange="markLessonComplete(this.checked)" />
+        Mark Lesson 1 as complete
+      </label>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // ── State ─────────────────────────────────────────────────
+  const dimensions = [
+    { key: 'clarity',             label: 'Positioning Clarity' },
+    { key: 'differentiation',     label: 'Differentiation' },
+    { key: 'authority_signals',   label: 'Authority Signals' },
+    { key: 'content_consistency', label: 'Content Consistency' },
+    { key: 'boundary_confidence', label: 'Boundary Confidence' },
+  ]
+
+  // ── Wire up sliders ───────────────────────────────────────
+  document.querySelectorAll('.dimension-slider').forEach(slider => {
+    const key = slider.dataset.key
+    const scoreEl = document.getElementById('score-' + key)
+    slider.addEventListener('input', () => {
+      scoreEl.textContent = slider.value
+      updateSliderTrack(slider)
+    })
+    updateSliderTrack(slider)
+  })
+
+  function updateSliderTrack(slider) {
+    const pct = ((slider.value - 1) / 9) * 100
+    slider.style.background = `linear-gradient(to right, #d4af37 ${pct}%, #2a2a2a ${pct}%)`
+  }
+
+  // ── On page load: check for existing assessment ───────────
+  window.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const res = await fetch('/api/assessments/positioning-gap', { credentials: 'include' })
+      const data = await res.json()
+      if (data.assessment) {
+        renderResults(data.assessment)
+        document.getElementById('completion-banner').classList.add('visible')
+        document.getElementById('complete-row').style.display = 'flex'
+      }
+    } catch (e) {
+      // No existing assessment — show the form fresh
+    }
+  })
+
+  // ── Submit ────────────────────────────────────────────────
+  async function submitAssessment() {
+    const btn = document.getElementById('btn-submit')
+    const errEl = document.getElementById('error-msg')
+    errEl.classList.remove('visible')
+
+    const responses = {}
+    document.querySelectorAll('.dimension-slider').forEach(s => {
+      responses[s.dataset.key] = parseInt(s.value)
+    })
+
+    btn.disabled = true
+    btn.innerHTML = '<span class="spinner"></span>&nbsp; Generating your gap map…'
+
+    try {
+      const res = await fetch('/api/assessments', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ assessment_type: 'positioning-gap', responses }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Submission failed')
+
+      renderResults(data.assessment)
+      document.getElementById('completion-banner').classList.add('visible')
+      document.getElementById('complete-row').style.display = 'flex'
+      document.getElementById('complete-row').scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    } catch (err) {
+      errEl.textContent = err.message || 'Something went wrong. Please try again.'
+      errEl.classList.add('visible')
+      btn.disabled = false
+      btn.textContent = 'Generate My Positioning Gap Map'
+    }
+  }
+
+  // ── Render results ────────────────────────────────────────
+  function renderResults(assessment) {
+    const score = assessment.score
+    const gaps = typeof assessment.gaps === 'string' ? JSON.parse(assessment.gaps) : assessment.gaps
+    const responses = typeof assessment.responses === 'string' ? JSON.parse(assessment.responses) : assessment.responses
+
+    document.getElementById('result-score').textContent = score
+    const levelMap = { 80: 'Strong Authority Foundation', 60: 'Developing Authority Foundation', 40: 'Emerging Authority Foundation', 0: 'Foundation Stage — Let\'s Build This' }
+    const level = Object.keys(levelMap).reverse().find(k => score >= parseInt(k))
+    document.getElementById('result-level').textContent = levelMap[level] || levelMap[0]
+
+    // Gap bar chart
+    const barsEl = document.getElementById('gap-bars')
+    barsEl.innerHTML = ''
+    dimensions.forEach(dim => {
+      const s = responses[dim.key] || 0
+      const color = s >= 8 ? '#4ade80' : s >= 6 ? '#facc15' : '#f87171'
+      barsEl.innerHTML += `
+        <div class="gap-bar-row">
+          <div class="gap-bar-label">${dim.label}</div>
+          <div class="gap-bar-track">
+            <div class="gap-bar-fill" style="width:${s * 10}%;background:${color}"></div>
+          </div>
+          <div class="gap-bar-score">${s}</div>
+        </div>`
+    })
+
+    // Gap list
+    const gapsEl = document.getElementById('gaps-list')
+    gapsEl.innerHTML = ''
+    if (!gaps || gaps.length === 0) {
+      gapsEl.innerHTML = `<div class="no-gaps">✓ No critical gaps identified — your positioning foundation is strong. Continue to Lesson 4 to generate your positioning statement.</div>`
+    } else {
+      gapsEl.innerHTML = '<div class="gap-map-title" style="margin-top:1rem;">Priority Gaps</div>'
+      gaps.forEach(g => {
+        gapsEl.innerHTML += `
+          <div class="gap-item">
+            <div class="gap-item-header">
+              <span class="gap-icon">⚠</span>
+              <span class="gap-name">${g.label}</span>
+              <span class="gap-score-pill">${g.score}/10</span>
+            </div>
+            <div class="gap-desc">${g.description}</div>
+          </div>`
+      })
+    }
+
+    // Show results, hide form
+    document.getElementById('builder-section').style.display = 'none'
+    document.getElementById('results-panel').classList.add('visible')
+  }
+
+  // ── Retake ────────────────────────────────────────────────
+  function retakeAssessment() {
+    document.getElementById('results-panel').classList.remove('visible')
+    document.getElementById('builder-section').style.display = 'block'
+    document.getElementById('error-msg').classList.remove('visible')
+    document.getElementById('btn-submit').disabled = false
+    document.getElementById('btn-submit').textContent = 'Generate My Positioning Gap Map'
+    document.querySelectorAll('.dimension-slider').forEach(s => { s.value = 5; updateSliderTrack(s); document.getElementById('score-' + s.dataset.key).textContent = 5 })
+  }
+
+  // ── Mark lesson complete ──────────────────────────────────
+  async function markLessonComplete(checked) {
+    try {
+      await fetch('/api/lessons/lesson-1/progress', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_complete: checked ? 1 : 0 }),
+      })
+    } catch (e) {
+      console.error('Progress update failed', e)
+    }
+  }
+</script>
+
+</body>
+</html>
