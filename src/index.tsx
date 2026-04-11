@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
-import auth, { handleAuthSessionCheck } from './routes/auth'
+import auth from './routes/auth'
+import { handleAuthSessionCheck } from './routes/auth'
 import billing from './routes/billing'
 import contextCard from './routes/contextCard'
 import lessons from './routes/lessons'
