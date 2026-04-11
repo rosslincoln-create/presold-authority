@@ -10,10 +10,17 @@ export type AuthVariables = {
   sessionId: string
 }
 
-// Helper: return 401 JSON for API routes, redirect for page routes
+// Helper: return 401 JSON for API routes, redirect for page routes.
+// Use full URL pathname: when this app is mounted under e.g. /api/auth, c.req.path
+// is often the stripped path (/check), not /api/auth/check — so startsWith('/api/') would be wrong.
 function authFailResponse(c: any, status: 401 | 403 = 401, message = 'Valid session required') {
-  const path = c.req.path
-  if (path.startsWith('/api/')) {
+  let pathname = '/'
+  try {
+    pathname = new URL(c.req.url).pathname
+  } catch {
+    pathname = typeof c.req.path === 'string' ? c.req.path : '/'
+  }
+  if (pathname.startsWith('/api/')) {
     return c.json({ error: 'Unauthorized', message }, status)
   } else {
     return c.redirect('/login')

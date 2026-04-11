@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import auth from './routes/auth'
+import auth, { handleAuthSessionCheck } from './routes/auth'
 import billing from './routes/billing'
 import contextCard from './routes/contextCard'
 import lessons from './routes/lessons'
@@ -35,6 +35,8 @@ app.get('/api/health', (c) => {
 })
 
 // ─── Public API Routes ────────────────────────────────────────────────────────
+// Register session check on the root app so GET /api/auth/check always resolves (not only via mounted path).
+app.get('/api/auth/check', handleAuthSessionCheck)
 app.route('/api/auth', auth)
 app.route('/api/billing', billing)
 app.route('/api/context-card', contextCard)

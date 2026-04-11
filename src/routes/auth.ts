@@ -1,4 +1,4 @@
-import { Hono } from 'hono'
+import { Hono, type Context } from 'hono'
 import { Env } from '../index'
 import {
   hashPassword, verifyPassword, createJWT, generateId,
@@ -353,9 +353,12 @@ auth.get('/check-activation', async (c) => {
 
 // ─── GET /api/auth/check ──────────────────────────────────────────────────────
 // Used by frontend auth guard scripts to verify session validity.
+// Registered on the root app as GET /api/auth/check (see index.tsx) so the route is always found.
 // authMiddleware handles the actual check — if we reach here, user is authenticated.
 
-auth.get('/check', async (c) => {
+export async function handleAuthSessionCheck(
+  c: Context<{ Bindings: Env }>
+): Promise<Response> {
   try {
     return await authMiddleware(c, async () => {
       const userId = c.get('userId' as never) as string
@@ -365,7 +368,7 @@ auth.get('/check', async (c) => {
     console.error('GET /api/auth/check:', err)
     return c.json({ authenticated: false }, 401)
   }
-})
+}
 
 // ─── POST /api/auth/test-create-activation (DEVELOPMENT ONLY) ────────────────
 
