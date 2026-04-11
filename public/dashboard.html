@@ -181,6 +181,21 @@
     /* Loading state */
     .loading { color: #a1a1aa; font-size: 14px; padding: 20px 0; }
 
+    /* Dashboard load error (API failures — do not redirect to login) */
+    .dashboard-error {
+      display: none;
+      background: #1c1214;
+      border: 1px solid #7f1d1d;
+      border-left: 4px solid #ef4444;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      color: #fecaca;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .dashboard-error.visible { display: block; }
+
     /* Mobile */
     @media (max-width: 768px) {
       .sidebar { display: none; }
@@ -257,6 +272,8 @@
 
   <!-- Main content -->
   <main class="main">
+
+    <div class="dashboard-error" id="dashboardError" role="alert" aria-live="polite"></div>
 
     <!-- Context card incomplete banner -->
     <div class="banner" id="contextCardBanner">
@@ -391,6 +408,20 @@
       });
     }
 
+    function showDashboardError(message) {
+      var el = document.getElementById('dashboardError');
+      if (!el) return;
+      el.textContent = message;
+      el.classList.add('visible');
+    }
+
+    function hideDashboardError() {
+      var el = document.getElementById('dashboardError');
+      if (!el) return;
+      el.textContent = '';
+      el.classList.remove('visible');
+    }
+
     function renderLessons(lessons) {
       var grid = document.getElementById('lessonsGrid');
       if (!lessons || !lessons.length) {
@@ -419,8 +450,25 @@
     async function loadDashboard() {
       try {
         var res = await fetch('/api/dashboard', { credentials: 'include' });
-        if (!res.ok) { window.location.href = '/login'; return; }
+        if (res.status === 401 || res.status === 403) {
+          window.location.href = '/login';
+          return;
+        }
+        if (!res.ok) {
+          var errMsg = 'We could not load your dashboard. Please try again in a moment.';
+          try {
+            var errBody = await res.json();
+            if (errBody && typeof errBody.message === 'string') errMsg = errBody.message;
+            else if (errBody && typeof errBody.error === 'string') errMsg = errBody.error;
+          } catch (parseErr) { /* ignore */ }
+          console.error('Dashboard API error:', res.status, errMsg);
+          showDashboardError(errMsg);
+          document.getElementById('lessonsGrid').innerHTML =
+            '<p class="loading">Dashboard unavailable.</p>';
+          return;
+        }
         var data = await res.json();
+        hideDashboardError();
 
         // Welcome name
         var firstName = data.user.full_name 
@@ -453,6 +501,11 @@
 
       } catch(err) {
         console.error('Dashboard load error:', err);
+        showDashboardError(
+          'We could not reach the server. Check your connection and refresh the page.'
+        );
+        var grid = document.getElementById('lessonsGrid');
+        if (grid) grid.innerHTML = '<p class="loading">Dashboard unavailable.</p>';
       }
     }
 
