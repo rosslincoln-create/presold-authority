@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+  // Redirect lesson.html?id=lesson-X to the dedicated lesson page
+  (function() {
+    var params = new URLSearchParams(window.location.search);
+    var id = params.get('id');
+    if (id) {
+      window.location.replace('/lessons/' + id + '.html');
+    }
+  })();
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lesson — Pre-Sold Authority</title>

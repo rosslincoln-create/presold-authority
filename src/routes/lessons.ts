@@ -38,6 +38,36 @@ lessons.get('/', async (c) => {
   return c.json({ modules })
 })
 
+// GET /api/lessons/:id/progress — current lesson_progress row (e.g. notes)
+lessons.get('/:id/progress', async (c) => {
+  const userId = c.get('userId' as never) as string
+  const lessonId = c.req.param('id')
+
+  const row = await c.env.DB.prepare(`
+    SELECT id, user_id, lesson_id, video_watch_percent, is_complete, builder_completed,
+           notes, completed_at, created_at, updated_at
+    FROM lesson_progress
+    WHERE user_id = ? AND lesson_id = ?
+  `).bind(userId, lessonId).first() as Record<string, unknown> | null
+
+  if (!row) {
+    return c.json({
+      notes: '',
+      video_watch_percent: 0,
+      is_complete: false,
+      builder_completed: false
+    })
+  }
+
+  return c.json({
+    ...row,
+    video_watch_percent: row.video_watch_percent ?? 0,
+    is_complete: !!row.is_complete,
+    builder_completed: !!row.builder_completed,
+    notes: row.notes ?? ''
+  })
+})
+
 // GET /api/lessons/:id — single lesson with prev/next navigation
 lessons.get('/:id', async (c) => {
   const userId = c.get('userId' as never) as string

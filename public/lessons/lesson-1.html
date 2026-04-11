@@ -27,10 +27,19 @@
       overflow-y: auto;
     }
     .sidebar-logo {
-      padding: 0 20px 24px;
+      padding: 0 20px 28px;
       border-bottom: 1px solid #27272a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 72px;
     }
-    .sidebar-logo img { height: 36px; object-fit: contain; }
+    .sidebar-logo img {
+      height: 52px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
     .sidebar-nav { padding: 16px 0; }
     .sidebar-section-label {
       font-size: 10px;
@@ -160,6 +169,53 @@
       margin: 24px 0;
       font-size: 14px;
       color: #e4e4e7;
+    }
+
+    /* ── Notes section ── */
+    .notes-section {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 36px;
+    }
+    .notes-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .notes-icon { font-size: 16px; }
+    .notes-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #e4e4e7;
+      flex: 1;
+    }
+    .notes-status {
+      font-size: 12px;
+      color: #52525b;
+      transition: color 0.3s;
+    }
+    .notes-status.saving { color: #fbbf24; }
+    .notes-status.saved  { color: #4ade80; }
+    .notes-textarea {
+      width: 100%;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      border-radius: 8px;
+      color: #d4d4d8;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 12px 14px;
+      resize: vertical;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: border-color 0.15s;
+    }
+    .notes-textarea:focus {
+      outline: none;
+      border-color: #71717a;
     }
 
     /* ── Builder section ── */
@@ -475,7 +531,8 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <img src="/assets/brand/logo-full.png" alt="Pre-Sold Authority" onerror="this.style.display='none'">
+      <img src="/assets/brand/logo-mark.png" alt="PSA">
+      <span style="margin-left:10px; font-size:13px; font-weight:700; color:#f4f4f5; line-height:1.2;">Pre-Sold<br>Authority</span>
     </div>
     <nav class="sidebar-nav">
       <div class="sidebar-section-label">Navigation</div>
@@ -573,6 +630,21 @@
       <p>Before we go anywhere else in this system, you need an honest read on where your positioning currently sits. Not where you'd like it to be — where it actually is right now.</p>
 
       <p>The builder below walks you through five dimensions of positioning. Rate yourself honestly on each one. The output is your baseline Positioning Gap Map — it shows exactly where the trust gap is largest, so the rest of this system is targeted at the right things.</p>
+    </div>
+
+    <!-- Notes section -->
+    <div class="notes-section" id="notesSection">
+      <div class="notes-header">
+        <span class="notes-icon">📝</span>
+        <span class="notes-title">My Notes</span>
+        <span class="notes-status" id="notesStatus"></span>
+      </div>
+      <textarea
+        id="notesTextarea"
+        class="notes-textarea"
+        placeholder="Take notes as you work through this lesson — saved automatically to your account…"
+        rows="5"
+      ></textarea>
     </div>
 
     <!-- ═══════════════════════════════════════════ -->
@@ -916,6 +988,57 @@ async function loadSavedAssessment() {
 }
 
 loadSavedAssessment();
+
+// ─────────────────────────────────────────────
+// Notes — auto-save with debounce
+// ─────────────────────────────────────────────
+var notesTimer = null;
+
+async function saveNotes(text) {
+  const statusEl = document.getElementById('notesStatus');
+  statusEl.textContent = 'Saving…';
+  statusEl.className = 'notes-status saving';
+  try {
+    const res = await fetch('/api/lessons/lesson-1/progress', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notes: text })
+    });
+    if (res.ok) {
+      statusEl.textContent = 'Saved';
+      statusEl.className = 'notes-status saved';
+      setTimeout(function() {
+        statusEl.textContent = '';
+        statusEl.className = 'notes-status';
+      }, 2000);
+    }
+  } catch (err) {
+    statusEl.textContent = 'Not saved';
+    statusEl.className = 'notes-status';
+  }
+}
+
+document.getElementById('notesTextarea').addEventListener('input', function() {
+  clearTimeout(notesTimer);
+  var text = this.value;
+  notesTimer = setTimeout(function() { saveNotes(text); }, 1200);
+});
+
+async function loadNotes() {
+  try {
+    const res = await fetch('/api/lessons/lesson-1/progress', {
+      credentials: 'include'
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data && (data.notes !== undefined && data.notes !== null)) {
+      document.getElementById('notesTextarea').value = data.notes;
+    }
+  } catch (err) { /* silent */ }
+}
+
+loadNotes();
 </script>
 
 </body>
