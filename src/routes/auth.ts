@@ -362,7 +362,26 @@ export async function handleAuthSessionCheck(
   try {
     return await authMiddleware(c, async () => {
       const userId = c.get('userId' as never) as string
-      return c.json({ authenticated: true, userId })
+      const row = await c.env.DB.prepare(
+        `SELECT id, email, role, subscription_tier, user_status FROM users WHERE id = ?`
+      ).bind(userId).first<{
+        id: string
+        email: string
+        role: string
+        subscription_tier: string
+        user_status: string
+      }>()
+      if (!row) {
+        return c.json({ authenticated: false }, 401)
+      }
+      return c.json({
+        authenticated: true,
+        userId: row.id,
+        email: row.email,
+        role: row.role,
+        subscriptionTier: row.subscription_tier,
+        userStatus: row.user_status,
+      })
     })
   } catch (err) {
     console.error('GET /api/auth/check:', err)
