@@ -1,450 +1,455 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lesson 1 — The Shift | Pre-Sold Authority</title>
-  <link rel="stylesheet" href="/style-premium.css" />
-  <link rel="icon" href="/favicon.ico" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 1 — Why Good Agents Still Look Interchangeable | Pre-Sold Authority</title>
+  <link rel="stylesheet" href="/style-premium.css">
   <style>
-    /* ── Layout ─────────────────────────────────────────── */
-    .lesson-layout {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0;
+    /* ── Layout ── */
+    body { background: #09090b; color: #f4f4f5; font-family: 'Inter', system-ui, sans-serif; margin: 0; }
+
+    .lesson-shell {
+      display: flex;
       min-height: 100vh;
     }
-    @media (min-width: 1024px) {
-      .lesson-layout {
-        grid-template-columns: 260px 1fr;
-      }
-    }
 
-    /* ── Sidebar ─────────────────────────────────────────── */
-    .lesson-sidebar {
-      background: var(--color-bg-secondary, #111);
-      border-right: 1px solid var(--color-border, #2a2a2a);
-      padding: 2rem 1.25rem;
-      display: none;
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: #18181b;
+      border-right: 1px solid #27272a;
+      padding: 24px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
     }
-    @media (min-width: 1024px) {
-      .lesson-sidebar { display: block; }
+    .sidebar-logo {
+      padding: 0 20px 24px;
+      border-bottom: 1px solid #27272a;
     }
-    .sidebar-logo { margin-bottom: 2rem; }
-    .sidebar-logo img { height: 32px; }
-    .sidebar-nav-label {
-      font-size: 0.65rem;
+    .sidebar-logo img { height: 36px; object-fit: contain; }
+    .sidebar-nav { padding: 16px 0; }
+    .sidebar-section-label {
+      font-size: 10px;
+      font-weight: 700;
       letter-spacing: 0.1em;
+      color: #71717a;
       text-transform: uppercase;
-      color: var(--color-text-muted, #666);
-      margin-bottom: 0.75rem;
-      margin-top: 1.5rem;
+      padding: 12px 20px 6px;
     }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      font-size: 13px;
+      color: #a1a1aa;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .sidebar-link:hover { color: #f4f4f5; background: #27272a; }
+    .sidebar-link.active { color: #fbbf24; border-left-color: #fbbf24; background: rgba(251,191,36,0.06); }
     .lesson-nav-item {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      color: var(--color-text-muted, #999);
+      gap: 10px;
+      padding: 8px 20px;
+      font-size: 12.5px;
+      color: #71717a;
       text-decoration: none;
-      margin-bottom: 0.25rem;
+      border-left: 3px solid transparent;
       transition: all 0.15s;
     }
-    .lesson-nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
-    .lesson-nav-item.active { background: rgba(212,175,55,0.12); color: var(--color-gold, #d4af37); }
-    .lesson-nav-item .check {
+    .lesson-nav-item:hover { color: #a1a1aa; background: #27272a; }
+    .lesson-nav-item.current { color: #fbbf24; border-left-color: #fbbf24; }
+    .lesson-nav-item.complete { color: #4ade80; }
+    .lesson-badge {
       width: 18px; height: 18px;
       border-radius: 50%;
-      border: 1.5px solid currentColor;
+      background: #3f3f46;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      font-size: 0.6rem;
+      font-size: 10px; font-weight: 700; flex-shrink: 0;
     }
-    .lesson-nav-item.completed .check {
-      background: var(--color-gold, #d4af37);
-      border-color: var(--color-gold, #d4af37);
-      color: #000;
-    }
+    .lesson-badge.complete { background: #166534; color: #4ade80; }
+    .lesson-badge.current  { background: rgba(251,191,36,0.2); color: #fbbf24; }
 
-    /* ── Main content ─────────────────────────────────────── */
-    .lesson-main {
+    /* ── Main content ── */
+    .main-content {
+      flex: 1;
+      padding: 40px 48px;
       max-width: 860px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem 4rem;
-      width: 100%;
     }
 
-    /* ── Top nav bar ─────────────────────────────────────── */
-    .lesson-topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--color-border, #2a2a2a);
+    /* Breadcrumb */
+    .breadcrumb {
+      font-size: 12px; color: #71717a;
+      margin-bottom: 8px;
     }
-    .lesson-breadcrumb {
-      font-size: 0.78rem;
-      color: var(--color-text-muted, #666);
-    }
-    .lesson-breadcrumb span { color: var(--color-gold, #d4af37); }
-    .btn-nav {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      padding: 0.45rem 1rem;
-      border-radius: 6px;
-      font-size: 0.82rem;
-      font-weight: 500;
-      text-decoration: none;
-      transition: all 0.15s;
-    }
-    .btn-next {
-      background: var(--color-gold, #d4af37);
-      color: #000;
-    }
-    .btn-next:hover { opacity: 0.9; }
-    .btn-next:disabled, .btn-next.disabled {
-      background: #333; color: #666; cursor: not-allowed; pointer-events: none;
-    }
+    .breadcrumb a { color: #71717a; text-decoration: none; }
+    .breadcrumb a:hover { color: #a1a1aa; }
+    .breadcrumb span { margin: 0 6px; }
 
-    /* ── Section heading ─────────────────────────────────── */
-    .section-label {
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--color-gold, #d4af37);
-      margin-bottom: 0.5rem;
-    }
-    .lesson-title {
-      font-size: 1.9rem;
+    /* Module label */
+    .module-label {
+      font-size: 11px;
       font-weight: 700;
-      line-height: 1.2;
-      margin-bottom: 0.5rem;
-      color: #fff;
-    }
-    .lesson-subtitle {
-      color: var(--color-text-muted, #999);
-      font-size: 0.95rem;
-      margin-bottom: 2rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      margin-bottom: 10px;
     }
 
-    /* ── Video placeholder ───────────────────────────────── */
+    h1.lesson-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 24px;
+      line-height: 1.2;
+    }
+
+    /* Video placeholder */
     .video-wrapper {
-      background: #0d0d0d;
-      border: 1px solid var(--color-border, #2a2a2a);
-      border-radius: 10px;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
       aspect-ratio: 16/9;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 2rem;
+      margin-bottom: 36px;
       position: relative;
       overflow: hidden;
     }
-    .video-placeholder-inner {
+    .video-placeholder-text {
       text-align: center;
-      color: var(--color-text-muted, #666);
+      color: #52525b;
     }
-    .video-placeholder-inner .play-icon {
-      width: 64px; height: 64px;
-      border-radius: 50%;
-      background: rgba(212,175,55,0.1);
-      border: 2px solid rgba(212,175,55,0.3);
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 1rem;
+    .video-placeholder-text .play-icon {
+      font-size: 48px; display: block; margin-bottom: 12px;
     }
-    .video-placeholder-inner p { font-size: 0.85rem; margin-top: 0.5rem; }
+    .video-placeholder-text p { font-size: 14px; margin: 0; }
 
-    /* ── Builder section ─────────────────────────────────── */
-    .builder-card {
-      background: var(--color-bg-secondary, #111);
-      border: 1px solid var(--color-border, #2a2a2a);
-      border-radius: 12px;
-      padding: 2rem;
-      margin-bottom: 2rem;
+    /* Lesson body */
+    .lesson-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #d4d4d8;
+      margin-bottom: 48px;
+    }
+    .lesson-body h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 36px 0 12px;
+    }
+    .lesson-body p { margin: 0 0 16px; }
+    .lesson-body ul {
+      padding-left: 20px;
+      margin: 0 0 16px;
+    }
+    .lesson-body ul li { margin-bottom: 8px; }
+    .lesson-body .highlight-box {
+      background: rgba(251,191,36,0.07);
+      border-left: 3px solid #fbbf24;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 24px 0;
+      font-size: 14px;
+      color: #e4e4e7;
+    }
+
+    /* ── Builder section ── */
+    .builder-section {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      padding: 36px 40px;
+      margin-bottom: 40px;
     }
     .builder-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
+      margin-bottom: 28px;
     }
-    .builder-badge {
-      background: rgba(212,175,55,0.12);
-      color: var(--color-gold, #d4af37);
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
+    .builder-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      padding: 0.3rem 0.7rem;
+      color: #fbbf24;
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.2);
+      padding: 3px 10px;
       border-radius: 20px;
-      border: 1px solid rgba(212,175,55,0.2);
+      margin-bottom: 12px;
     }
-    .builder-title {
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: #fff;
-      margin-bottom: 0.4rem;
+    .builder-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 8px;
     }
-    .builder-description {
-      font-size: 0.88rem;
-      color: var(--color-text-muted, #888);
+    .builder-header p {
+      font-size: 14px;
+      color: #a1a1aa;
+      margin: 0;
       line-height: 1.6;
-      margin-bottom: 1.75rem;
     }
 
-    /* ── Dimension sliders ───────────────────────────────── */
-    .dimensions-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
+    /* Slider rows */
+    .dimension-row {
+      margin-bottom: 28px;
     }
-    .dimension-item {}
-    .dimension-header {
+    .dimension-label-row {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 0.4rem;
+      margin-bottom: 6px;
     }
-    .dimension-label {
-      font-size: 0.9rem;
+    .dimension-name {
+      font-size: 14px;
       font-weight: 600;
-      color: #fff;
+      color: #e4e4e7;
     }
-    .dimension-score {
-      font-size: 1.1rem;
+    .dimension-score-display {
+      font-size: 18px;
       font-weight: 700;
-      color: var(--color-gold, #d4af37);
-      min-width: 2.5rem;
+      color: #fbbf24;
+      min-width: 30px;
       text-align: right;
     }
-    .dimension-desc {
-      font-size: 0.78rem;
-      color: var(--color-text-muted, #777);
-      margin-bottom: 0.6rem;
+    .dimension-description {
+      font-size: 12px;
+      color: #71717a;
+      margin-bottom: 10px;
     }
-    .dimension-slider {
-      -webkit-appearance: none;
-      appearance: none;
+    .slider-track {
+      position: relative;
       width: 100%;
-      height: 6px;
-      border-radius: 3px;
-      background: #2a2a2a;
+    }
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: #3f3f46;
       outline: none;
       cursor: pointer;
     }
-    .dimension-slider::-webkit-slider-thumb {
+    input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      appearance: none;
-      width: 20px;
-      height: 20px;
+      width: 20px; height: 20px;
       border-radius: 50%;
-      background: var(--color-gold, #d4af37);
+      background: #fbbf24;
       cursor: pointer;
-      box-shadow: 0 0 0 3px rgba(212,175,55,0.2);
+      border: 2px solid #09090b;
+      box-shadow: 0 0 0 2px rgba(251,191,36,0.3);
       transition: box-shadow 0.15s;
     }
-    .dimension-slider::-webkit-slider-thumb:hover {
-      box-shadow: 0 0 0 6px rgba(212,175,55,0.25);
+    input[type="range"]::-webkit-slider-thumb:hover {
+      box-shadow: 0 0 0 4px rgba(251,191,36,0.2);
     }
-    .scale-labels {
+    .slider-labels {
       display: flex;
       justify-content: space-between;
-      font-size: 0.65rem;
-      color: var(--color-text-muted, #666);
-      margin-top: 0.3rem;
+      font-size: 10px;
+      color: #52525b;
+      margin-top: 4px;
     }
 
-    /* ── Submit button ───────────────────────────────────── */
-    .btn-submit {
-      width: 100%;
-      padding: 0.85rem;
-      background: var(--color-gold, #d4af37);
-      color: #000;
-      font-weight: 700;
-      font-size: 0.95rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: opacity 0.15s;
-      letter-spacing: 0.02em;
-    }
-    .btn-submit:hover { opacity: 0.9; }
-    .btn-submit:disabled { background: #333; color: #666; cursor: not-allowed; }
-
-    /* ── Results panel ───────────────────────────────────── */
-    .results-panel {
+    /* Gap bar chart */
+    .gap-chart {
       display: none;
-      margin-top: 2rem;
+      margin-top: 32px;
+      padding-top: 28px;
+      border-top: 1px solid #27272a;
     }
-    .results-panel.visible { display: block; }
-
-    .score-summary {
-      background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(212,175,55,0.03));
-      border: 1px solid rgba(212,175,55,0.2);
-      border-radius: 10px;
-      padding: 1.5rem;
-      text-align: center;
-      margin-bottom: 1.5rem;
+    .gap-chart.visible { display: block; }
+    .gap-chart h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 20px;
     }
-    .score-label { font-size: 0.75rem; color: var(--color-text-muted, #777); text-transform: uppercase; letter-spacing: 0.08em; }
-    .score-number { font-size: 3.5rem; font-weight: 800; color: var(--color-gold, #d4af37); line-height: 1; margin: 0.3rem 0; }
-    .score-level { font-size: 1rem; color: #fff; font-weight: 600; }
-
-    .gap-map-title {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--color-text-muted, #888);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 1rem;
+    .gap-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
     }
-    .gap-bars { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
-    .gap-bar-row { display: flex; align-items: center; gap: 0.75rem; }
-    .gap-bar-label { font-size: 0.8rem; color: #ccc; width: 160px; flex-shrink: 0; }
+    .gap-bar-label {
+      width: 180px;
+      flex-shrink: 0;
+      font-size: 12px;
+      color: #a1a1aa;
+      text-align: right;
+    }
     .gap-bar-track {
       flex: 1;
-      height: 8px;
-      background: #222;
-      border-radius: 4px;
+      height: 10px;
+      background: #27272a;
+      border-radius: 5px;
       overflow: hidden;
     }
     .gap-bar-fill {
       height: 100%;
-      border-radius: 4px;
-      transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
+      border-radius: 5px;
+      transition: width 0.6s ease;
     }
-    .gap-bar-score { font-size: 0.8rem; font-weight: 700; color: #fff; width: 28px; text-align: right; flex-shrink: 0; }
-
-    .gaps-list { margin-top: 1.25rem; }
-    .gap-item {
-      background: rgba(255,80,80,0.06);
-      border: 1px solid rgba(255,80,80,0.15);
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 0.75rem;
-    }
-    .gap-item-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; }
-    .gap-icon { color: #f87171; font-size: 0.9rem; }
-    .gap-name { font-size: 0.9rem; font-weight: 600; color: #fff; }
-    .gap-score-pill {
-      margin-left: auto;
-      background: rgba(255,80,80,0.15);
-      color: #f87171;
-      font-size: 0.72rem;
+    .gap-bar-score {
+      width: 28px;
+      font-size: 12px;
       font-weight: 700;
-      padding: 0.15rem 0.5rem;
-      border-radius: 20px;
+      color: #e4e4e7;
     }
-    .gap-desc { font-size: 0.8rem; color: var(--color-text-muted, #888); }
+    .score-summary {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .score-big {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .score-big.strong  { color: #4ade80; }
+    .score-big.moderate { color: #fbbf24; }
+    .score-big.weak    { color: #f87171; }
+    .score-label-group { flex: 1; }
+    .score-label-group .score-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin-bottom: 4px;
+    }
+    .score-label-group .score-sub {
+      font-size: 13px;
+      color: #71717a;
+      line-height: 1.5;
+    }
 
-    .no-gaps {
-      background: rgba(52,211,153,0.06);
-      border: 1px solid rgba(52,211,153,0.2);
+    /* Gap list */
+    .gap-list {
+      margin-top: 20px;
+    }
+    .gap-list h4 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #71717a;
+      margin: 0 0 12px;
+    }
+    .gap-item {
+      background: rgba(248,113,113,0.06);
+      border: 1px solid rgba(248,113,113,0.15);
       border-radius: 8px;
-      padding: 1rem 1.25rem;
-      color: #6ee7b7;
-      font-size: 0.88rem;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+    }
+    .gap-item-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #f87171;
+      margin-bottom: 4px;
+    }
+    .gap-item-note {
+      font-size: 12px;
+      color: #a1a1aa;
+      line-height: 1.5;
     }
 
-    .results-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
-    .btn-retake {
-      flex: 1;
-      padding: 0.65rem 1rem;
-      border: 1px solid var(--color-border, #2a2a2a);
-      background: transparent;
-      color: var(--color-text-muted, #888);
-      border-radius: 7px;
-      font-size: 0.85rem;
+    /* Saved state banner */
+    .saved-banner {
+      display: none;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #4ade80;
+      margin-bottom: 20px;
+      align-items: center;
+      gap: 8px;
+    }
+    .saved-banner.visible { display: flex; }
+
+    /* Buttons */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fbbf24;
+      color: #09090b;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: none;
       cursor: pointer;
       transition: all 0.15s;
-      min-width: 120px;
     }
-    .btn-retake:hover { border-color: #555; color: #fff; }
-    .btn-continue {
-      flex: 2;
-      padding: 0.65rem 1.25rem;
-      background: var(--color-gold, #d4af37);
-      color: #000;
-      border: none;
-      border-radius: 7px;
-      font-size: 0.88rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: opacity 0.15s;
-      text-align: center;
-      text-decoration: none;
-      display: flex;
+    .btn-primary:hover { background: #f59e0b; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-secondary {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-    }
-    .btn-continue:hover { opacity: 0.9; }
-
-    /* ── Completion banner ───────────────────────────────── */
-    .completion-banner {
-      display: none;
-      background: rgba(52,211,153,0.07);
-      border: 1px solid rgba(52,211,153,0.2);
+      gap: 8px;
+      background: transparent;
+      color: #a1a1aa;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 20px;
       border-radius: 8px;
-      padding: 0.9rem 1.1rem;
-      color: #6ee7b7;
-      font-size: 0.88rem;
-      align-items: center;
-      gap: 0.6rem;
-      margin-bottom: 1rem;
-    }
-    .completion-banner.visible { display: flex; }
-
-    /* ── Error state ─────────────────────────────────────── */
-    .error-msg {
-      background: rgba(239,68,68,0.08);
-      border: 1px solid rgba(239,68,68,0.2);
-      border-radius: 7px;
-      padding: 0.75rem 1rem;
-      color: #f87171;
-      font-size: 0.85rem;
-      margin-top: 0.75rem;
-      display: none;
-    }
-    .error-msg.visible { display: block; }
-
-    /* ── Loading spinner ─────────────────────────────────── */
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .spinner {
-      width: 18px; height: 18px;
-      border: 2px solid rgba(0,0,0,0.3);
-      border-top-color: #000;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      display: inline-block;
-      vertical-align: middle;
-    }
-
-    /* ── Completion checkbox ─────────────────────────────── */
-    .lesson-complete-row {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 1.25rem;
-      background: var(--color-bg-secondary, #111);
-      border: 1px solid var(--color-border, #2a2a2a);
-      border-radius: 10px;
-      margin-top: 2rem;
-    }
-    .lesson-complete-row label {
-      font-size: 0.9rem;
-      color: #ccc;
+      border: 1px solid #3f3f46;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
+      transition: all 0.15s;
     }
-    .lesson-complete-row input[type="checkbox"] {
-      width: 18px; height: 18px; cursor: pointer;
-      accent-color: var(--color-gold, #d4af37);
+    .btn-secondary:hover { border-color: #71717a; color: #e4e4e7; }
+
+    /* Lesson nav footer */
+    .lesson-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 32px;
+      border-top: 1px solid #27272a;
+      margin-top: 8px;
+    }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #a1a1aa;
+      text-decoration: none;
+      padding: 10px 18px;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { border-color: #52525b; color: #e4e4e7; }
+    .nav-btn.next-btn {
+      background: #18181b;
+      color: #f4f4f5;
+      border-color: #3f3f46;
+    }
+    .nav-btn.next-btn:hover { border-color: #fbbf24; color: #fbbf24; }
+    .complete-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #4ade80;
     }
   </style>
 </head>
@@ -458,359 +463,459 @@
         if (r.status === 401 || r.status === 403) {
           window.location.href = '/login';
         }
-        // 500 = server error, do NOT redirect — let user stay
       })
       .catch(function() {
-        // Network error only — do not redirect on server errors
+        // Network error only — do not redirect
       });
   })();
 </script>
 
-<div class="lesson-layout">
+<div class="lesson-shell">
 
   <!-- Sidebar -->
-  <aside class="lesson-sidebar">
+  <aside class="sidebar">
     <div class="sidebar-logo">
-      <a href="/dashboard.html">
-        <img src="/assets/brand/logo-full.png" alt="Pre-Sold Authority" onerror="this.style.display='none'" />
-      </a>
+      <img src="/assets/brand/logo-full.png" alt="Pre-Sold Authority" onerror="this.style.display='none'">
     </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Navigation</div>
+      <a href="/dashboard" class="sidebar-link">← Dashboard</a>
+      <a href="/assets" class="sidebar-link">My Assets</a>
 
-    <div class="sidebar-nav-label">Module 1 — The Authority Shift</div>
-    <a href="/lessons/lesson-1.html" class="lesson-nav-item active" id="nav-l1">
-      <span class="check">1</span> The Shift
-    </a>
-    <a href="/lessons/lesson-2.html" class="lesson-nav-item" id="nav-l2">
-      <span class="check">2</span> Visibility vs. Authority
-    </a>
-    <a href="/lessons/lesson-3.html" class="lesson-nav-item" id="nav-l3">
-      <span class="check">3</span> The Context Card
-    </a>
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 1 — The Authority Shift</div>
+      <a href="/lessons/lesson-1.html" class="lesson-nav-item current" id="nav-l1">
+        <span class="lesson-badge current" id="badge-l1">1</span>
+        Why Agents Look Interchangeable
+      </a>
+      <a href="/lessons/lesson-2.html" class="lesson-nav-item" id="nav-l2">
+        <span class="lesson-badge" id="badge-l2">2</span>
+        Visibility vs. Authority
+      </a>
 
-    <div class="sidebar-nav-label">Module 2 — The System</div>
-    <a href="/lessons/lesson-4.html" class="lesson-nav-item" id="nav-l4">
-      <span class="check">4</span> Authority Positioning
-    </a>
-    <a href="/lessons/lesson-5.html" class="lesson-nav-item" id="nav-l5">
-      <span class="check">5</span> Profile &amp; Pinned Post
-    </a>
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 2 — The System</div>
+      <a href="/lessons/lesson-3.html" class="lesson-nav-item" id="nav-l3">
+        <span class="lesson-badge" id="badge-l3">3</span>
+        The Context Card
+      </a>
+      <a href="/lessons/lesson-4.html" class="lesson-nav-item" id="nav-l4">
+        <span class="lesson-badge" id="badge-l4">4</span>
+        Authority Positioning
+      </a>
 
-    <div class="sidebar-nav-label">Module 3 — Content</div>
-    <a href="/lessons/lesson-6.html" class="lesson-nav-item" id="nav-l6">
-      <span class="check">6</span> Content Pillars
-    </a>
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 3 — Content</div>
+      <a href="/lessons/lesson-5.html" class="lesson-nav-item" id="nav-l5">
+        <span class="lesson-badge" id="badge-l5">5</span>
+        Profile + Pinned Post
+      </a>
+      <a href="/lessons/lesson-6.html" class="lesson-nav-item" id="nav-l6">
+        <span class="lesson-badge" id="badge-l6">6</span>
+        Content Pillars
+      </a>
 
-    <div class="sidebar-nav-label">Module 4 — Conversion</div>
-    <a href="/lessons/lesson-7.html" class="lesson-nav-item" id="nav-l7">
-      <span class="check">7</span> Posts &amp; DM Flow
-    </a>
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 4 — Conversion</div>
+      <a href="/lessons/lesson-7.html" class="lesson-nav-item" id="nav-l7">
+        <span class="lesson-badge" id="badge-l7">7</span>
+        Posts + DM Flow
+      </a>
 
-    <div class="sidebar-nav-label">Module 5 — Install</div>
-    <a href="/lessons/lesson-8.html" class="lesson-nav-item" id="nav-l8">
-      <span class="check">8</span> Boundary Language &amp; Rhythm
-    </a>
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 5 — Install</div>
+      <a href="/lessons/lesson-8.html" class="lesson-nav-item" id="nav-l8">
+        <span class="lesson-badge" id="badge-l8">8</span>
+        Boundaries + Weekly Rhythm
+      </a>
+    </nav>
   </aside>
 
   <!-- Main -->
-  <main class="lesson-main">
+  <main class="main-content">
 
-    <!-- Top bar -->
-    <div class="lesson-topbar">
-      <div class="lesson-breadcrumb">
-        <a href="/dashboard.html" style="color:inherit;text-decoration:none;">Dashboard</a>
-        &nbsp;/&nbsp;
-        <span>Lesson 1</span>
-      </div>
-      <a href="/lessons/lesson-2.html" class="btn-nav btn-next" id="btn-next-lesson">
-        Lesson 2 →
-      </a>
+    <div class="breadcrumb">
+      <a href="/dashboard">Dashboard</a><span>›</span>
+      <a href="/lessons">Lessons</a><span>›</span>
+      Module 1
     </div>
 
-    <!-- Lesson header -->
-    <div class="section-label">Module 1 · Lesson 1 of 8</div>
-    <h1 class="lesson-title">The Shift — Why Good Agents Still Look Interchangeable</h1>
-    <p class="lesson-subtitle">Install the core belief: the problem isn't effort — it's positioning. Understand why pre-sold clients exist and what creates them.</p>
+    <div class="module-label">Module 1 — The Authority Shift</div>
+    <h1 class="lesson-title">Lesson 1: Why Good Agents Still Look Interchangeable</h1>
 
-    <!-- Video section -->
+    <!-- Video -->
     <div class="video-wrapper">
-      <div class="video-placeholder-inner">
-        <div class="play-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="5,3 19,12 5,21" fill="currentColor" stroke="none"/>
-          </svg>
-        </div>
-        <p style="color:#555;font-size:0.8rem;">Lesson video — coming in Sprint 6E/post-recording</p>
-        <p style="color:#444;font-size:0.75rem;margin-top:0.25rem;">(OTS walkthrough will be embedded here via Bunny.net)</p>
+      <div class="video-placeholder-text">
+        <span class="play-icon">▶</span>
+        <p>Lesson video coming soon</p>
       </div>
     </div>
 
-    <!-- Completion banner (shown when already submitted) -->
-    <div class="completion-banner" id="completion-banner">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
-      Builder complete — your Positioning Gap Map is saved below.
+    <!-- Lesson content -->
+    <div class="lesson-body">
+      <p>Most agents lose clients before the first conversation even starts — not because they lack skill, but because they look identical to every other agent in their market.</p>
+
+      <p>When a serious buyer or seller finds you online, they run a rapid, mostly unconscious evaluation. They're asking themselves: <em>Does this person feel specific to my situation? Do they seem like they know what they're doing? Do I feel safe choosing them?</em></p>
+
+      <p>That evaluation happens in seconds. And it happens before they contact you.</p>
+
+      <div class="highlight-box">
+        The problem is not effort. Most agents work hard. The problem is <strong>perception</strong> — and perception is shaped by the signals you send before the conversation begins.
+      </div>
+
+      <h2>What "interchangeable" actually costs you</h2>
+      <p>When your positioning looks generic, the prospect's brain does something predictable: they add you to a comparison list. And once you're on a comparison list, the entire dynamic shifts. Now you're competing on speed, availability, how likeable you seem — and how cheap you'll go on commission.</p>
+
+      <p>This is why many good agents end up with:</p>
+      <ul>
+        <li>First calls that feel like job interviews</li>
+        <li>Commission conversations that turn into negotiations</li>
+        <li>Follow-up that takes hours and produces nothing</li>
+        <li>Showings with people who were never serious</li>
+      </ul>
+
+      <h2>The shift this lesson installs</h2>
+      <p>Before we go anywhere else in this system, you need an honest read on where your positioning currently sits. Not where you'd like it to be — where it actually is right now.</p>
+
+      <p>The builder below walks you through five dimensions of positioning. Rate yourself honestly on each one. The output is your baseline Positioning Gap Map — it shows exactly where the trust gap is largest, so the rest of this system is targeted at the right things.</p>
     </div>
 
-    <!-- ── BUILDER CARD ────────────────────────────────────── -->
-    <div class="builder-card" id="builder-section">
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- BUILDER                                     -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="builder-section">
       <div class="builder-header">
-        <div>
-          <div class="builder-title">Positioning Gap Assessment</div>
-          <div class="builder-description">
-            Rate your current positioning honestly across five dimensions. This becomes your baseline — your Positioning Gap Map. There are no wrong answers. The goal is an accurate starting point, not a perfect score.<br><br>
-            <strong style="color:#ccc;">Scale: 1 = Not true at all &nbsp;·&nbsp; 10 = Completely nailed</strong>
-          </div>
-        </div>
-        <span class="builder-badge">Non-AI Builder</span>
+        <span class="builder-tag">Implementation Step</span>
+        <h2>Your Positioning Gap Assessment</h2>
+        <p>Rate yourself honestly on each dimension from 1 (not in place at all) to 10 (fully installed and working). This becomes your baseline — you'll revisit it after completing the system.</p>
       </div>
 
-      <!-- The 5 dimension sliders -->
-      <div class="dimensions-grid" id="dimensions-form">
-
-        <div class="dimension-item">
-          <div class="dimension-header">
-            <span class="dimension-label">Positioning Clarity</span>
-            <span class="dimension-score" id="score-clarity">5</span>
-          </div>
-          <div class="dimension-desc">Prospects instantly understand who you help and what you stand for.</div>
-          <input type="range" class="dimension-slider" id="slider-clarity" min="1" max="10" value="5" data-key="clarity" />
-          <div class="scale-labels"><span>1 — Not at all</span><span>10 — Crystal clear</span></div>
-        </div>
-
-        <div class="dimension-item">
-          <div class="dimension-header">
-            <span class="dimension-label">Differentiation</span>
-            <span class="dimension-score" id="score-differentiation">5</span>
-          </div>
-          <div class="dimension-desc">You stand out clearly from other agents in your market — not just "experienced and dedicated."</div>
-          <input type="range" class="dimension-slider" id="slider-differentiation" min="1" max="10" value="5" data-key="differentiation" />
-          <div class="scale-labels"><span>1 — Look identical to others</span><span>10 — Clearly distinctive</span></div>
-        </div>
-
-        <div class="dimension-item">
-          <div class="dimension-header">
-            <span class="dimension-label">Authority Signals</span>
-            <span class="dimension-score" id="score-authority_signals">5</span>
-          </div>
-          <div class="dimension-desc">Your profile, content, and messaging communicate trust before a prospect ever contacts you.</div>
-          <input type="range" class="dimension-slider" id="slider-authority_signals" min="1" max="10" value="5" data-key="authority_signals" />
-          <div class="scale-labels"><span>1 — No visible signals</span><span>10 — Strong trust signals</span></div>
-        </div>
-
-        <div class="dimension-item">
-          <div class="dimension-header">
-            <span class="dimension-label">Content Consistency</span>
-            <span class="dimension-score" id="score-content_consistency">5</span>
-          </div>
-          <div class="dimension-desc">Your content consistently attracts decision-stage buyers and sellers — not just likes.</div>
-          <input type="range" class="dimension-slider" id="slider-content_consistency" min="1" max="10" value="5" data-key="content_consistency" />
-          <div class="scale-labels"><span>1 — Inconsistent or absent</span><span>10 — Consistent and effective</span></div>
-        </div>
-
-        <div class="dimension-item">
-          <div class="dimension-header">
-            <span class="dimension-label">Boundary Confidence</span>
-            <span class="dimension-score" id="score-boundary_confidence">5</span>
-          </div>
-          <div class="dimension-desc">You clearly filter low-intent prospects without losing real business or feeling harsh.</div>
-          <input type="range" class="dimension-slider" id="slider-boundary_confidence" min="1" max="10" value="5" data-key="boundary_confidence" />
-          <div class="scale-labels"><span>1 — No clear filter</span><span>10 — Clear and confident</span></div>
-        </div>
-
+      <!-- Saved state banner -->
+      <div class="saved-banner" id="savedBanner">
+        ✓ Your assessment is saved. You can update it at any time.
       </div>
 
-      <div class="error-msg" id="error-msg">Something went wrong. Please try again.</div>
+      <!-- Dimension 1 -->
+      <div class="dimension-row">
+        <div class="dimension-label-row">
+          <span class="dimension-name">1. Positioning Clarity</span>
+          <span class="dimension-score-display" id="score-1">5</span>
+        </div>
+        <div class="dimension-description">How clearly do prospects understand who you help and what makes you the right choice — before they contact you?</div>
+        <div class="slider-track">
+          <input type="range" min="1" max="10" value="5" id="slider-1" oninput="updateScore(1,this.value)">
+          <div class="slider-labels"><span>1 — Not at all</span><span>10 — Crystal clear</span></div>
+        </div>
+      </div>
 
-      <button class="btn-submit" id="btn-submit" onclick="submitAssessment()">
-        Generate My Positioning Gap Map
-      </button>
+      <!-- Dimension 2 -->
+      <div class="dimension-row">
+        <div class="dimension-label-row">
+          <span class="dimension-name">2. Authority Signals</span>
+          <span class="dimension-score-display" id="score-2">5</span>
+        </div>
+        <div class="dimension-description">How strong are the trust signals on your profile, pinned post, and public messaging right now?</div>
+        <div class="slider-track">
+          <input type="range" min="1" max="10" value="5" id="slider-2" oninput="updateScore(2,this.value)">
+          <div class="slider-labels"><span>1 — Generic / missing</span><span>10 — Strong and specific</span></div>
+        </div>
+      </div>
+
+      <!-- Dimension 3 -->
+      <div class="dimension-row">
+        <div class="dimension-label-row">
+          <span class="dimension-name">3. Content Relevance</span>
+          <span class="dimension-score-display" id="score-3">5</span>
+        </div>
+        <div class="dimension-description">Does your content attract decision-stage buyers and sellers — or mostly casual browsers and peers?</div>
+        <div class="slider-track">
+          <input type="range" min="1" max="10" value="5" id="slider-3" oninput="updateScore(3,this.value)">
+          <div class="slider-labels"><span>1 — Attracts no one specific</span><span>10 — Pulls serious clients</span></div>
+        </div>
+      </div>
+
+      <!-- Dimension 4 -->
+      <div class="dimension-row">
+        <div class="dimension-label-row">
+          <span class="dimension-name">4. Inbound Conversion Path</span>
+          <span class="dimension-score-display" id="score-4">5</span>
+        </div>
+        <div class="dimension-description">When someone reaches out, how clear and consistent is your DM → clarity → next step flow?</div>
+        <div class="slider-track">
+          <input type="range" min="1" max="10" value="5" id="slider-4" oninput="updateScore(4,this.value)">
+          <div class="slider-labels"><span>1 — No system in place</span><span>10 — Clean and repeatable</span></div>
+        </div>
+      </div>
+
+      <!-- Dimension 5 -->
+      <div class="dimension-row">
+        <div class="dimension-label-row">
+          <span class="dimension-name">5. Boundary Language</span>
+          <span class="dimension-score-display" id="score-5">5</span>
+        </div>
+        <div class="dimension-description">Do your messaging and process language set a professional, serious tone that filters out low-intent prospects?</div>
+        <div class="slider-track">
+          <input type="range" min="1" max="10" value="5" id="slider-5" oninput="updateScore(5,this.value)">
+          <div class="slider-labels"><span>1 — No boundaries set</span><span>10 — Clear and professional</span></div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div style="display:flex; gap:12px; align-items:center; margin-top:12px;">
+        <button class="btn-primary" id="submitBtn" onclick="submitAssessment()">
+          Generate My Gap Map
+        </button>
+        <button class="btn-secondary" id="resetBtn" onclick="resetAssessment()" style="display:none;">
+          Re-assess
+        </button>
+      </div>
+
+      <!-- Gap chart (shown after submit) -->
+      <div class="gap-chart" id="gapChart">
+        <h3>Your Positioning Gap Map</h3>
+
+        <div id="barChart"></div>
+
+        <div class="score-summary" id="scoreSummary"></div>
+
+        <div class="gap-list" id="gapList"></div>
+      </div>
+
     </div>
+    <!-- /builder-section -->
 
-    <!-- ── RESULTS PANEL ──────────────────────────────────── -->
-    <div class="results-panel" id="results-panel">
-
-      <div class="score-summary">
-        <div class="score-label">Your Authority Foundation Score</div>
-        <div class="score-number" id="result-score">—</div>
-        <div class="score-level" id="result-level">—</div>
+    <!-- Lesson nav footer -->
+    <div class="lesson-nav-footer">
+      <div class="complete-chip" id="completeChip" style="display:none;">
+        ✓ Lesson complete
       </div>
-
-      <div class="gap-map-title">Positioning Gap Map</div>
-      <div class="gap-bars" id="gap-bars"></div>
-
-      <div class="gaps-list" id="gaps-list"></div>
-
-      <div class="results-actions">
-        <button class="btn-retake" onclick="retakeAssessment()">Retake Assessment</button>
-        <a href="/lessons/lesson-2.html" class="btn-continue">
-          Continue to Lesson 2 →
-        </a>
-      </div>
-    </div>
-
-    <!-- Lesson complete checkbox -->
-    <div class="lesson-complete-row" id="complete-row" style="display:none;">
-      <label>
-        <input type="checkbox" id="lesson-complete-check" onchange="markLessonComplete(this.checked)" />
-        Mark Lesson 1 as complete
-      </label>
+      <div style="flex:1;"></div>
+      <a href="/lessons/lesson-2.html" class="nav-btn next-btn">
+        Next Lesson → Visibility vs. Authority
+      </a>
     </div>
 
   </main>
 </div>
 
 <script>
-  // ── State ─────────────────────────────────────────────────
-  const dimensions = [
-    { key: 'clarity',             label: 'Positioning Clarity' },
-    { key: 'differentiation',     label: 'Differentiation' },
-    { key: 'authority_signals',   label: 'Authority Signals' },
-    { key: 'content_consistency', label: 'Content Consistency' },
-    { key: 'boundary_confidence', label: 'Boundary Confidence' },
-  ]
+// ─────────────────────────────────────────────
+// Dimension metadata
+// ─────────────────────────────────────────────
+const DIMENSIONS = [
+  {
+    id: 1,
+    key: 'positioning_clarity',
+    name: 'Positioning Clarity',
+    note: 'Your positioning statement and differentiators are the first things to install. Lesson 4 builds these directly.'
+  },
+  {
+    id: 2,
+    key: 'authority_signals',
+    name: 'Authority Signals',
+    note: 'Your profile headline, About section, and pinned post are your primary trust signals. Lesson 5 installs these.'
+  },
+  {
+    id: 3,
+    key: 'content_relevance',
+    name: 'Content Relevance',
+    note: 'Decision-stage content attracts serious clients and filters casual browsers. Lesson 6 builds your content pillars.'
+  },
+  {
+    id: 4,
+    key: 'inbound_conversion',
+    name: 'Inbound Conversion Path',
+    note: 'A clear DM → clarity → next step flow prevents warm leads from going cold. Lesson 7 installs this.'
+  },
+  {
+    id: 5,
+    key: 'boundary_language',
+    name: 'Boundary Language',
+    note: 'Professional boundary language filters tire-kickers before they reach your calendar. Lesson 8 covers this.'
+  }
+];
 
-  // ── Wire up sliders ───────────────────────────────────────
-  document.querySelectorAll('.dimension-slider').forEach(slider => {
-    const key = slider.dataset.key
-    const scoreEl = document.getElementById('score-' + key)
-    slider.addEventListener('input', () => {
-      scoreEl.textContent = slider.value
-      updateSliderTrack(slider)
-    })
-    updateSliderTrack(slider)
-  })
+const GAP_THRESHOLD = 7; // scores below this are flagged as gaps
 
-  function updateSliderTrack(slider) {
-    const pct = ((slider.value - 1) / 9) * 100
-    slider.style.background = `linear-gradient(to right, #d4af37 ${pct}%, #2a2a2a ${pct}%)`
+// ─────────────────────────────────────────────
+// State
+// ─────────────────────────────────────────────
+let scores = { 1: 5, 2: 5, 3: 5, 4: 5, 5: 5 };
+let submitted = false;
+
+// ─────────────────────────────────────────────
+// Slider update
+// ─────────────────────────────────────────────
+function updateScore(dim, val) {
+  scores[dim] = parseInt(val);
+  document.getElementById('score-' + dim).textContent = val;
+}
+
+// ─────────────────────────────────────────────
+// Bar colour based on score
+// ─────────────────────────────────────────────
+function barColor(score) {
+  if (score >= 8) return '#4ade80';
+  if (score >= 6) return '#fbbf24';
+  return '#f87171';
+}
+
+// ─────────────────────────────────────────────
+// Render gap chart
+// ─────────────────────────────────────────────
+function renderChart(responses) {
+  const total = DIMENSIONS.reduce((sum, d) => sum + responses[d.key], 0);
+  const avg   = Math.round((total / DIMENSIONS.length) * 10);
+
+  // Bar chart
+  const chartEl = document.getElementById('barChart');
+  chartEl.innerHTML = DIMENSIONS.map(d => {
+    const s = responses[d.key];
+    const pct = (s / 10) * 100;
+    return `
+      <div class="gap-bar-row">
+        <div class="gap-bar-label">${d.name}</div>
+        <div class="gap-bar-track">
+          <div class="gap-bar-fill" style="width:${pct}%; background:${barColor(s)};"></div>
+        </div>
+        <div class="gap-bar-score">${s}</div>
+      </div>`;
+  }).join('');
+
+  // Summary
+  let level, cssClass, message;
+  if (avg >= 70) {
+    level = 'Strong Foundation'; cssClass = 'strong';
+    message = 'Your authority signals are largely in place. The system will sharpen and systematise what\'s working.';
+  } else if (avg >= 45) {
+    level = 'Moderate Gaps'; cssClass = 'moderate';
+    message = 'You have some strong signals but clear gaps that are likely costing you quality conversations. The system targets these directly.';
+  } else {
+    level = 'Significant Gap'; cssClass = 'weak';
+    message = 'The trust layer is largely missing — which is exactly why conversations feel harder than they should. The 8 lessons install it step by step.';
   }
 
-  // ── On page load: check for existing assessment ───────────
-  window.addEventListener('DOMContentLoaded', async () => {
-    try {
-      const res = await fetch('/api/assessments/positioning-gap', { credentials: 'include' })
-      const data = await res.json()
-      if (data.assessment) {
-        renderResults(data.assessment)
-        document.getElementById('completion-banner').classList.add('visible')
-        document.getElementById('complete-row').style.display = 'flex'
+  document.getElementById('scoreSummary').innerHTML = `
+    <div class="score-big ${cssClass}">${avg}</div>
+    <div class="score-label-group">
+      <div class="score-title">${level}</div>
+      <div class="score-sub">${message}</div>
+    </div>`;
+
+  // Gap list
+  const gaps = DIMENSIONS.filter(d => responses[d.key] < GAP_THRESHOLD);
+  const gapListEl = document.getElementById('gapList');
+  if (gaps.length > 0) {
+    gapListEl.innerHTML = `
+      <h4>Gaps to close (below ${GAP_THRESHOLD})</h4>
+      ${gaps.map(d => `
+        <div class="gap-item">
+          <div class="gap-item-name">${d.name} — ${responses[d.key]}/10</div>
+          <div class="gap-item-note">${d.note}</div>
+        </div>`).join('')}`;
+  } else {
+    gapListEl.innerHTML = `
+      <h4>No critical gaps</h4>
+      <p style="font-size:13px;color:#71717a;">All dimensions are at or above the threshold. Focus on systematising and compounding what\'s already working.</p>`;
+  }
+
+  document.getElementById('gapChart').classList.add('visible');
+}
+
+// ─────────────────────────────────────────────
+// Submit
+// ─────────────────────────────────────────────
+async function submitAssessment() {
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  const responses = {};
+  DIMENSIONS.forEach(d => { responses[d.key] = scores[d.id]; });
+
+  try {
+    const res = await fetch('/api/assessments', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        assessment_type: 'positioning-gap',
+        responses
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Save failed');
+    }
+
+    submitted = true;
+    renderChart(responses);
+    document.getElementById('savedBanner').classList.add('visible');
+    document.getElementById('resetBtn').style.display = 'inline-flex';
+    document.getElementById('completeChip').style.display = 'inline-flex';
+    btn.style.display = 'none';
+
+    // Lock sliders
+    DIMENSIONS.forEach(d => {
+      document.getElementById('slider-' + d.id).disabled = true;
+    });
+
+  } catch (err) {
+    console.error('Assessment save error:', err);
+    btn.disabled = false;
+    btn.textContent = 'Generate My Gap Map';
+    alert('Something went wrong saving your assessment. Please try again.');
+  }
+}
+
+// ─────────────────────────────────────────────
+// Reset (re-assess)
+// ─────────────────────────────────────────────
+function resetAssessment() {
+  submitted = false;
+  document.getElementById('gapChart').classList.remove('visible');
+  document.getElementById('savedBanner').classList.remove('visible');
+  document.getElementById('resetBtn').style.display = 'none';
+  document.getElementById('submitBtn').style.display = 'inline-flex';
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('submitBtn').textContent = 'Generate My Gap Map';
+  DIMENSIONS.forEach(d => {
+    document.getElementById('slider-' + d.id).disabled = false;
+  });
+}
+
+// ─────────────────────────────────────────────
+// Load saved state on page load
+// ─────────────────────────────────────────────
+async function loadSavedAssessment() {
+  try {
+    const res = await fetch('/api/assessments?type=positioning-gap', {
+      credentials: 'include'
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data || !data.responses) return;
+
+    const r = data.responses;
+    DIMENSIONS.forEach(d => {
+      if (r[d.key] !== undefined) {
+        scores[d.id] = r[d.key];
+        const slider = document.getElementById('slider-' + d.id);
+        slider.value = r[d.key];
+        slider.disabled = true;
+        document.getElementById('score-' + d.id).textContent = r[d.key];
       }
-    } catch (e) {
-      // No existing assessment — show the form fresh
-    }
-  })
+    });
 
-  // ── Submit ────────────────────────────────────────────────
-  async function submitAssessment() {
-    const btn = document.getElementById('btn-submit')
-    const errEl = document.getElementById('error-msg')
-    errEl.classList.remove('visible')
+    submitted = true;
+    renderChart(r);
+    document.getElementById('savedBanner').classList.add('visible');
+    document.getElementById('resetBtn').style.display = 'inline-flex';
+    document.getElementById('completeChip').style.display = 'inline-flex';
+    document.getElementById('submitBtn').style.display = 'none';
 
-    const responses = {}
-    document.querySelectorAll('.dimension-slider').forEach(s => {
-      responses[s.dataset.key] = parseInt(s.value)
-    })
-
-    btn.disabled = true
-    btn.innerHTML = '<span class="spinner"></span>&nbsp; Generating your gap map…'
-
-    try {
-      const res = await fetch('/api/assessments', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ assessment_type: 'positioning-gap', responses }),
-      })
-
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Submission failed')
-
-      renderResults(data.assessment)
-      document.getElementById('completion-banner').classList.add('visible')
-      document.getElementById('complete-row').style.display = 'flex'
-      document.getElementById('complete-row').scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-    } catch (err) {
-      errEl.textContent = err.message || 'Something went wrong. Please try again.'
-      errEl.classList.add('visible')
-      btn.disabled = false
-      btn.textContent = 'Generate My Positioning Gap Map'
-    }
+  } catch (err) {
+    // No saved state — start fresh, silently
   }
+}
 
-  // ── Render results ────────────────────────────────────────
-  function renderResults(assessment) {
-    const score = assessment.score
-    const gaps = typeof assessment.gaps === 'string' ? JSON.parse(assessment.gaps) : assessment.gaps
-    const responses = typeof assessment.responses === 'string' ? JSON.parse(assessment.responses) : assessment.responses
-
-    document.getElementById('result-score').textContent = score
-    const levelMap = { 80: 'Strong Authority Foundation', 60: 'Developing Authority Foundation', 40: 'Emerging Authority Foundation', 0: 'Foundation Stage — Let\'s Build This' }
-    const level = Object.keys(levelMap).reverse().find(k => score >= parseInt(k))
-    document.getElementById('result-level').textContent = levelMap[level] || levelMap[0]
-
-    // Gap bar chart
-    const barsEl = document.getElementById('gap-bars')
-    barsEl.innerHTML = ''
-    dimensions.forEach(dim => {
-      const s = responses[dim.key] || 0
-      const color = s >= 8 ? '#4ade80' : s >= 6 ? '#facc15' : '#f87171'
-      barsEl.innerHTML += `
-        <div class="gap-bar-row">
-          <div class="gap-bar-label">${dim.label}</div>
-          <div class="gap-bar-track">
-            <div class="gap-bar-fill" style="width:${s * 10}%;background:${color}"></div>
-          </div>
-          <div class="gap-bar-score">${s}</div>
-        </div>`
-    })
-
-    // Gap list
-    const gapsEl = document.getElementById('gaps-list')
-    gapsEl.innerHTML = ''
-    if (!gaps || gaps.length === 0) {
-      gapsEl.innerHTML = `<div class="no-gaps">✓ No critical gaps identified — your positioning foundation is strong. Continue to Lesson 4 to generate your positioning statement.</div>`
-    } else {
-      gapsEl.innerHTML = '<div class="gap-map-title" style="margin-top:1rem;">Priority Gaps</div>'
-      gaps.forEach(g => {
-        gapsEl.innerHTML += `
-          <div class="gap-item">
-            <div class="gap-item-header">
-              <span class="gap-icon">⚠</span>
-              <span class="gap-name">${g.label}</span>
-              <span class="gap-score-pill">${g.score}/10</span>
-            </div>
-            <div class="gap-desc">${g.description}</div>
-          </div>`
-      })
-    }
-
-    // Show results, hide form
-    document.getElementById('builder-section').style.display = 'none'
-    document.getElementById('results-panel').classList.add('visible')
-  }
-
-  // ── Retake ────────────────────────────────────────────────
-  function retakeAssessment() {
-    document.getElementById('results-panel').classList.remove('visible')
-    document.getElementById('builder-section').style.display = 'block'
-    document.getElementById('error-msg').classList.remove('visible')
-    document.getElementById('btn-submit').disabled = false
-    document.getElementById('btn-submit').textContent = 'Generate My Positioning Gap Map'
-    document.querySelectorAll('.dimension-slider').forEach(s => { s.value = 5; updateSliderTrack(s); document.getElementById('score-' + s.dataset.key).textContent = 5 })
-  }
-
-  // ── Mark lesson complete ──────────────────────────────────
-  async function markLessonComplete(checked) {
-    try {
-      await fetch('/api/lessons/lesson-1/progress', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ is_complete: checked ? 1 : 0 }),
-      })
-    } catch (e) {
-      console.error('Progress update failed', e)
-    }
-  }
+loadSavedAssessment();
 </script>
 
 </body>
