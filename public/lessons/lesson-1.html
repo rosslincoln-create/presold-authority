@@ -452,9 +452,18 @@
 
 <!-- Auth guard -->
 <script>
-  fetch('/api/auth/check', { credentials: 'include' })
-    .then(r => { if (!r.ok) window.location.href = '/login.html' })
-    .catch(() => { window.location.href = '/login.html' })
+  (function() {
+    fetch('/api/auth/check', { credentials: 'include' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403) {
+          window.location.href = '/login';
+        }
+        // 500 = server error, do NOT redirect — let user stay
+      })
+      .catch(function() {
+        // Network error only — do not redirect on server errors
+      });
+  })();
 </script>
 
 <div class="lesson-layout">

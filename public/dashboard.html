@@ -200,8 +200,11 @@
           if (r.status === 401 || r.status === 403) {
             window.location.href = '/login';
           }
+          // 500 = server error, do NOT redirect — let user stay
         })
-        .catch(function() { window.location.href = '/login'; });
+        .catch(function() {
+          // Network error only — do not redirect on server errors
+        });
     })();
   </script>
 

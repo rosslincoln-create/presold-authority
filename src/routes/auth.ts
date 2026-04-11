@@ -355,9 +355,16 @@ auth.get('/check-activation', async (c) => {
 // Used by frontend auth guard scripts to verify session validity.
 // authMiddleware handles the actual check — if we reach here, user is authenticated.
 
-auth.get('/check', authMiddleware, async (c) => {
-  const userId = c.get('userId' as never) as string
-  return c.json({ authenticated: true, userId })
+auth.get('/check', async (c) => {
+  try {
+    return await authMiddleware(c, async () => {
+      const userId = c.get('userId' as never) as string
+      return c.json({ authenticated: true, userId })
+    })
+  } catch (err) {
+    console.error('GET /api/auth/check:', err)
+    return c.json({ authenticated: false }, 401)
+  }
 })
 
 // ─── POST /api/auth/test-create-activation (DEVELOPMENT ONLY) ────────────────
