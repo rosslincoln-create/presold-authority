@@ -51,7 +51,7 @@ contextCard.get('/', async (c) => {
   ).bind(userId).first() as Record<string, any> | null
 
   if (!card) {
-    return c.json({ contextCard: null })
+    return c.json({}, 200)
   }
 
   // Parse JSON array fields before returning to frontend

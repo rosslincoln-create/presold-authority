@@ -397,25 +397,19 @@
   </style>
 </head>
 <body>
- <script>
-  (function() {
-    fetch('/api/context-card', { 
-      credentials: 'include',
-      redirect: 'manual'
-    })
-    .then(function(r) {
-      // redirect: 'manual' means redirects return type 'opaqueredirect' with status 0
-      // A 401 or redirect both mean not authenticated
-      if (r.type === 'opaqueredirect' || r.status === 0 || r.status === 401 || r.status === 403) {
-        window.location.href = '/login';
-      }
-      // 500 = server error, do NOT redirect — let user stay
-    })
-    .catch(function() {
-      // Network error only — do not redirect on server errors
-    });
-  })();
-</script>
+  <script>
+    (function() {
+      fetch('/api/auth/check', { credentials: 'include' })
+        .then(function(r) {
+          if (r.status === 401 || r.status === 403) {
+            window.location.href = '/login';
+          }
+        })
+        .catch(function() {
+          // Network error only — do not redirect
+        });
+    })();
+  </script>
   <div class="wizard-wrap">
     <!-- Logo -->
     <div class="wizard-logo">
