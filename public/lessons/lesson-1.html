@@ -14,17 +14,21 @@
       min-height: 100vh;
     }
 
-    /* ── Sidebar ── */
+    /* ── Sidebar (match dashboard: width, padding, flex column so .sidebar-logo spans full width for centered logo) ── */
     .sidebar {
-      width: 260px;
+      width: 240px;
       flex-shrink: 0;
-      background: #18181b;
+      min-height: 100vh;
+      background: #111113;
       border-right: 1px solid #27272a;
-      padding: 24px 0;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
       position: sticky;
       top: 0;
       height: 100vh;
       overflow-y: auto;
+      box-sizing: border-box;
     }
     .sidebar-nav { padding: 16px 0; }
     .sidebar-section-label {
