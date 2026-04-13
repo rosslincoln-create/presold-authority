@@ -923,27 +923,40 @@
 
     // ── Init ──────────────────────────────────────────────────────────────────
     async function init() {
-      try {
-        const res = await fetch('/api/context-card', { credentials: 'include' })
-        if (res.ok) {
-          const data = await res.json()
-          if (data.contextCard) {
-            if (data.contextCard.is_complete) {
-              window.location.href = '/dashboard'
-              return
-            }
-            // Prefill wizardData from saved card
-            wizardData = { ...data.contextCard }
-          }
-        }
-      } catch (e) {
-        // Silently continue — user starts fresh
-      }
+  try {
+    const res = await fetch('/api/context-card', { credentials: 'include' })
 
-      renderCurrentStep()
+    if (res.ok) {
+      const data = await res.json()
+
+      // ── FIX: API returns card fields at top level, not nested under data.contextCard
+      // Check is_complete directly on data, but only if data has actual content
+      const cardExists = data && typeof data === 'object' && Object.keys(data).length > 0
+
+      if (cardExists) {
+        // Pre-fill wizard with saved data
+        wizardData = { ...data }
+
+        // Only redirect to dashboard if complete AND not in edit mode
+        const isEditMode = new URLSearchParams(window.location.search).get('mode') === 'edit'
+
+        if (data.is_complete === true && !isEditMode) {
+          window.location.href = '/dashboard'
+          return
+        }
+      }
+      // If data is {} (no card), cardExists is false — fall through to renderCurrentStep()
     }
 
-    init()
+  } catch (e) {
+    console.error('[onboarding] init error:', e)
+    // Silently continue — user starts fresh
+  }
+
+  renderCurrentStep()
+}
+
+init()
   </script>
 </body>
 </html>
