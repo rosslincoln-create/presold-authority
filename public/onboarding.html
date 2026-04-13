@@ -924,7 +924,7 @@
     // ── Init ──────────────────────────────────────────────────────────────────
     async function init() {
       try {
-        const res = await fetch('/api/context-card')
+        const res = await fetch('/api/context-card', { credentials: 'include' })
         if (res.ok) {
           const data = await res.json()
           if (data.contextCard) {
