@@ -1,11 +1,11 @@
-import { Hono, type Context } from 'hono'
+import { Hono } from 'hono'
 import { Env } from '../index'
 import {
   hashPassword, verifyPassword, createJWT, generateId,
   setSessionCookie, clearSessionCookie, getSessionCookie,
-  verifyJWT, createSession, deleteSession, deleteAllUserSessions
+  verifyJWT, createSession, deleteSession, deleteAllUserSessions,
+  getSession
 } from '../lib/auth'
-import { authMiddleware } from '../middleware/authMiddleware'
 
 const auth = new Hono<{ Bindings: Env }>()
 
@@ -351,43 +351,42 @@ auth.get('/check-activation', async (c) => {
   return c.json({ valid: true, pending: false })
 })
 
-// ─── GET /api/auth/check ──────────────────────────────────────────────────────
-// Used by frontend auth guard scripts to verify session validity.
-// Registered on the root app as GET /api/auth/check (see index.tsx) so the route is always found.
-// authMiddleware handles the actual check — if we reach here, user is authenticated.
+// ─── GET /api/auth/check (via auth subrouter → /api/auth/check) ───────────────
+// Used by frontend auth guard scripts: JWT in psa_session → sessionId → KV session.
 
-export async function handleAuthSessionCheck(
-  c: Context<{ Bindings: Env }>
-): Promise<Response> {
+auth.get('/check', async (c) => {
   try {
-    return await authMiddleware(c, async () => {
-      const userId = c.get('userId' as never) as string
-      const row = await c.env.DB.prepare(
-        `SELECT id, email, role, subscription_tier, user_status FROM users WHERE id = ?`
-      ).bind(userId).first<{
-        id: string
-        email: string
-        role: string
-        subscription_tier: string
-        user_status: string
-      }>()
-      if (!row) {
-        return c.json({ authenticated: false }, 401)
-      }
-      return c.json({
-        authenticated: true,
-        userId: row.id,
-        email: row.email,
-        role: row.role,
-        subscriptionTier: row.subscription_tier,
-        userStatus: row.user_status,
-      })
+    const token = getSessionCookie(c)
+    if (!token) {
+      return c.json({ authenticated: false }, 401)
+    }
+
+    const payload = await verifyJWT(token, c.env.JWT_SECRET)
+    if (!payload) {
+      return c.json({ authenticated: false }, 401)
+    }
+
+    const sessionData = await getSession(c.env.KV, payload.sessionId)
+    if (!sessionData) {
+      return c.json({ authenticated: false }, 401)
+    }
+
+    if (new Date(sessionData.expiresAt) < new Date()) {
+      return c.json({ authenticated: false }, 401)
+    }
+
+    return c.json({
+      authenticated: true,
+      userId: payload.userId,
+      email: payload.email,
+      role: payload.role,
+      subscriptionTier: payload.tier,
+      userStatus: sessionData.userStatus
     })
   } catch (err) {
-    console.error('GET /api/auth/check:', err)
     return c.json({ authenticated: false }, 401)
   }
-}
+})
 
 // ─── POST /api/auth/test-create-activation (DEVELOPMENT ONLY) ────────────────
 
