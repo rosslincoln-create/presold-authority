@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Context Card | Pre-Sold Authority</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/style-premium.css" />
+  <style>
+    body { background: #09090b; color: #f4f4f5; font-family: 'Inter', system-ui, sans-serif; margin: 0; }
+
+    .lesson-shell { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      min-height: 100vh;
+      background: #111113;
+      border-right: 1px solid #27272a;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+    .sidebar-nav { padding: 16px 0; }
+    .sidebar-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #71717a;
+      text-transform: uppercase;
+      padding: 12px 20px 6px;
+    }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      font-size: 13px;
+      color: #a1a1aa;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .sidebar-link:hover { color: #f4f4f5; background: #27272a; }
+
+    .main-content {
+      flex: 1;
+      padding: 40px 48px;
+      max-width: 920px;
+    }
+
+    .backlink {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #a1a1aa;
+      text-decoration: none;
+      margin-bottom: 14px;
+    }
+    .backlink:hover { color: #e4e4e7; }
+
+    h1.page-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 10px;
+      line-height: 1.2;
+      color: #f4f4f5;
+    }
+    .page-subtitle {
+      font-size: 14px;
+      color: #71717a;
+      margin: 0 0 26px;
+      line-height: 1.6;
+      max-width: 760px;
+    }
+
+    .card {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      padding: 28px 28px;
+    }
+
+    .section {
+      padding: 20px 0 22px;
+      border-top: 1px solid #27272a;
+    }
+    .section:first-child { border-top: none; padding-top: 0; }
+    .section-title {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      margin: 0 0 16px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 760px) {
+      .form-row { grid-template-columns: 1fr; }
+      .main-content { padding: 28px 18px; }
+      .card { padding: 22px 18px; }
+      .sidebar { display: none; }
+    }
+
+    .form-group { margin-bottom: 16px; }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #e4e4e7;
+      margin-bottom: 8px;
+    }
+    .form-note {
+      font-size: 12px;
+      color: #71717a;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .input, .select, .textarea {
+      width: 100%;
+      padding: 10px 12px;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      border-radius: 10px;
+      color: #f4f4f5;
+      font-size: 14px;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: border-color 0.15s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .input::placeholder, .textarea::placeholder { color: #71717a; }
+    .input:focus, .select:focus, .textarea:focus { outline: none; border-color: #fbbf24; }
+    .textarea { resize: vertical; line-height: 1.55; }
+    .select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2371717a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    .choice-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+    .choice-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 8px 12px;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      border-radius: 10px;
+      transition: all 0.15s;
+      font-size: 13px;
+      color: #f4f4f5;
+      user-select: none;
+    }
+    .choice-item:hover { border-color: #fbbf24; }
+    .choice-item input[type="radio"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #3f3f46;
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .choice-item input[type="radio"]:checked {
+      background: #fbbf24;
+      border-color: #fbbf24;
+    }
+    .choice-item input[type="radio"]:checked::after {
+      content: '';
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 6px;
+      height: 6px;
+      background: #09090b;
+      border-radius: 50%;
+    }
+    .choice-item:has(input:checked) {
+      border-color: #fbbf24;
+      background: rgba(251,191,36,0.06);
+    }
+
+    .save-wrap { margin-top: 18px; }
+    .btn-save {
+      width: 100%;
+      padding: 14px 18px;
+      background: #fbbf24;
+      color: #09090b;
+      font-weight: 800;
+      font-size: 15px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.15s;
+      font-family: inherit;
+    }
+    .btn-save:hover:not(:disabled) { opacity: 0.92; transform: translateY(-1px); }
+    .btn-save:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .inline-error {
+      display: none;
+      font-size: 13px;
+      color: #f87171;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 12px;
+      line-height: 1.5;
+    }
+    .inline-error.visible { display: block; }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      top: 18px;
+      z-index: 50;
+      display: none;
+      background: rgba(74,222,128,0.12);
+      border: 1px solid rgba(74,222,128,0.25);
+      color: #4ade80;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    .toast.visible { display: block; }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toastSuccess">Context Card saved</div>
+
+  <div class="lesson-shell">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <img src="/assets/brand/logo-mark.png" alt="PSA" />
+        <span class="sidebar-logo-text">Pre-Sold<br />Authority</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">Navigation</div>
+        <a href="/dashboard" class="sidebar-link">← Dashboard</a>
+        <a href="/lessons" class="sidebar-link">Lessons</a>
+        <a href="/assets" class="sidebar-link">My Assets</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <a class="backlink" href="/dashboard">← Back to Dashboard</a>
+      <h1 class="page-title">Your Context Card</h1>
+      <p class="page-subtitle">This is your source of truth. Everything the platform generates uses this information.</p>
+
+      <div class="card">
+        <form id="contextCardForm">
+
+          <div class="section">
+            <div class="section-title">Basics</div>
+
+            <div class="form-group">
+              <label class="form-label" for="full_name">Full name</label>
+              <input class="input" id="full_name" type="text" autocomplete="name" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="brokerage_name">Brokerage / Team name</label>
+                <input class="input" id="brokerage_name" type="text" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="phone">Phone number</label>
+                <input class="input" id="phone" type="text" autocomplete="tel" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="market_location">Market / City / Region</label>
+              <input class="input" id="market_location" type="text" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Your role</label>
+              <div class="choice-grid">
+                <label class="choice-item">
+                  <input type="radio" name="agent_role" value="buyer" />
+                  Buyer's Agent
+                </label>
+                <label class="choice-item">
+                  <input type="radio" name="agent_role" value="listing" />
+                  Listing Agent
+                </label>
+                <label class="choice-item">
+                  <input type="radio" name="agent_role" value="hybrid" />
+                  Hybrid — Both
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="years_experience">Years of experience</label>
+              <select class="select" id="years_experience">
+                <option value="">— Select —</option>
+                <option value="1-2">1-2</option>
+                <option value="3-5">3-5</option>
+                <option value="6-10">6-10</option>
+                <option value="11-20">11-20</option>
+                <option value="20+">20+</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Your Ideal Client</div>
+
+            <div class="form-group">
+              <label class="form-label" for="serious_client_definition">What does a serious client look like?</label>
+              <textarea class="textarea" id="serious_client_definition" rows="3" placeholder="e.g. Pre-approved, specific timeframe, clear on budget"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="anti_client_description">Who you prefer not to work with</label>
+              <textarea class="textarea" id="anti_client_description" rows="3" placeholder="e.g. Buyers unwilling to get pre-approved before viewing"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="price_range">Typical price range</label>
+              <select class="select" id="price_range">
+                <option value="">— Select —</option>
+                <option value="Under $300k">Under $300k</option>
+                <option value="$300k-$500k">$300k-$500k</option>
+                <option value="$500k-$800k">$500k-$800k</option>
+                <option value="$800k-$1.2M">$800k-$1.2M</option>
+                <option value="$1.2M-$2M">$1.2M-$2M</option>
+                <option value="Over $2M">Over $2M</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Your Positioning</div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="process_step_1">Your process — Step 1</label>
+                <input class="input" id="process_step_1" type="text" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="process_step_2">Your process — Step 2</label>
+                <input class="input" id="process_step_2" type="text" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="process_step_3">Your process — Step 3</label>
+              <input class="input" id="process_step_3" type="text" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="boundary_statement">Your professional boundary statement</label>
+              <textarea class="textarea" id="boundary_statement" rows="3" placeholder="e.g. I work with buyers who are pre-approved before viewing properties"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="strengths">Your top strengths (one per line)</label>
+              <textarea class="textarea" id="strengths" rows="5"></textarea>
+              <div class="form-note">Stored as JSON array — join with newlines for display, split on save</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="values">Your core values (one per line)</label>
+              <textarea class="textarea" id="values" rows="5"></textarea>
+              <div class="form-note">Stored as JSON array — join with newlines for display, split on save</div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Proof &amp; Credibility</div>
+
+            <div class="form-group">
+              <label class="form-label" for="transactions_range">Transactions completed</label>
+              <select class="select" id="transactions_range">
+                <option value="">— Select —</option>
+                <option value="Under 10">Under 10</option>
+                <option value="10-25">10-25</option>
+                <option value="25-50">25-50</option>
+                <option value="50-100">50-100</option>
+                <option value="100+">100+</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="proof_points">Your proof points (one per line)</label>
+              <textarea class="textarea" id="proof_points" rows="6"></textarea>
+              <div class="form-note">Stored as JSON array — join with newlines for display, split on save</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="testimonial_snippets">Testimonial snippets (optional)</label>
+              <textarea class="textarea" id="testimonial_snippets" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Contact &amp; Compliance</div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="licence_number">Licence / MLS ID (optional)</label>
+                <input class="input" id="licence_number" type="text" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="state_province">State / Province</label>
+                <input class="input" id="state_province" type="text" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="website_url">Website URL (optional)</label>
+              <input class="input" id="website_url" type="text" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="social_profile_url">Primary social profile URL (optional)</label>
+              <input class="input" id="social_profile_url" type="text" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="broker_disclaimer">Broker-required disclaimer text (optional)</label>
+              <textarea class="textarea" id="broker_disclaimer" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Voice &amp; Tone</div>
+
+            <div class="form-group">
+              <label class="form-label">Tone preference</label>
+              <div class="choice-grid">
+                <label class="choice-item">
+                  <input type="radio" name="tone_preference" value="calm_advisor" />
+                  Calm Advisor
+                </label>
+                <label class="choice-item">
+                  <input type="radio" name="tone_preference" value="direct" />
+                  Direct &amp; No-Nonsense
+                </label>
+                <label class="choice-item">
+                  <input type="radio" name="tone_preference" value="friendly" />
+                  Warm &amp; Approachable
+                </label>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="words_to_use">Words / phrases you like</label>
+                <textarea class="textarea" id="words_to_use" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="words_to_avoid">Words / phrases to avoid</label>
+                <textarea class="textarea" id="words_to_avoid" rows="3"></textarea>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">CTA preference</label>
+              <div class="choice-grid">
+                <label class="choice-item">
+                  <input type="radio" name="cta_preference" value="dm_keyword" />
+                  DM keyword
+                </label>
+                <label class="choice-item">
+                  <input type="radio" name="cta_preference" value="comment_keyword" />
+                  Comment keyword
+                </label>
+                <label class="choice-item">
+                  <input type="radio" name="cta_preference" value="link" />
+                  Direct link
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="cta_next_step">Your preferred next step / CTA</label>
+              <input class="input" id="cta_next_step" type="text" />
+            </div>
+          </div>
+
+          <div class="save-wrap">
+            <button class="btn-save" id="btnSave" type="submit">Save Context Card</button>
+            <div class="inline-error" id="saveError"></div>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (function() {
+      function setValue(id, value) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.value = value == null ? '' : String(value);
+      }
+
+      function setRadio(name, value) {
+        if (value == null) return;
+        var sel = document.querySelector('input[type="radio"][name="' + name + '"][value="' + cssEscape(String(value)) + '"]');
+        if (sel) sel.checked = true;
+      }
+
+      function joinLines(v) {
+        if (!v) return '';
+        if (!Array.isArray(v)) return '';
+        return v.filter(function(x) { return x != null && String(x).trim().length > 0; }).map(function(x) { return String(x); }).join('\n');
+      }
+
+      function splitLines(v) {
+        if (!v) return [];
+        return String(v).split('\n').map(function(s) { return s.trim(); }).filter(function(s) { return s.length > 0; });
+      }
+
+      function strOrNull(id) {
+        var el = document.getElementById(id);
+        if (!el) return null;
+        var t = (el.value || '').trim();
+        return t.length > 0 ? t : null;
+      }
+
+      function radioOrNull(name) {
+        var el = document.querySelector('input[type="radio"][name="' + name + '"]:checked');
+        return el ? el.value : null;
+      }
+
+      function showToast() {
+        var el = document.getElementById('toastSuccess');
+        if (!el) return;
+        el.classList.add('visible');
+        setTimeout(function() { el.classList.remove('visible'); }, 3000);
+      }
+
+      function setError(msg) {
+        var el = document.getElementById('saveError');
+        if (!el) return;
+        if (msg) {
+          el.textContent = msg;
+          el.classList.add('visible');
+        } else {
+          el.textContent = '';
+          el.classList.remove('visible');
+        }
+      }
+
+      function cssEscape(s) {
+        // Minimal CSS escape for attribute selector usage (covers quotes and backslashes)
+        return String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+      }
+
+      async function checkAuth() {
+        var res = await fetch('/api/auth/check', { credentials: 'include' });
+        if (res.status === 401 || res.status === 403) {
+          window.location.href = '/login';
+          return false;
+        }
+        return true;
+      }
+
+      function prefillFromCard(card) {
+        if (!card || typeof card !== 'object') return;
+
+        setValue('full_name', card.full_name);
+        setValue('brokerage_name', card.brokerage_name);
+        setValue('phone', card.phone);
+        setValue('market_location', card.market_location);
+        setRadio('agent_role', card.agent_role);
+        setValue('years_experience', card.years_experience);
+
+        setValue('serious_client_definition', card.serious_client_definition);
+        setValue('anti_client_description', card.anti_client_description);
+        setValue('price_range', card.price_range);
+
+        setValue('process_step_1', card.process_step_1);
+        setValue('process_step_2', card.process_step_2);
+        setValue('process_step_3', card.process_step_3);
+        setValue('boundary_statement', card.boundary_statement);
+
+        setValue('strengths', joinLines(card.strengths));
+        setValue('values', joinLines(card.values));
+
+        setValue('transactions_range', card.transactions_range);
+        setValue('proof_points', joinLines(card.proof_points));
+        setValue('testimonial_snippets', card.testimonial_snippets);
+
+        setValue('licence_number', card.licence_number);
+        setValue('website_url', card.website_url);
+        setValue('social_profile_url', card.social_profile_url);
+        setValue('state_province', card.state_province);
+        setValue('broker_disclaimer', card.broker_disclaimer);
+
+        setRadio('tone_preference', card.tone_preference);
+        setValue('words_to_use', card.words_to_use);
+        setValue('words_to_avoid', card.words_to_avoid);
+        setRadio('cta_preference', card.cta_preference);
+        setValue('cta_next_step', card.cta_next_step);
+      }
+
+      async function loadContextCard() {
+        var res = await fetch('/api/context-card', { credentials: 'include' });
+        if (!res.ok) return;
+        var data = await res.json().catch(function() { return null; });
+        if (!data || !data.contextCard) return;
+        if (typeof data.contextCard !== 'object' || Object.keys(data.contextCard).length === 0) return;
+        prefillFromCard(data.contextCard);
+      }
+
+      async function saveContextCard() {
+        var btn = document.getElementById('btnSave');
+        if (btn) btn.disabled = true;
+        setError(null);
+
+        var payload = {
+          full_name: strOrNull('full_name'),
+          brokerage_name: strOrNull('brokerage_name'),
+          phone: strOrNull('phone'),
+          market_location: strOrNull('market_location'),
+          agent_role: radioOrNull('agent_role'),
+          years_experience: strOrNull('years_experience'),
+
+          serious_client_definition: strOrNull('serious_client_definition'),
+          anti_client_description: strOrNull('anti_client_description'),
+          price_range: strOrNull('price_range'),
+
+          process_step_1: strOrNull('process_step_1'),
+          process_step_2: strOrNull('process_step_2'),
+          process_step_3: strOrNull('process_step_3'),
+          boundary_statement: strOrNull('boundary_statement'),
+          strengths: splitLines((document.getElementById('strengths') || {}).value),
+          values: splitLines((document.getElementById('values') || {}).value),
+
+          transactions_range: strOrNull('transactions_range'),
+          proof_points: splitLines((document.getElementById('proof_points') || {}).value),
+          testimonial_snippets: strOrNull('testimonial_snippets'),
+
+          licence_number: strOrNull('licence_number'),
+          website_url: strOrNull('website_url'),
+          social_profile_url: strOrNull('social_profile_url'),
+          state_province: strOrNull('state_province'),
+          broker_disclaimer: strOrNull('broker_disclaimer'),
+
+          tone_preference: radioOrNull('tone_preference'),
+          words_to_use: strOrNull('words_to_use'),
+          words_to_avoid: strOrNull('words_to_avoid'),
+          cta_preference: radioOrNull('cta_preference'),
+          cta_next_step: strOrNull('cta_next_step'),
+
+          is_complete: true
+        };
+
+        try {
+          var res = await fetch('/api/context-card', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          var data = await res.json().catch(function() { return {}; });
+          if (!res.ok) {
+            throw new Error(data && data.error ? data.error : 'Save failed');
+          }
+
+          showToast();
+        } catch (e) {
+          setError(e && e.message ? e.message : 'Save failed — please try again');
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      }
+
+      async function init() {
+        try {
+          var ok = await checkAuth();
+          if (!ok) return;
+          await loadContextCard();
+        } catch (e) {
+          // Non-fatal. Page stays usable even if prefill fails.
+        }
+      }
+
+      document.getElementById('contextCardForm').addEventListener('submit', function(ev) {
+        ev.preventDefault();
+        saveContextCard();
+      });
+
+      init();
+    })();
+  </script>
+</body>
+</html>
+

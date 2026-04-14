@@ -940,6 +940,11 @@
         // Only redirect to dashboard if complete AND not in edit mode
         const isEditMode = new URLSearchParams(window.location.search).get('mode') === 'edit'
 
+        if (isEditMode) {
+          window.location.href = '/context-card-edit.html'
+          return
+        }
+
         if (data.is_complete === true && !isEditMode) {
           window.location.href = '/dashboard'
           return
