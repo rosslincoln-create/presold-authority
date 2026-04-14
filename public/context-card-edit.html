@@ -575,6 +575,14 @@
         return String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
       }
 
+      function humaniseSnakeCase(val) {
+        if (!val) return ''
+        return val
+          .split('_')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ')
+      }
+
       async function checkAuth() {
         var res = await fetch('/api/auth/check', { credentials: 'include' });
         if (res.status === 401 || res.status === 403) {
@@ -603,11 +611,11 @@
         setValue('process_step_3', card.process_step_3);
         setValue('boundary_statement', card.boundary_statement);
 
-        setValue('strengths', joinLines(card.strengths));
-        setValue('values', joinLines(card.values));
+        setValue('strengths', joinLines(Array.isArray(card.strengths) ? card.strengths.map(humaniseSnakeCase) : card.strengths));
+        setValue('values', joinLines(Array.isArray(card.values) ? card.values.map(humaniseSnakeCase) : card.values));
 
         setValue('transactions_range', card.transactions_range);
-        setValue('proof_points', joinLines(card.proof_points));
+        setValue('proof_points', joinLines(Array.isArray(card.proof_points) ? card.proof_points.map(humaniseSnakeCase) : card.proof_points));
         setValue('testimonial_snippets', card.testimonial_snippets);
 
         setValue('licence_number', card.licence_number);
