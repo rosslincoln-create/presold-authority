@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 2 — Visibility vs. Authority | Pre-Sold Authority</title>
+  <link rel="stylesheet" href="/style-premium.css">
+  <style>
+    /* ── Layout ── */
+    body { background: #09090b; color: #f4f4f5; font-family: 'Inter', system-ui, sans-serif; margin: 0; }
+
+    .lesson-shell {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      min-height: 100vh;
+      background: #111113;
+      border-right: 1px solid #27272a;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+    .sidebar-nav { padding: 16px 0; }
+    .sidebar-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #71717a;
+      text-transform: uppercase;
+      padding: 12px 20px 6px;
+    }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      font-size: 13px;
+      color: #a1a1aa;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .sidebar-link:hover { color: #f4f4f5; background: #27272a; }
+    .sidebar-link.active { color: #fbbf24; border-left-color: #fbbf24; background: rgba(251,191,36,0.06); }
+    .lesson-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      font-size: 12.5px;
+      color: #71717a;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .lesson-nav-item:hover { color: #a1a1aa; background: #27272a; }
+    .lesson-nav-item.current { color: #fbbf24; border-left-color: #fbbf24; }
+    .lesson-nav-item.complete { color: #a1a1aa; }
+    .lesson-badge {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: #3f3f46;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; flex-shrink: 0;
+    }
+    .lesson-badge.complete { background: #166534; color: #4ade80; }
+    .lesson-badge.current  { background: rgba(251,191,36,0.2); color: #fbbf24; }
+
+    .main-content {
+      flex: 1;
+      padding: 40px 48px;
+      max-width: 860px;
+    }
+
+    .breadcrumb {
+      font-size: 12px; color: #71717a;
+      margin-bottom: 8px;
+    }
+    .breadcrumb a { color: #71717a; text-decoration: none; }
+    .breadcrumb a:hover { color: #a1a1aa; }
+    .breadcrumb span { margin: 0 6px; }
+
+    .module-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      margin-bottom: 10px;
+    }
+
+    h1.lesson-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 12px;
+      line-height: 1.2;
+    }
+
+    .lesson-meta-row {
+      font-size: 14px;
+      color: #71717a;
+      margin-bottom: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .lesson-meta-row .meta-dot { color: #52525b; }
+
+    .video-wrapper {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .video-placeholder-text {
+      text-align: center;
+      color: #52525b;
+    }
+    .video-placeholder-text .play-icon {
+      font-size: 48px; display: block; margin-bottom: 12px;
+    }
+    .video-placeholder-text p { font-size: 14px; margin: 0; }
+
+    .lesson-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #d4d4d8;
+      margin-bottom: 48px;
+    }
+    .lesson-body h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 36px 0 12px;
+    }
+    .lesson-body p { margin: 0 0 16px; }
+    .lesson-body ul {
+      padding-left: 20px;
+      margin: 0 0 16px;
+    }
+    .lesson-body ul li { margin-bottom: 8px; }
+    .lesson-body .highlight-box {
+      background: rgba(251,191,36,0.07);
+      border-left: 3px solid #fbbf24;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 24px 0;
+      font-size: 14px;
+      color: #e4e4e7;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 28px 0;
+    }
+    @media (max-width: 720px) {
+      .compare-grid { grid-template-columns: 1fr; }
+    }
+    .compare-card {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 20px 22px;
+    }
+    .compare-card h3 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 0 0 12px;
+    }
+    .compare-card.generic h3 { color: #f87171; }
+    .compare-card.psa h3 { color: #4ade80; }
+    .compare-card ul {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 14px;
+      color: #a1a1aa;
+    }
+    .compare-card li { margin-bottom: 8px; }
+
+    .notes-section {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 36px;
+    }
+    .notes-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .notes-icon { font-size: 16px; }
+    .notes-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #e4e4e7;
+      flex: 1;
+    }
+    .notes-status {
+      font-size: 12px;
+      color: #52525b;
+      transition: color 0.3s;
+    }
+    .notes-status.saving { color: #fbbf24; }
+    .notes-status.saved  { color: #4ade80; }
+    .notes-textarea {
+      width: 100%;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      border-radius: 8px;
+      color: #d4d4d8;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 12px 14px;
+      resize: vertical;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: border-color 0.15s;
+    }
+    .notes-textarea:focus {
+      outline: none;
+      border-color: #71717a;
+    }
+    .builder-section {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      padding: 36px 40px;
+      margin-bottom: 40px;
+    }
+    .builder-header {
+      margin-bottom: 24px;
+    }
+    .builder-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.2);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .builder-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 8px;
+    }
+    .builder-header p {
+      font-size: 14px;
+      color: #a1a1aa;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .audit-progress-wrap {
+      margin-bottom: 28px;
+    }
+    .audit-progress-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #71717a;
+      margin-bottom: 8px;
+    }
+    .audit-progress-label strong { color: #e4e4e7; }
+    .audit-progress-track {
+      height: 8px;
+      background: #27272a;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .audit-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2563eb, #fbbf24);
+      border-radius: 4px;
+      transition: width 0.35s ease;
+      width: 0%;
+    }
+
+    .audit-category {
+      margin-bottom: 28px;
+    }
+    .audit-category-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fbbf24;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 0 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #27272a;
+    }
+
+    .yn-row {
+      margin-bottom: 18px;
+    }
+    .yn-question {
+      font-size: 14px;
+      color: #e4e4e7;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .yn-toggle {
+      display: inline-flex;
+      gap: 8px;
+    }
+    .yn-btn {
+      min-width: 72px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1px solid #3f3f46;
+      background: #09090b;
+      color: #a1a1aa;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .yn-btn:hover:not(:disabled) {
+      border-color: #71717a;
+      color: #e4e4e7;
+    }
+    .yn-btn.selected-yes {
+      border-color: #4ade80;
+      background: rgba(74,222,128,0.12);
+      color: #4ade80;
+    }
+    .yn-btn.selected-no {
+      border-color: #f87171;
+      background: rgba(248,113,113,0.1);
+      color: #fca5a5;
+    }
+    .yn-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.85;
+    }
+
+    .builder-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .btn-cta-blue {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-cta-blue:hover:not(:disabled) { background: #1d4ed8; }
+    .btn-cta-blue:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: #a1a1aa;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: 1px solid #3f3f46;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-secondary:hover:not(:disabled) { border-color: #71717a; color: #e4e4e7; }
+    .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .inline-error {
+      display: none;
+      font-size: 13px;
+      color: #f87171;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 8px;
+    }
+    .inline-error.visible { display: block; }
+
+    .gap-chart {
+      display: none;
+      margin-top: 32px;
+      padding-top: 28px;
+      border-top: 1px solid #27272a;
+    }
+    .gap-chart.visible { display: block; }
+    .gap-chart h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 20px;
+    }
+    .gap-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .gap-bar-label {
+      width: 200px;
+      flex-shrink: 0;
+      font-size: 12px;
+      color: #a1a1aa;
+      text-align: right;
+    }
+    .gap-bar-track {
+      flex: 1;
+      height: 10px;
+      background: #27272a;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .gap-bar-fill {
+      height: 100%;
+      border-radius: 5px;
+      transition: width 0.6s ease;
+    }
+    .gap-bar-score {
+      width: 36px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #e4e4e7;
+    }
+    .score-summary {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .score-big {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .score-big.strong  { color: #4ade80; }
+    .score-big.moderate { color: #fbbf24; }
+    .score-big.weak    { color: #f87171; }
+    .score-label-group { flex: 1; }
+    .score-label-group .score-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin-bottom: 4px;
+    }
+    .score-label-group .score-sub {
+      font-size: 13px;
+      color: #71717a;
+      line-height: 1.5;
+    }
+
+    .gap-list { margin-top: 20px; }
+    .gap-list h4 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #71717a;
+      margin: 0 0 12px;
+    }
+    .gap-item {
+      background: rgba(248,113,113,0.06);
+      border: 1px solid rgba(248,113,113,0.15);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+    }
+    .gap-item-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fbbf24;
+      margin-bottom: 8px;
+    }
+    .gap-item-missing {
+      font-size: 12px;
+      color: #fca5a5;
+      margin: 0 0 8px;
+      padding-left: 16px;
+      list-style: disc;
+    }
+    .gap-item-missing li { margin-bottom: 4px; }
+    .gap-item-note {
+      font-size: 12px;
+      color: #a1a1aa;
+      line-height: 1.55;
+    }
+
+    .saved-banner {
+      display: none;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #4ade80;
+      margin-bottom: 20px;
+      align-items: center;
+      gap: 8px;
+    }
+    .saved-banner.visible { display: flex; }
+
+    .lesson-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 32px;
+      border-top: 1px solid #27272a;
+      margin-top: 8px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #a1a1aa;
+      text-decoration: none;
+      padding: 10px 18px;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { border-color: #52525b; color: #e4e4e7; }
+    .nav-btn.next-btn {
+      background: #18181b;
+      color: #f4f4f5;
+      border-color: #3f3f46;
+    }
+    .nav-btn.next-btn:hover { border-color: #fbbf24; color: #fbbf24; }
+    .complete-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #4ade80;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  (function() {
+    fetch('/api/auth/check', { credentials: 'include' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403) {
+          window.location.href = '/login';
+        }
+      })
+      .catch(function() {});
+  })();
+</script>
+
+<div class="lesson-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="/assets/brand/logo-mark.png" alt="PSA">
+      <span class="sidebar-logo-text">Pre-Sold<br>Authority</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Navigation</div>
+      <a href="/dashboard" class="sidebar-link">← Dashboard</a>
+      <a href="/lessons" class="sidebar-link active">Lessons</a>
+      <a href="/assets" class="sidebar-link">My Assets</a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 1 — The Authority Shift</div>
+      <a href="/lessons/lesson-1.html" class="lesson-nav-item complete" id="nav-l1">
+        <span class="lesson-badge complete" id="badge-l1">1</span>
+        Why Agents Look Interchangeable
+      </a>
+      <a href="/lessons/lesson-2.html" class="lesson-nav-item current" id="nav-l2">
+        <span class="lesson-badge current" id="badge-l2">2</span>
+        Visibility vs. Authority
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 2 — The System</div>
+      <a href="/lessons/lesson-3.html" class="lesson-nav-item" id="nav-l3">
+        <span class="lesson-badge" id="badge-l3">3</span>
+        The Context Card
+      </a>
+      <a href="/lessons/lesson-4.html" class="lesson-nav-item" id="nav-l4">
+        <span class="lesson-badge" id="badge-l4">4</span>
+        Authority Positioning
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 3 — Content</div>
+      <a href="/lessons/lesson-5.html" class="lesson-nav-item" id="nav-l5">
+        <span class="lesson-badge" id="badge-l5">5</span>
+        Profile + Pinned Post
+      </a>
+      <a href="/lessons/lesson-6.html" class="lesson-nav-item" id="nav-l6">
+        <span class="lesson-badge" id="badge-l6">6</span>
+        Content Pillars
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 4 — Conversion</div>
+      <a href="/lessons/lesson-7.html" class="lesson-nav-item" id="nav-l7">
+        <span class="lesson-badge" id="badge-l7">7</span>
+        Posts + DM Flow
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 5 — Install</div>
+      <a href="/lessons/lesson-8.html" class="lesson-nav-item" id="nav-l8">
+        <span class="lesson-badge" id="badge-l8">8</span>
+        Boundaries + Weekly Rhythm
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+
+    <div class="breadcrumb">
+      <a href="/dashboard">Dashboard</a><span>›</span>
+      <a href="/lessons">Lessons</a><span>›</span>
+      Module 1
+    </div>
+
+    <div class="module-label">Module 1 · Lesson 2</div>
+    <h1 class="lesson-title">Visibility vs. Authority</h1>
+    <div class="lesson-meta-row">
+      <span>4–6 minutes</span>
+      <span class="meta-dot">·</span>
+      <span>Builder: Authority Signals Audit</span>
+    </div>
+
+    <div class="video-wrapper" id="videoWrapper">
+      <div class="video-placeholder-text" id="videoPlaceholder">
+        <span class="play-icon">▶</span>
+        <p>Lesson video coming soon</p>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+      <p>Visibility is easy to measure: views, impressions, follower counts, how often your name shows up. Authority is different. Authority is the degree to which the <em>right</em> prospects — serious buyers and sellers — believe you are the obvious choice <em>before</em> they ever book a call.</p>
+
+      <p>You can be highly visible and still look interchangeable. In fact, high visibility without authority often <em>increases</em> comparison shopping: more people see you, but none of them can articulate why you over anyone else.</p>
+
+      <div class="highlight-box">
+        <strong>Visibility</strong> answers: “Did they see you?” <strong>Authority</strong> answers: “Do they already trust that you’re the right specialist for their situation?” That second question is what Pre-Sold Authority is built to raise.
+      </div>
+
+      <h2>The three authority signals</h2>
+      <p>Prospects don’t consciously score you on a spreadsheet — they pattern-match. In seconds, they’re testing three signals:</p>
+      <ul>
+        <li><strong>Clarity</strong> — Do I instantly understand who you help, with what problem, and what outcome you deliver?</li>
+        <li><strong>Relevance</strong> — Does your content, proof, and language speak to <em>my</em> situation — not “real estate in general”?</li>
+        <li><strong>Confidence</strong> — Do you sound like someone who has a process, standards, and boundaries — or like someone hoping for a conversation?</li>
+      </ul>
+
+      <p>When those signals are weak, you attract attention from everyone — including tire-kickers, free-advice seekers, and people who were never going to commit. When they’re strong, you repel the wrong fits <em>early</em>, so your calendar and your DMs fill with people who already take you seriously.</p>
+
+      <h2>Generic visibility vs. pre-sold positioning</h2>
+      <div class="compare-grid">
+        <div class="compare-card generic">
+          <h3>Generic agent positioning</h3>
+          <ul>
+            <li>Headline could belong to any local agent</li>
+            <li>Content skews toward listings and generic market stats</li>
+            <li>No clear intake — conversations start cold</li>
+            <li>Proof is thin or buried; you look “active” but not distinct</li>
+          </ul>
+        </div>
+        <div class="compare-card psa">
+          <h3>Pre-Sold Authority positioning</h3>
+          <ul>
+            <li>Specific client type + outcome visible in seconds</li>
+            <li>Posts and proof map to decision-stage problems</li>
+            <li>Process and boundaries visible before the hire</li>
+            <li>Trust signals compound so serious prospects self-select in</li>
+          </ul>
+        </div>
+      </div>
+
+      <p>The builder below is your <strong>Authority Signals Audit</strong> — fifteen yes/no checks across the five areas where clarity, relevance, and confidence actually show up online. Honest answers here give you a score, a category breakdown, and a gap list with concrete remediation notes tied to the rest of this system.</p>
+    </div>
+
+    <div class="notes-section" id="notesSection">
+      <div class="notes-header">
+        <span class="notes-icon">📝</span>
+        <span class="notes-title">My Notes</span>
+        <span class="notes-status" id="notesStatus"></span>
+      </div>
+      <textarea
+        id="notesTextarea"
+        class="notes-textarea"
+        placeholder="Take notes as you work through this lesson — saved automatically to your account…"
+        rows="5"
+      ></textarea>
+    </div>
+
+    <div class="builder-section">
+      <div class="builder-header">
+        <span class="builder-tag">Implementation Step</span>
+        <h2>Authority Signals Audit</h2>
+        <p>Answer each question with Yes or No based on what a stranger would see on your public profiles today — not what you plan to add later.</p>
+      </div>
+
+      <div class="saved-banner" id="savedBanner">
+        ✓ Your audit is saved. Reset below to run it again.
+      </div>
+
+      <div class="audit-progress-wrap">
+        <div class="audit-progress-label">
+          <span>Progress</span>
+          <strong id="auditProgressText">0 of 15 answered</strong>
+        </div>
+        <div class="audit-progress-track">
+          <div class="audit-progress-fill" id="auditProgressFill"></div>
+        </div>
+      </div>
+
+      <div id="auditQuestions">
+
+        <div class="audit-category">
+          <div class="audit-category-title">a) Profile &amp; Headline</div>
+          <div class="yn-row" data-key="headline_niche">
+            <div class="yn-question">Your headline mentions a specific niche or target client type</div>
+            <div class="yn-toggle">
+              <button type="button" class="yn-btn" data-value="yes" data-key="headline_niche">Yes</button>
+              <button type="button" class="yn-btn" data-value="no" data-key="headline_niche">No</button>
+            </div>
+          </div>
+          <div class="yn-row" data-key="photo_professional">
+            <div class="yn-question">Your profile photo looks professional and approachable</div>
+            <div class="yn-toggle">
+              <button type="button" class="yn-btn" data-value="yes" data-key="photo_professional">Yes</button>
+              <button type="button" class="yn-btn" data-value="no" data-key="photo_professional">No</button>
+            </div>
+          </div>
+          <div class="yn-row" data-key="bio_differentiated">
+            <div class="yn-question">Your bio explains what makes you different, not just credentials</div>
+            <div class="yn-toggle">
+              <button type="button" class="yn-btn" data-value="yes" data-key="bio_differentiated">Yes</button>
+              <button type="button" class="yn-btn" data-value="no" data-key="bio_differentiated">No</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="audit-category">
+          <div class="audit-category-title">b) Content &amp; Posts</div>
+          <div class="yn-row" data-key="content_expertise">
+            <div class="yn-question">You post content demonstrating expertise, not just listings</div>
+            <div class="yn-toggle">
+              <button type="button" class="yn-btn" data-value="yes" data-key="content_expertise">Yes</button>
+              <button type="button" class="yn-btn" data-value="no" data-key="content_expertise">No</button>
+            </div>
+          </div>
+          <div class="yn-row" data-key="posting_frequency">
+            <div class="yn-question">You post at least once per week consistently</div>
+            <div class="yn-toggle">
+              <button type="button" class="yn-btn" data-value="yes" data-key="posting_frequency">Yes</button>
+              <button type="button" class="yn-btn" data-value="no" data-key="posting_frequency">No</button>
+            </div>
+          </div>
+          <div class="yn-row" data-key="content_engagement">
+            <div class="yn-question">Posts attract engagement from your ideal client type</div>
+            <div class="yn-toggle">
+              <button type="button" class="yn-btn" data-value="yes" data-key="content_engagement">Yes</button>
+              <button type="button" class="yn-btn" data-value="no" data-key="content_engagement">No</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="audit-category">
+          <div class="audit-category-title">c) Messaging &amp; Positioning</div>
+          <div class="yn-row" data-key="positioning_statement">
+            <div class="yn-question">You have a clear one-sentence positioning statement</div>
+            <div class="yn-toggle">
+              <button type="button" class="yn-btn" data-value="yes" data-key="positioning_statement">Yes</button>
+              <button type="button" class="yn-btn" data-value="no" data-key="positioning_statement">No</button>
+            </div>
+          </div>
+          <div class="yn-row" data-key="ten_second_clarity">
+            <div class="yn-question">Prospects understand your specialty within 10 seconds</div>
+            <div class="yn-toggle">
+              <button type="button" class="yn-btn" data-value="yes" data-key="ten_second_clarity">Yes</button>
+              <button type="button" class="yn-btn" data-value="no" data-key="ten_second_clarity">No</button>
+            </div>
+          </div>
+          <div class="yn-row" data-key="cross_platform_consistency">
+            <div class="yn-question">Messaging is consistent across all platforms</div>
+            <div class="yn-toggle">
+              <button type="button" class="yn-btn" data-value="yes" data-key="cross_platform_consistency">Yes</button>
+              <button type="button" class="yn-btn" data-value="no" data-key="cross_platform_consistency">No</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="audit-category">
+          <div class="audit-category-title">d) Process &amp; Boundaries</div>
+          <div class="yn-row" data-key="intake_process">
+            <div class="yn-question">You have a documented client intake or onboarding process</div>
+            <div class="yn-toggle">
+              <button type="button" class="yn-btn" data-value="yes" data-key="intake_process">Yes</button>
+              <button type="button" class="yn-btn" data-value="no" data-key="intake_process">No</button>
+            </div>
+          </div>
+          <div class="yn-row" data-key="written_standards">
+            <div class="yn-question">You have written agreements or standards of engagement</div>
+            <div class="yn-toggle">
+              <button type="button" class="yn-btn" data-value="yes" data-key="written_standards">Yes</button>
+              <button type="button" class="yn-btn" data-value="no" data-key="written_standards">No</button>
+            </div>
+          </div>
+          <div class="yn-row" data-key="pre_hire_communication">
+            <div class="yn-question">You communicate your process before prospects hire you</div>
+            <div class="yn-toggle">
+              <button type="button" class="yn-btn" data-value="yes" data-key="pre_hire_communication">Yes</button>
+              <button type="button" class="yn-btn" data-value="no" data-key="pre_hire_communication">No</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="audit-category">
+          <div class="audit-category-title">e) Social Proof &amp; Credibility</div>
+          <div class="yn-row" data-key="testimonials">
+            <div class="yn-question">You have at least 5 written testimonials publicly visible</div>
+            <div class="yn-toggle">
+              <button type="button" class="yn-btn" data-value="yes" data-key="testimonials">Yes</button>
+              <button type="button" class="yn-btn" data-value="no" data-key="testimonials">No</button>
+            </div>
+          </div>
+          <div class="yn-row" data-key="case_studies">
+            <div class="yn-question">You have at least one case study or results-based story</div>
+            <div class="yn-toggle">
+              <button type="button" class="yn-btn" data-value="yes" data-key="case_studies">Yes</button>
+              <button type="button" class="yn-btn" data-value="no" data-key="case_studies">No</button>
+            </div>
+          </div>
+          <div class="yn-row" data-key="recognition">
+            <div class="yn-question">You have third-party recognition: press, awards, or certifications</div>
+            <div class="yn-toggle">
+              <button type="button" class="yn-btn" data-value="yes" data-key="recognition">Yes</button>
+              <button type="button" class="yn-btn" data-value="no" data-key="recognition">No</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="builder-actions">
+        <button type="button" class="btn-cta-blue" id="submitAuditBtn" disabled>Submit audit</button>
+        <button type="button" class="btn-secondary" id="resetAuditBtn">Reset</button>
+      </div>
+      <div class="inline-error" id="auditError"></div>
+
+      <div class="gap-chart" id="resultsPanel">
+        <h3>Your results</h3>
+        <div id="categoryBars"></div>
+        <div class="score-summary" id="scoreSummary"></div>
+        <div class="gap-list" id="gapList"></div>
+      </div>
+    </div>
+
+    <div class="lesson-nav-footer">
+      <a href="/lessons/lesson-1.html" class="nav-btn">← Previous: Lesson 1</a>
+      <div class="complete-chip" id="completeChip" style="display:none;">✓ Lesson complete</div>
+      <div style="flex:1;min-width:8px;"></div>
+      <a href="/lessons/lesson-3.html" class="nav-btn next-btn">Next: Lesson 3 — The Context Card →</a>
+    </div>
+
+  </main>
+</div>
+
+<script>
+(function() {
+  var QUESTION_KEYS = [
+    'headline_niche', 'photo_professional', 'bio_differentiated',
+    'content_expertise', 'posting_frequency', 'content_engagement',
+    'positioning_statement', 'ten_second_clarity', 'cross_platform_consistency',
+    'intake_process', 'written_standards', 'pre_hire_communication',
+    'testimonials', 'case_studies', 'recognition'
+  ];
+
+  var CATEGORIES = [
+    { label: 'Profile & Headline', keys: ['headline_niche', 'photo_professional', 'bio_differentiated'] },
+    { label: 'Content & Posts', keys: ['content_expertise', 'posting_frequency', 'content_engagement'] },
+    { label: 'Messaging & Positioning', keys: ['positioning_statement', 'ten_second_clarity', 'cross_platform_consistency'] },
+    { label: 'Process & Boundaries', keys: ['intake_process', 'written_standards', 'pre_hire_communication'] },
+    { label: 'Social Proof & Credibility', keys: ['testimonials', 'case_studies', 'recognition'] }
+  ];
+
+  var responses = {};
+  var locked = false;
+
+  function barColor(pct) {
+    if (pct >= 67) return '#4ade80';
+    if (pct >= 34) return '#fbbf24';
+    return '#f87171';
+  }
+
+  function countAnswered() {
+    var n = 0;
+    for (var i = 0; i < QUESTION_KEYS.length; i++) {
+      if (Object.prototype.hasOwnProperty.call(responses, QUESTION_KEYS[i])) n++;
+    }
+    return n;
+  }
+
+  function updateProgress() {
+    var c = countAnswered();
+    var pct = (c / 15) * 100;
+    document.getElementById('auditProgressFill').style.width = pct + '%';
+    document.getElementById('auditProgressText').textContent = c + ' of 15 answered';
+    document.getElementById('submitAuditBtn').disabled = c < 15 || locked;
+  }
+
+  function setToggleUI(key, value) {
+    var row = document.querySelector('.yn-row[data-key="' + key + '"]');
+    if (!row) return;
+    var buttons = row.querySelectorAll('.yn-btn');
+    for (var i = 0; i < buttons.length; i++) {
+      var b = buttons[i];
+      b.classList.remove('selected-yes', 'selected-no');
+      if (value === true && b.getAttribute('data-value') === 'yes') b.classList.add('selected-yes');
+      if (value === false && b.getAttribute('data-value') === 'no') b.classList.add('selected-no');
+    }
+  }
+
+  function onToggleClick(ev) {
+    if (locked) return;
+    var btn = ev.target.closest('.yn-btn');
+    if (!btn) return;
+    var key = btn.getAttribute('data-key');
+    var val = btn.getAttribute('data-value') === 'yes';
+    responses[key] = val;
+    setToggleUI(key, val);
+    updateProgress();
+    document.getElementById('auditError').classList.remove('visible');
+    document.getElementById('auditError').textContent = '';
+  }
+
+  document.getElementById('auditQuestions').addEventListener('click', onToggleClick);
+
+  function categoryBreakdown(resp) {
+    return CATEGORIES.map(function(cat) {
+      var yes = 0;
+      for (var i = 0; i < cat.keys.length; i++) {
+        if (resp[cat.keys[i]] === true) yes++;
+      }
+      return { label: cat.label, yes: yes, total: 3, pct: (yes / 3) * 100 };
+    });
+  }
+
+  function renderResults(score, gaps, resp) {
+    var breakdown = categoryBreakdown(resp);
+    var barsEl = document.getElementById('categoryBars');
+    barsEl.innerHTML = breakdown.map(function(row) {
+      return (
+        '<div class="gap-bar-row">' +
+          '<div class="gap-bar-label">' + row.label + '</div>' +
+          '<div class="gap-bar-track">' +
+            '<div class="gap-bar-fill" style="width:' + row.pct + '%;background:' + barColor(row.pct) + ';"></div>' +
+          '</div>' +
+          '<div class="gap-bar-score">' + row.yes + '/3</div>' +
+        '</div>'
+      );
+    }).join('');
+
+    var level, cssClass, message;
+    if (score >= 70) {
+      level = 'Strong authority signals';
+      cssClass = 'strong';
+      message = 'Most checks are in place. Tighten remaining gaps and compound consistency across content and DMs.';
+    } else if (score >= 45) {
+      level = 'Mixed signal profile';
+      cssClass = 'moderate';
+      message = 'You have visible strengths, but missing signals are likely costing you pre-sold conversations. Prioritise the gap list below.';
+    } else {
+      level = 'Authority gap';
+      cssClass = 'weak';
+      message = 'The audit shows major gaps — which is useful. The lessons ahead install clarity, relevance, and confidence step by step.';
+    }
+
+    document.getElementById('scoreSummary').innerHTML =
+      '<div class="score-big ' + cssClass + '">' + score + '</div>' +
+      '<div class="score-label-group">' +
+        '<div class="score-title">' + level + '</div>' +
+        '<div class="score-sub">Score out of 100 based on 15 yes/no signals. Category bars show how many of three you have per area.</div>' +
+        '<div class="score-sub" style="margin-top:8px;">' + message + '</div>' +
+      '</div>';
+
+    var gapListEl = document.getElementById('gapList');
+    if (gaps && gaps.length > 0) {
+      gapListEl.innerHTML =
+        '<h4>Gaps &amp; remediation</h4>' +
+        gaps.map(function(g) {
+          var missList = (g.missing || []).map(function(m) {
+            return '<li>' + escapeHtml(m) + '</li>';
+          }).join('');
+          return (
+            '<div class="gap-item">' +
+              '<div class="gap-item-name">' + escapeHtml(g.category) + '</div>' +
+              (missList ? '<ul class="gap-item-missing">' + missList + '</ul>' : '') +
+              '<div class="gap-item-note">' + escapeHtml(g.remediation || '') + '</div>' +
+            '</div>'
+          );
+        }).join('');
+    } else {
+      gapListEl.innerHTML =
+        '<h4>No multi-signal category gaps</h4>' +
+        '<p style="font-size:13px;color:#71717a;line-height:1.55;">No category had two or more missing signals. Keep sharpening consistency, proof, and your DM path to compound authority.</p>';
+    }
+
+    document.getElementById('resultsPanel').classList.add('visible');
+  }
+
+  function escapeHtml(s) {
+    if (!s) return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function setLockedUI(isLocked) {
+    locked = isLocked;
+    var btns = document.querySelectorAll('#auditQuestions .yn-btn');
+    for (var i = 0; i < btns.length; i++) btns[i].disabled = isLocked;
+    document.getElementById('submitAuditBtn').style.display = isLocked ? 'none' : 'inline-flex';
+    document.getElementById('submitAuditBtn').disabled = countAnswered() < 15 || isLocked;
+    document.getElementById('resetAuditBtn').style.display = 'inline-flex';
+  }
+
+  function applyResponsesFromObject(resp) {
+    responses = {};
+    for (var i = 0; i < QUESTION_KEYS.length; i++) {
+      var k = QUESTION_KEYS[i];
+      if (typeof resp[k] === 'boolean') {
+        responses[k] = resp[k];
+        setToggleUI(k, resp[k]);
+      }
+    }
+    updateProgress();
+  }
+
+  async function submitAudit() {
+    var errEl = document.getElementById('auditError');
+    errEl.classList.remove('visible');
+    errEl.textContent = '';
+    var btn = document.getElementById('submitAuditBtn');
+    btn.disabled = true;
+    var prevText = btn.textContent;
+    btn.textContent = 'Saving…';
+
+    var body = { assessment_type: 'authority-signals', responses: {} };
+    for (var i = 0; i < QUESTION_KEYS.length; i++) {
+      var k = QUESTION_KEYS[i];
+      body.responses[k] = responses[k];
+    }
+
+    try {
+      var res = await fetch('/api/assessments', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      var data = await res.json().catch(function() { return {}; });
+      if (!res.ok) {
+        throw new Error(data.error || 'Save failed');
+      }
+      document.getElementById('savedBanner').classList.add('visible');
+      document.getElementById('completeChip').style.display = 'inline-flex';
+      renderResults(data.score, data.gaps, data.responses);
+      setLockedUI(true);
+    } catch (e) {
+      errEl.textContent = e.message || 'Something went wrong. Please try again.';
+      errEl.classList.add('visible');
+      btn.disabled = countAnswered() < 15;
+    } finally {
+      btn.textContent = prevText;
+    }
+  }
+
+  function resetAudit() {
+    responses = {};
+    for (var i = 0; i < QUESTION_KEYS.length; i++) {
+      setToggleUI(QUESTION_KEYS[i], null);
+    }
+    document.getElementById('resultsPanel').classList.remove('visible');
+    document.getElementById('savedBanner').classList.remove('visible');
+    document.getElementById('completeChip').style.display = 'none';
+    document.getElementById('auditError').classList.remove('visible');
+    document.getElementById('auditError').textContent = '';
+    setLockedUI(false);
+    updateProgress();
+  }
+
+  document.getElementById('submitAuditBtn').addEventListener('click', submitAudit);
+  document.getElementById('resetAuditBtn').addEventListener('click', resetAudit);
+
+  async function loadSavedAudit() {
+    try {
+      var res = await fetch('/api/assessments?type=authority-signals', { credentials: 'include' });
+      if (res.status === 404) return;
+      if (!res.ok) return;
+      var data = await res.json();
+      if (!data || !data.responses) return;
+      applyResponsesFromObject(data.responses);
+      document.getElementById('savedBanner').classList.add('visible');
+      document.getElementById('completeChip').style.display = 'inline-flex';
+      renderResults(data.score, data.gaps, data.responses);
+      setLockedUI(true);
+    } catch (e) {}
+  }
+
+  loadSavedAudit();
+
+  async function loadVideo() {
+    var wrap = document.getElementById('videoWrapper');
+    var ph = document.getElementById('videoPlaceholder');
+    try {
+      var res = await fetch('/api/settings/lesson_2_video_url', { credentials: 'include' });
+      if (!res.ok) {
+        return;
+      }
+      var ct = res.headers.get('content-type') || '';
+      var url = null;
+      if (ct.indexOf('application/json') !== -1) {
+        var data = await res.json().catch(function() { return null; });
+        if (data) {
+          url = data.value || data.url || data.lesson_2_video_url || null;
+          if (url === null && typeof data === 'object' && data.data) url = data.data;
+        }
+      } else {
+        var text = await res.text();
+        url = text && text.trim() ? text.trim() : null;
+      }
+      if (!url || typeof url !== 'string') return;
+      ph.style.display = 'none';
+      var iframe = document.createElement('iframe');
+      iframe.src = url;
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.setAttribute('loading', 'lazy');
+      iframe.title = 'Lesson video';
+      wrap.appendChild(iframe);
+    } catch (e) {}
+  }
+
+  loadVideo();
+
+  var notesTimer = null;
+  async function saveNotes(text) {
+    var statusEl = document.getElementById('notesStatus');
+    statusEl.textContent = 'Saving…';
+    statusEl.className = 'notes-status saving';
+    try {
+      var res = await fetch('/api/lessons/lesson-2/progress', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes: text })
+      });
+      if (res.ok) {
+        statusEl.textContent = 'Saved';
+        statusEl.className = 'notes-status saved';
+        setTimeout(function() {
+          statusEl.textContent = '';
+          statusEl.className = 'notes-status';
+        }, 2000);
+      }
+    } catch (err) {
+      statusEl.textContent = 'Not saved';
+      statusEl.className = 'notes-status';
+    }
+  }
+
+  document.getElementById('notesTextarea').addEventListener('input', function() {
+    clearTimeout(notesTimer);
+    var text = this.value;
+    notesTimer = setTimeout(function() { saveNotes(text); }, 1200);
+  });
+
+  async function loadNotes() {
+    try {
+      var res = await fetch('/api/lessons/lesson-2/progress', { credentials: 'include' });
+      if (!res.ok) return;
+      var data = await res.json();
+      if (data && data.notes !== undefined && data.notes !== null) {
+        document.getElementById('notesTextarea').value = data.notes;
+      }
+    } catch (err) {}
+  }
+
+  loadNotes();
+
+  updateProgress();
+})();
+</script>
+
+</body>
+</html>
