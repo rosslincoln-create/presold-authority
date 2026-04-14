@@ -34,6 +34,16 @@ app.get('/api/health', (c) => {
   })
 })
 
+app.get('/api/settings/:key', async (c) => {
+  const key = c.req.param('key')
+  const row = await c.env.DB
+    .prepare('SELECT key, value FROM app_settings WHERE key = ?')
+    .bind(key)
+    .first() as { key: string; value: string | null } | null
+  if (!row) return c.json({ error: 'Setting not found' }, 404)
+  return c.json({ key: row.key, value: row.value })
+})
+
 // ─── Public API Routes ────────────────────────────────────────────────────────
 app.route('/api/auth', auth)
 app.route('/api/billing', billing)
