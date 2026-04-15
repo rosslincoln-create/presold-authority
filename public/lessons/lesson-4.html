@@ -984,6 +984,11 @@
         currentAssetId = data.assetId;
         currentVersion = data.version;
         currentOutput = data.output;
+        if (typeof data.output.selected_index === 'number') {
+          selectedStatementIndex = data.output.selected_index;
+        } else {
+          selectedStatementIndex = 0;
+        }
         versionHistory = [{ version: data.version, assetId: data.assetId, output: data.output }];
         renderOutput(data.output, data.version);
         el('regenBtn').style.display = 'inline-flex';
@@ -1178,12 +1183,8 @@
 
     try {
       // Save edited content (selected positioning statement is the "edit")
-      // Build the edited output: swap primary with selected option
       var editedOutput = JSON.parse(JSON.stringify(currentOutput));
-      var allOptions = [currentOutput.primary_positioning_statement].concat(currentOutput.alternative_statements || []);
-      if (selectedStatementIndex > 0 && allOptions[selectedStatementIndex]) {
-        editedOutput.primary_positioning_statement = allOptions[selectedStatementIndex];
-      }
+      editedOutput.selected_index = selectedStatementIndex;
 
       var res = await fetch('/api/builder/outputs/' + currentAssetId, {
         method: 'PUT',
