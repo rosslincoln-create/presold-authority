@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 4 — Your Authority Positioning | Pre-Sold Authority</title>
+  <link rel="stylesheet" href="/style-premium.css">
+  <style>
+    /* ── Layout ── */
+    body { background: #09090b; color: #f4f4f5; font-family: 'Inter', system-ui, sans-serif; margin: 0; }
+
+    .lesson-shell {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      min-height: 100vh;
+      background: #111113;
+      border-right: 1px solid #27272a;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+    .sidebar-nav { padding: 16px 0; }
+    .sidebar-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #71717a;
+      text-transform: uppercase;
+      padding: 12px 20px 6px;
+    }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      font-size: 13px;
+      color: #a1a1aa;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .sidebar-link:hover { color: #f4f4f5; background: #27272a; }
+    .sidebar-link.active { color: #fbbf24; border-left-color: #fbbf24; background: rgba(251,191,36,0.06); }
+    .lesson-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      font-size: 12.5px;
+      color: #71717a;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .lesson-nav-item:hover { color: #a1a1aa; background: #27272a; }
+    .lesson-nav-item.current { color: #fbbf24; border-left-color: #fbbf24; }
+    .lesson-nav-item.complete { color: #4ade80; }
+    .lesson-badge {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: #3f3f46;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; flex-shrink: 0;
+    }
+    .lesson-badge.complete { background: #166534; color: #4ade80; }
+    .lesson-badge.current  { background: rgba(251,191,36,0.2); color: #fbbf24; }
+
+    .main-content {
+      flex: 1;
+      padding: 40px 48px;
+      max-width: 860px;
+    }
+
+    .breadcrumb {
+      font-size: 12px; color: #71717a;
+      margin-bottom: 8px;
+    }
+    .breadcrumb a { color: #71717a; text-decoration: none; }
+    .breadcrumb a:hover { color: #a1a1aa; }
+    .breadcrumb span { margin: 0 6px; }
+
+    .module-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      margin-bottom: 10px;
+    }
+
+    h1.lesson-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 12px;
+      line-height: 1.2;
+    }
+
+    .lesson-meta-row {
+      font-size: 14px;
+      color: #71717a;
+      margin-bottom: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .lesson-meta-row .meta-dot { color: #52525b; }
+
+    .video-wrapper {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .video-placeholder-text {
+      text-align: center;
+      color: #52525b;
+    }
+    .video-placeholder-text .play-icon {
+      font-size: 48px; display: block; margin-bottom: 12px;
+    }
+    .video-placeholder-text p { font-size: 14px; margin: 0; }
+
+    .lesson-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #d4d4d8;
+      margin-bottom: 48px;
+    }
+    .lesson-body h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 36px 0 12px;
+    }
+    .lesson-body p { margin: 0 0 16px; }
+    .lesson-body ul {
+      padding-left: 20px;
+      margin: 0 0 16px;
+    }
+    .lesson-body ul li { margin-bottom: 8px; }
+    .lesson-body .highlight-box {
+      background: rgba(251,191,36,0.07);
+      border-left: 3px solid #fbbf24;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 24px 0;
+      font-size: 14px;
+      color: #e4e4e7;
+    }
+
+    .notes-section {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 36px;
+    }
+    .notes-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .notes-icon { font-size: 16px; }
+    .notes-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #e4e4e7;
+      flex: 1;
+    }
+    .notes-status {
+      font-size: 12px;
+      color: #52525b;
+      transition: color 0.3s;
+    }
+    .notes-status.saving { color: #fbbf24; }
+    .notes-status.saved  { color: #4ade80; }
+    .notes-textarea {
+      width: 100%;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      border-radius: 8px;
+      color: #d4d4d8;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 12px 14px;
+      resize: vertical;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: border-color 0.15s;
+    }
+    .notes-textarea:focus {
+      outline: none;
+      border-color: #71717a;
+    }
+    .builder-section {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      padding: 36px 40px;
+      margin-bottom: 40px;
+    }
+    .builder-header {
+      margin-bottom: 24px;
+    }
+    .builder-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.2);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .builder-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 8px;
+    }
+    .builder-header p {
+      font-size: 14px;
+      color: #a1a1aa;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .context-sections-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 640px) {
+      .context-sections-grid { grid-template-columns: 1fr; }
+    }
+    .context-section-card {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .context-section-card-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .section-status-icon {
+      font-size: 16px;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+    .section-status-icon.ok { color: #4ade80; }
+    .section-status-icon.warn { color: #fbbf24; }
+    .context-section-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #f4f4f5;
+      line-height: 1.3;
+    }
+    .context-section-status {
+      font-size: 12px;
+      color: #a1a1aa;
+      line-height: 1.5;
+      margin: 0;
+      padding-left: 26px;
+    }
+
+    .builder-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .btn-cta-blue {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-cta-blue:hover:not(:disabled) { background: #1d4ed8; }
+    .btn-cta-blue:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: #a1a1aa;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: 1px solid #3f3f46;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-secondary:hover:not(:disabled) { border-color: #71717a; color: #e4e4e7; }
+    .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .inline-error {
+      display: none;
+      font-size: 13px;
+      color: #f87171;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 8px;
+    }
+    .inline-error.visible { display: block; }
+
+    .saved-banner {
+      display: none;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #4ade80;
+      margin-bottom: 20px;
+      align-items: center;
+      gap: 8px;
+    }
+    .saved-banner.visible { display: flex; }
+
+    .lesson-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 32px;
+      border-top: 1px solid #27272a;
+      margin-top: 8px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #a1a1aa;
+      text-decoration: none;
+      padding: 10px 18px;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { border-color: #52525b; color: #e4e4e7; }
+    .nav-btn.next-btn {
+      background: #18181b;
+      color: #f4f4f5;
+      border-color: #3f3f46;
+    }
+    .nav-btn.next-btn:hover { border-color: #fbbf24; color: #fbbf24; }
+    .complete-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #4ade80;
+    }
+
+    /* ── Builder: AI Generation ── */
+    .generate-input-section {
+      margin-bottom: 28px;
+    }
+    .generate-input-section label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #a1a1aa;
+      margin-bottom: 6px;
+    }
+    .generate-input-section .input-hint {
+      font-size: 12px;
+      color: #52525b;
+      margin-top: 4px;
+    }
+    .context-preview-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.15);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: #4ade80;
+      margin-bottom: 20px;
+    }
+    .context-preview-pill.warn {
+      background: rgba(251,191,36,0.08);
+      border-color: rgba(251,191,36,0.2);
+      color: #fbbf24;
+    }
+
+    /* Loading state */
+    .generate-loading {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 0;
+      font-size: 14px;
+      color: #a1a1aa;
+    }
+    .generate-loading.visible { display: flex; }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid #3f3f46;
+      border-top-color: #fbbf24;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Output area */
+    .output-area {
+      display: none;
+    }
+    .output-area.visible { display: block; }
+
+    .output-version-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .version-tab {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid #3f3f46;
+      color: #71717a;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .version-tab.active {
+      background: rgba(251,191,36,0.1);
+      border-color: rgba(251,191,36,0.3);
+      color: #fbbf24;
+    }
+    .regen-reason-wrap {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .regen-reason-select {
+      font-size: 12px;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      color: #a1a1aa;
+      border-radius: 6px;
+      padding: 4px 8px;
+      display: none;
+    }
+    .regen-reason-select.visible { display: block; }
+
+    /* Positioning statement selector */
+    .positioning-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .positioning-option {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .positioning-option:hover { border-color: #52525b; }
+    .positioning-option.selected {
+      border-color: #fbbf24;
+      background: rgba(251,191,36,0.05);
+    }
+    .option-radio {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      border: 2px solid #52525b;
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: all 0.15s;
+    }
+    .positioning-option.selected .option-radio {
+      border-color: #fbbf24;
+      background: #fbbf24;
+    }
+    .option-text {
+      font-size: 14px;
+      color: #d4d4d8;
+      line-height: 1.6;
+    }
+    .positioning-option.selected .option-text { color: #f4f4f5; }
+
+    /* Output sub-sections */
+    .output-subsection {
+      margin-bottom: 28px;
+    }
+    .output-subsection-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #71717a;
+      margin-bottom: 12px;
+    }
+    .differentiator-card {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+    .differentiator-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin-bottom: 4px;
+    }
+    .differentiator-desc {
+      font-size: 13px;
+      color: #a1a1aa;
+      line-height: 1.5;
+    }
+    .proof-cues-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .proof-cue-item {
+      font-size: 13px;
+      color: #a1a1aa;
+      padding: 8px 12px;
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 7px;
+      line-height: 1.5;
+    }
+    .boundary-box {
+      background: rgba(251,191,36,0.05);
+      border: 1px solid rgba(251,191,36,0.15);
+      border-radius: 10px;
+      padding: 16px 18px;
+      font-size: 14px;
+      color: #e4e4e7;
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* Save confirmation */
+    .save-confirm-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #27272a;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  (function() {
+    fetch('/api/auth/check', { credentials: 'include' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403) {
+          window.location.href = '/login';
+        }
+      })
+      .catch(function() {});
+  })();
+</script>
+
+<div class="lesson-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="/assets/brand/logo-mark.png" alt="PSA">
+      <span class="sidebar-logo-text">Pre-Sold<br>Authority</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Navigation</div>
+      <a href="/dashboard" class="sidebar-link">← Dashboard</a>
+      <a href="/lessons" class="sidebar-link active">Lessons</a>
+      <a href="/assets" class="sidebar-link">My Assets</a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 1 — The Authority Shift</div>
+      <a href="/lessons/lesson-1.html" class="lesson-nav-item complete" id="nav-l1">
+        <span class="lesson-badge complete" id="badge-l1">1</span>
+        Why Agents Look Interchangeable
+      </a>
+      <a href="/lessons/lesson-2.html" class="lesson-nav-item complete" id="nav-l2">
+        <span class="lesson-badge complete" id="badge-l2">2</span>
+        Visibility vs. Authority
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 2 — The System</div>
+      <a href="/lessons/lesson-3.html" class="lesson-nav-item complete" id="nav-l3">
+        <span class="lesson-badge complete" id="badge-l3">3</span>
+        The Context Card
+      </a>
+      <a href="/lessons/lesson-4.html" class="lesson-nav-item current" id="nav-l4">
+        <span class="lesson-badge current" id="badge-l4">4</span>
+        Authority Positioning
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 3 — Content</div>
+      <a href="/lessons/lesson-5.html" class="lesson-nav-item" id="nav-l5">
+        <span class="lesson-badge" id="badge-l5">5</span>
+        Profile + Pinned Post
+      </a>
+      <a href="/lessons/lesson-6.html" class="lesson-nav-item" id="nav-l6">
+        <span class="lesson-badge" id="badge-l6">6</span>
+        Content Pillars
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 4 — Conversion</div>
+      <a href="/lessons/lesson-7.html" class="lesson-nav-item" id="nav-l7">
+        <span class="lesson-badge" id="badge-l7">7</span>
+        Posts + DM Flow
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 5 — Install</div>
+      <a href="/lessons/lesson-8.html" class="lesson-nav-item" id="nav-l8">
+        <span class="lesson-badge" id="badge-l8">8</span>
+        Boundaries + Weekly Rhythm
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+
+    <div class="breadcrumb">
+      <a href="/dashboard">Dashboard</a><span>›</span>
+      <a href="/lessons">Lessons</a><span>›</span>
+      Module 2
+    </div>
+
+    <div class="module-label">Module 2 · Lesson 4</div>
+    <h1 class="lesson-title">Your Authority Positioning</h1>
+    <div class="lesson-meta-row">
+      <span>5–7 minutes</span>
+      <span class="meta-dot">·</span>
+      <span>Builder: Authority Positioning Generator</span>
+    </div>
+
+    <div class="video-wrapper" id="videoWrapper">
+      <div class="video-placeholder-text" id="videoPlaceholder">
+        <span class="play-icon">▶</span>
+        <p>Lesson video coming soon</p>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+      <p>Your positioning statement is the foundation everything else builds on. It is what prospects read before they call you, what your LinkedIn headline reflects, and what your content reinforces. When it is right, serious buyers and sellers arrive already leaning toward you. When it is vague, you get compared on commission.</p>
+
+      <p>Most agents never define this clearly. They describe what they do — "I help buyers and sellers in the metro area" — rather than who they serve, what outcome they deliver, and why their process is the safe choice. The result is forgettable copy that blends into every other profile on the page.</p>
+
+      <p>In this lesson you will generate your positioning statement using your Context Card as the source of truth. The builder produces five options — you choose the one that feels most accurate, then keep the differentiators and boundary statement that go with it.</p>
+
+      <h2>What this builder produces</h2>
+      <ul>
+        <li><strong>1 primary positioning statement</strong> — your "I help X achieve Y by Z" sentence, ready to deploy</li>
+        <li><strong>5 alternatives</strong> — different angles on the same positioning so you can pick the best fit</li>
+        <li><strong>3 safe-choice differentiators</strong> — process-based reasons why serious clients choose you</li>
+        <li><strong>10 proof cues</strong> — credibility signals you can truthfully use across your profile and content</li>
+        <li><strong>1 boundary statement</strong> — a professional line that repels tire-kickers without sounding harsh</li>
+      </ul>
+
+      <div class="highlight-box">
+        Choose the statement that is most accurate, not the one that sounds most impressive. Believable beats brilliant. Your differentiators should describe your process, not your personality.
+      </div>
+
+      <p>Once you have saved your positioning, it feeds directly into Lesson 5 where the Profile Install builder uses it to rewrite your LinkedIn headline and About section.</p>
+    </div>
+
+    <div class="notes-section" id="notesSection">
+      <div class="notes-header">
+        <span class="notes-icon">📝</span>
+        <span class="notes-title">My Notes</span>
+        <span class="notes-status" id="notesStatus"></span>
+      </div>
+      <textarea
+        id="notesTextarea"
+        class="notes-textarea"
+        placeholder="Take notes as you work through this lesson — saved automatically to your account…"
+        rows="5"
+      ></textarea>
+    </div>
+
+    <div class="builder-section">
+      <div class="builder-header">
+        <span class="builder-tag">Implementation Step</span>
+        <h2>Generate Your Authority Positioning</h2>
+        <p>Your Context Card is the input. The builder produces your positioning statement, differentiators, proof cues, and boundary statement — ready to deploy.</p>
+      </div>
+
+      <!-- Context card status pill -->
+      <div id="contextStatusPill" class="context-preview-pill warn">
+        ⚠ Loading your Context Card…
+      </div>
+
+      <!-- Already-saved output banner -->
+      <div class="saved-banner" id="savedBanner">
+        ✓ Your positioning has been saved to your Asset Library
+      </div>
+
+      <!-- Input / generate controls -->
+      <div class="generate-input-section" id="generateControls">
+        <p style="font-size:14px;color:#a1a1aa;margin:0 0 16px;">Your Context Card details are pre-loaded as the input. Click Generate to produce your positioning options.</p>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <button type="button" class="btn-cta-blue" id="generateBtn">
+            ▶ Generate My Positioning
+          </button>
+          <button type="button" class="btn-secondary" id="regenBtn" style="display:none;">
+            ↺ Regenerate
+          </button>
+          <select class="regen-reason-select" id="regenReasonSelect">
+            <option value="">Why regenerating? (optional)</option>
+            <option value="too_generic">Too generic</option>
+            <option value="not_my_tone">Not my tone</option>
+            <option value="too_long">Too long</option>
+            <option value="compliance">Compliance concern</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Loading state -->
+      <div class="generate-loading" id="generateLoading">
+        <div class="spinner"></div>
+        <span>Generating your positioning — this takes about 10 seconds…</span>
+      </div>
+
+      <!-- Output area -->
+      <div class="output-area" id="outputArea">
+
+        <!-- Version bar -->
+        <div class="output-version-bar" id="versionBar">
+          <!-- version tabs injected by JS -->
+        </div>
+
+        <!-- Positioning statement selector -->
+        <div class="output-subsection">
+          <div class="output-subsection-label">Select Your Positioning Statement</div>
+          <p style="font-size:13px;color:#71717a;margin:0 0 12px;">Choose the statement that is most accurate. Believable beats impressive.</p>
+          <div class="positioning-options" id="positioningOptions">
+            <!-- options injected by JS -->
+          </div>
+        </div>
+
+        <!-- Differentiators -->
+        <div class="output-subsection">
+          <div class="output-subsection-label">Your 3 Safe-Choice Differentiators</div>
+          <div id="differentiatorsContainer">
+            <!-- cards injected by JS -->
+          </div>
+        </div>
+
+        <!-- Proof cues -->
+        <div class="output-subsection">
+          <div class="output-subsection-label">10 Proof Cues You Can Truthfully Use</div>
+          <div class="proof-cues-list" id="proofCuesList">
+            <!-- items injected by JS -->
+          </div>
+        </div>
+
+        <!-- Boundary statement -->
+        <div class="output-subsection">
+          <div class="output-subsection-label">Your Boundary Statement</div>
+          <div class="boundary-box" id="boundaryBox"></div>
+        </div>
+
+        <!-- Save row -->
+        <div class="save-confirm-row">
+          <button type="button" class="btn-cta-blue" id="saveBtn">Save to My Assets ✓</button>
+          <span id="saveStatus" style="font-size:13px;color:#52525b;"></span>
+        </div>
+
+      </div>
+
+      <div class="inline-error" id="builderError"></div>
+    </div>
+
+    <div class="lesson-nav-footer">
+      <a href="/lessons/lesson-3.html" class="nav-btn">← Previous: Lesson 3 — The Context Card</a>
+      <div class="complete-chip" id="completeChip" style="display:none;">✓ Lesson complete</div>
+      <div style="flex:1;min-width:8px;"></div>
+      <a href="/lessons/lesson-5.html" class="nav-btn next-btn">Next: Lesson 5 — Profile + Pinned Post →</a>
+    </div>
+
+  </main>
+</div>
+
+<script>
+(function() {
+
+  // ── Escape helper ──
+  function esc(s) {
+    if (!s) return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ── State ──
+  var currentOutput = null;      // parsed AI output object for current version
+  var currentAssetId = null;     // UUID of the saved generated_assets row
+  var currentVersion = 0;        // version number displayed
+  var selectedStatementIndex = 0; // which positioning option is selected (0 = primary)
+  var versionHistory = [];       // array of { version, assetId, output } for tabs
+  var isSaved = false;           // whether current output has been saved
+
+  // ── DOM refs ──
+  function el(id) { return document.getElementById(id); }
+
+  // ── Auth guard (same pattern as lesson-3) ──
+  fetch('/api/auth/check', { credentials: 'include' })
+    .then(function(r) {
+      if (r.status === 401 || r.status === 403) window.location.href = '/login';
+    })
+    .catch(function() {});
+
+  // ── Video loader (same pattern as lesson-3, key = lesson_4_video_url) ──
+  (function loadVideo() {
+    fetch('/api/settings/lesson_4_video_url', { credentials: 'include' })
+      .then(function(res) {
+        if (!res.ok) return;
+        return res.json();
+      })
+      .then(function(data) {
+        if (!data) return;
+        var url = data.value || data.url || null;
+        if (!url || typeof url !== 'string') return;
+        var wrap = el('videoWrapper');
+        var ph = el('videoPlaceholder');
+        if (!wrap) return;
+        if (ph) ph.style.display = 'none';
+        var iframe = document.createElement('iframe');
+        iframe.src = url;
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.setAttribute('loading', 'lazy');
+        iframe.title = 'Lesson 4 video';
+        wrap.appendChild(iframe);
+      })
+      .catch(function() {});
+  })();
+
+  // ── Context card status pill ──
+  // Checks /api/context-card — if context card exists and has key fields, show green pill
+  // If missing, show amber pill with link to complete it
+  (function loadContextStatus() {
+    fetch('/api/context-card', { credentials: 'include' })
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        var pill = el('contextStatusPill');
+        if (!pill) return;
+        var cc = (data && data.contextCard) ? data.contextCard : null;
+        var hasBasics = cc && cc.full_name && cc.market_location && cc.agent_role;
+        var hasPositioning = cc && cc.process_step_1 && cc.process_step_2 && cc.process_step_3;
+        if (hasBasics && hasPositioning) {
+          pill.className = 'context-preview-pill';
+          pill.textContent = '✓ Context Card loaded — ' + esc(cc.full_name) + ', ' + esc(cc.market_location);
+        } else {
+          pill.className = 'context-preview-pill warn';
+          pill.innerHTML = '⚠ Your Context Card is incomplete — <a href="/context-card-edit.html" style="color:#fbbf24;margin-left:4px;">complete it first</a>';
+        }
+      })
+      .catch(function() {
+        var pill = el('contextStatusPill');
+        if (pill) {
+          pill.className = 'context-preview-pill warn';
+          pill.textContent = '⚠ Could not load Context Card';
+        }
+      });
+  })();
+
+  // ── Notes (identical pattern to lesson-3, path = lesson-4) ──
+  var notesTimer = null;
+  function saveNotes(text) {
+    var statusEl = el('notesStatus');
+    if (statusEl) { statusEl.textContent = 'Saving…'; statusEl.className = 'notes-status saving'; }
+    fetch('/api/lessons/lesson-4/progress', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notes: text })
+    }).then(function(res) {
+      if (res.ok && statusEl) {
+        statusEl.textContent = 'Saved'; statusEl.className = 'notes-status saved';
+        setTimeout(function() { statusEl.textContent = ''; statusEl.className = 'notes-status'; }, 2000);
+      }
+    }).catch(function() {
+      if (statusEl) { statusEl.textContent = 'Not saved'; statusEl.className = 'notes-status'; }
+    });
+  }
+  var notesTA = el('notesTextarea');
+  if (notesTA) {
+    notesTA.addEventListener('input', function() {
+      clearTimeout(notesTimer);
+      var text = this.value;
+      notesTimer = setTimeout(function() { saveNotes(text); }, 1200);
+    });
+  }
+
+  // ── Load saved notes and progress on init ──
+  fetch('/api/lessons/lesson-4/progress', { credentials: 'include' })
+    .then(function(res) { return res.ok ? res.json() : null; })
+    .then(function(data) {
+      if (!data) return;
+      if (data.notes && notesTA) notesTA.value = data.notes;
+      // If lesson was previously completed, show complete chip
+      if (data.is_complete) {
+        var chip = el('completeChip');
+        if (chip) chip.style.display = 'inline-flex';
+      }
+    })
+    .catch(function() {});
+
+  // ── Load existing saved output (if user has generated before) ──
+  // Calls GET /api/builder/outputs/positioning
+  // If output exists, render it and show version tab, hide generate button
+  (function loadExistingOutput() {
+    fetch('/api/builder/outputs/positioning', { credentials: 'include' })
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        if (!data || !data.output) return;
+        currentAssetId = data.assetId;
+        currentVersion = data.version;
+        currentOutput = data.output;
+        versionHistory = [{ version: data.version, assetId: data.assetId, output: data.output }];
+        renderOutput(data.output, data.version);
+        el('regenBtn').style.display = 'inline-flex';
+        el('generateBtn').style.display = 'none';
+        el('savedBanner').classList.add('visible');
+        isSaved = true;
+      })
+      .catch(function() {});
+  })();
+
+  // ── Render output ──
+  // Takes a parsed output object and version number, populates all output sub-sections
+  function renderOutput(output, version) {
+    // Show output area
+    el('outputArea').classList.add('visible');
+
+    // Version bar
+    renderVersionBar(version);
+
+    // Positioning options: primary first, then alternatives
+    var options = [];
+    if (output.primary_positioning_statement) {
+      options.push(output.primary_positioning_statement);
+    }
+    if (Array.isArray(output.alternative_statements)) {
+      output.alternative_statements.forEach(function(s) { options.push(s); });
+    }
+    renderPositioningOptions(options);
+
+    // Differentiators
+    var dc = el('differentiatorsContainer');
+    dc.innerHTML = '';
+    if (Array.isArray(output.differentiators)) {
+      output.differentiators.forEach(function(d) {
+        var div = document.createElement('div');
+        div.className = 'differentiator-card';
+        div.innerHTML =
+          '<div class="differentiator-title">' + esc(d.title) + '</div>' +
+          '<div class="differentiator-desc">' + esc(d.description) + '</div>';
+        dc.appendChild(div);
+      });
+    }
+
+    // Proof cues
+    var pc = el('proofCuesList');
+    pc.innerHTML = '';
+    if (Array.isArray(output.proof_cues)) {
+      output.proof_cues.forEach(function(cue) {
+        var div = document.createElement('div');
+        div.className = 'proof-cue-item';
+        div.textContent = cue;
+        pc.appendChild(div);
+      });
+    }
+
+    // Boundary statement
+    var bb = el('boundaryBox');
+    if (bb) bb.textContent = output.boundary_statement || '';
+  }
+
+  function renderVersionBar(currentVer) {
+    var bar = el('versionBar');
+    bar.innerHTML = '';
+    versionHistory.forEach(function(v) {
+      var btn = document.createElement('button');
+      btn.className = 'version-tab' + (v.version === currentVer ? ' active' : '');
+      btn.textContent = 'Gen ' + v.version;
+      btn.addEventListener('click', function() {
+        currentOutput = v.output;
+        currentAssetId = v.assetId;
+        currentVersion = v.version;
+        renderOutput(v.output, v.version);
+      });
+      bar.appendChild(btn);
+    });
+    // Regen reason select sits in version bar area
+    var regenWrap = document.createElement('div');
+    regenWrap.className = 'regen-reason-wrap';
+    var sel = el('regenReasonSelect');
+    if (sel) regenWrap.appendChild(sel);
+    bar.appendChild(regenWrap);
+  }
+
+  function renderPositioningOptions(options) {
+    var container = el('positioningOptions');
+    container.innerHTML = '';
+    options.forEach(function(text, i) {
+      var div = document.createElement('div');
+      div.className = 'positioning-option' + (i === selectedStatementIndex ? ' selected' : '');
+      div.innerHTML =
+        '<div class="option-radio"></div>' +
+        '<div class="option-text">' + esc(text) + '</div>';
+      div.addEventListener('click', function() {
+        selectedStatementIndex = i;
+        container.querySelectorAll('.positioning-option').forEach(function(el, idx) {
+          el.classList.toggle('selected', idx === i);
+        });
+      });
+      container.appendChild(div);
+    });
+  }
+
+  // ── Generate ──
+  function showError(msg) {
+    var errEl = el('builderError');
+    if (!errEl) return;
+    errEl.textContent = msg;
+    errEl.classList.add('visible');
+  }
+  function clearError() {
+    var errEl = el('builderError');
+    if (errEl) { errEl.textContent = ''; errEl.classList.remove('visible'); }
+  }
+
+  async function runGenerate() {
+    clearError();
+    el('generateLoading').classList.add('visible');
+    el('generateBtn').disabled = true;
+    el('regenBtn').disabled = true;
+
+    // Capture regen reason if regenerating
+    var regenReason = '';
+    var sel = el('regenReasonSelect');
+    if (sel && sel.classList.contains('visible')) {
+      regenReason = sel.value || '';
+    }
+
+    try {
+      var body = { lessonId: 'lesson-4', additionalInput: {} };
+      if (regenReason) body.additionalInput.regenerationReason = regenReason;
+
+      var res = await fetch('/api/builder/generate', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      var data = await res.json().catch(function() { return {}; });
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Generation failed. Please try again.');
+      }
+
+      // New output received
+      currentOutput = data.output;
+      currentAssetId = data.assetId;
+      currentVersion = data.version;
+      selectedStatementIndex = 0;
+
+      // Add to version history (prepend so newest is first)
+      versionHistory.push({ version: data.version, assetId: data.assetId, output: data.output });
+
+      renderOutput(data.output, data.version);
+
+      // Show regen button, hide generate button
+      el('generateBtn').style.display = 'none';
+      el('regenBtn').style.display = 'inline-flex';
+
+      // Show regen reason select for future regenerations
+      if (sel) sel.classList.add('visible');
+
+      // Reset save state
+      isSaved = false;
+      el('savedBanner').classList.remove('visible');
+      el('saveStatus').textContent = '';
+
+    } catch (err) {
+      showError(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      el('generateLoading').classList.remove('visible');
+      el('generateBtn').disabled = false;
+      el('regenBtn').disabled = false;
+    }
+  }
+
+  el('generateBtn').addEventListener('click', runGenerate);
+  el('regenBtn').addEventListener('click', runGenerate);
+
+  // ── Save to Assets ──
+  el('saveBtn').addEventListener('click', async function() {
+    if (!currentOutput || !currentAssetId) {
+      showError('Nothing to save yet. Generate your positioning first.');
+      return;
+    }
+    clearError();
+    var saveBtn = el('saveBtn');
+    var saveStatus = el('saveStatus');
+    saveBtn.disabled = true;
+    saveStatus.textContent = 'Saving…';
+    saveStatus.style.color = '#fbbf24';
+
+    try {
+      // Save edited content (selected positioning statement is the "edit")
+      // Build the edited output: swap primary with selected option
+      var editedOutput = JSON.parse(JSON.stringify(currentOutput));
+      var allOptions = [currentOutput.primary_positioning_statement].concat(currentOutput.alternative_statements || []);
+      if (selectedStatementIndex > 0 && allOptions[selectedStatementIndex]) {
+        editedOutput.primary_positioning_statement = allOptions[selectedStatementIndex];
+      }
+
+      var res = await fetch('/api/builder/outputs/' + currentAssetId, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ editedContent: editedOutput })
+      });
+
+      if (!res.ok) {
+        var d = await res.json().catch(function() { return {}; });
+        throw new Error(d.error || 'Save failed');
+      }
+
+      // Mark lesson as complete
+      await fetch('/api/lessons/lesson-4/progress', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ builder_completed: true, is_complete: true })
+      });
+
+      isSaved = true;
+      el('savedBanner').classList.add('visible');
+      saveStatus.textContent = '✓ Saved';
+      saveStatus.style.color = '#4ade80';
+      el('completeChip').style.display = 'inline-flex';
+
+      // Update sidebar badge for lesson-4 to complete
+      var badge4 = document.getElementById('badge-l4');
+      var nav4 = document.getElementById('nav-l4');
+      if (badge4) badge4.className = 'lesson-badge complete';
+      if (nav4) nav4.className = 'lesson-nav-item complete';
+
+      setTimeout(function() {
+        if (!isSaved) return;
+        saveStatus.textContent = '';
+      }, 3000);
+
+    } catch (err) {
+      saveStatus.textContent = 'Save failed';
+      saveStatus.style.color = '#f87171';
+      showError(err.message || 'Save failed. Please try again.');
+      saveBtn.disabled = false;
+    }
+  });
+
+})();
+</script>
+
+</body>
+</html>
+
