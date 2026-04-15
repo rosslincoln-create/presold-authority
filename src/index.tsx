@@ -6,6 +6,7 @@ import lessons from './routes/lessons'
 import dashboard from './routes/dashboard'
 import { authMiddleware } from './middleware/authMiddleware'
 import assessments from './routes/assessments'
+import builder from './routes/builder'
 
 export type Env = {
   DB: D1Database
@@ -51,6 +52,7 @@ app.route('/api/context-card', contextCard)
 app.route('/api/lessons', lessons)
 app.route('/api/dashboard', dashboard)
 app.route('/api/assessments', assessments)
+app.route('/api/builder', builder)
 
 // ─── Protected Routes ─────────────────────────────────────────────────────────
 app.get('/dashboard', authMiddleware, (c) => c.redirect('/dashboard.html'))
