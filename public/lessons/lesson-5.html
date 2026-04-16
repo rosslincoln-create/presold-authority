@@ -1298,8 +1298,9 @@
       }
 
       currentAssetId = data.assetId;
-      currentVersion = data.version;
       var out = data.output;
+      var nextVer = versions.length + 1;
+      currentVersion = nextVer;
 
       var st = {
         assetId: data.assetId,
@@ -1311,13 +1312,13 @@
           bullets: (out && out.pinned_post && out.pinned_post.bullets) ? out.pinned_post.bullets.slice(0, 5) : [],
           cta: (out && out.pinned_post) ? out.pinned_post.cta : ''
         },
-        versionNumber: data.version
+        versionNumber: nextVer
       };
       while (st.pinnedPost.bullets.length < 5) st.pinnedPost.bullets.push('');
 
       versions.push(st);
 
-      renderOutput(out, data.version, {
+      renderOutput(out, nextVer, {
         selectedHeadlineIndex: 0,
         aboutText: st.aboutText,
         pinnedPost: st.pinnedPost
@@ -1462,14 +1463,14 @@
         if (!data || !data.output) return;
 
         currentAssetId = data.assetId;
-        currentVersion = data.version;
+        currentVersion = (typeof data.version === 'number' ? data.version : 1);
         if (data.updatedAt) {
           lastSavedUpdatedAt = data.updatedAt;
           el('lastSavedAt').textContent = 'Last saved ' + new Date(data.updatedAt).toLocaleString();
         }
 
         var o = data.output;
-        var raw = {
+        var parsedRawOutput = {
           headlines: o.headlines,
           about_section: o.about_section,
           featured_items: o.featured_items,
@@ -1477,20 +1478,25 @@
         };
 
         var idx = typeof o.selected_headline_index === 'number' ? o.selected_headline_index : 0;
+        var pinned = o.pinned_post || (parsedRawOutput && parsedRawOutput.pinned_post) || { hook: '', bullets: [], cta: '' };
+        if (!pinned || typeof pinned !== 'object') pinned = { hook: '', bullets: [], cta: '' };
+        var bullets = Array.isArray(pinned.bullets) ? pinned.bullets.slice(0, 5) : [];
+        while (bullets.length < 5) bullets.push('');
         var st = {
           assetId: data.assetId,
-          rawOutput: raw,
+          rawOutput: parsedRawOutput,
           selectedHeadlineIndex: idx,
-          aboutText: o.about_section != null ? o.about_section : '',
-          pinnedPost: o.pinned_post || { hook: '', bullets: [], cta: '' },
-          versionNumber: data.version
+          aboutText: o.about_section != null ? o.about_section : (parsedRawOutput ? parsedRawOutput.about_section : ''),
+          pinnedPost: {
+            hook: pinned.hook || '',
+            bullets: bullets,
+            cta: pinned.cta || ''
+          },
+          versionNumber: currentVersion
         };
-        if (!Array.isArray(st.pinnedPost.bullets)) st.pinnedPost.bullets = [];
-        st.pinnedPost.bullets = st.pinnedPost.bullets.slice(0, 5);
-        while (st.pinnedPost.bullets.length < 5) st.pinnedPost.bullets.push('');
         versions = [st];
 
-        renderOutput(raw, data.version, {
+        renderOutput(parsedRawOutput, currentVersion, {
           selectedHeadlineIndex: idx,
           aboutText: st.aboutText,
           pinnedPost: st.pinnedPost
