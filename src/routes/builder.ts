@@ -6,20 +6,6 @@ const builder = new Hono<{ Bindings: any }>()
 
 builder.use('/*', authMiddleware)
 
-/** Maps lesson IDs to generated_assets.asset_type (extend as new builders ship). */
-const LESSON_ID_TO_ASSET_TYPE: Record<string, string> = {
-  'lesson-4': 'positioning',
-  'lesson-5': 'profile-copy',
-  'lesson-6': 'content-pillars',
-  'lesson-7-posts': 'posts-10',
-  'lesson-7-dm': 'dm-flow',
-  'lesson-8': 'boundary-library',
-}
-
-function assetTypeForLesson(lessonId: string): string | null {
-  return LESSON_ID_TO_ASSET_TYPE[lessonId] ?? null
-}
-
 const RATE_LIMIT_KEY_PREFIX = 'ai-rate-limit:'
 const GENERATIONS_PER_WINDOW = 20
 const WINDOW_SECONDS = 86400
@@ -38,15 +24,32 @@ async function logAiGenFailed(
 
 // POST /api/builder/generate
 builder.post('/generate', async (c) => {
+  const LESSON_ID_TO_ASSET_TYPE: Record<string, string> = {
+    'lesson-4': 'positioning',
+    'lesson-5': 'profile-copy',
+    'lesson-6': 'content-pillars',
+    'lesson-7': 'posts-dm-flow',
+    'lesson-8': 'boundary-library',
+  }
+
   const userId = c.get('userId' as never) as string
-  let body: { lessonId?: string; additionalInput?: Record<string, unknown> }
+  let body: {
+    lessonId?: string
+    contextCard?: unknown
+    additionalInput?: Record<string, unknown>
+    priorAssetType?: string | null
+  }
   try {
     body = await c.req.json()
   } catch {
     return c.json({ error: 'Invalid JSON body' }, 400)
   }
 
-  const lessonId = body.lessonId
+  const { lessonId, contextCard, additionalInput, priorAssetType } = body
+
+  void contextCard
+  void additionalInput
+
   if (!lessonId || typeof lessonId !== 'string') {
     return c.json({ error: 'lessonId is required' }, 400)
   }
@@ -59,17 +62,80 @@ builder.post('/generate', async (c) => {
     return c.json({ error: 'Builder not available for this lesson' }, 400)
   }
 
-  const assetType = assetTypeForLesson(lessonId)
+  const assetType = LESSON_ID_TO_ASSET_TYPE[lessonId] ?? null
   if (!assetType) {
     return c.json({ error: 'Builder not available for this lesson' }, 400)
   }
 
-  const contextCard = await c.env.DB.prepare(
+  const dbContextCard = await c.env.DB.prepare(
     'SELECT * FROM context_cards WHERE user_id = ?'
   ).bind(userId).first() as Record<string, unknown> | null
 
-  if (!contextCard) {
+  if (!dbContextCard) {
     return c.json({ error: 'Please complete your Context Card before generating' }, 400)
+  }
+
+  let priorAssetData: { positioningStatement: string; differentiators: string } | undefined
+  if (priorAssetType) {
+    try {
+      const priorRow = await c.env.DB.prepare(`
+        SELECT id, raw_output, edited_content
+        FROM generated_assets
+        WHERE user_id = ? AND asset_type = ? AND is_current = 1
+        ORDER BY created_at DESC
+        LIMIT 1
+      `).bind(userId, priorAssetType).first<{
+        id: string
+        raw_output: string | null
+        edited_content: string | null
+      }>()
+
+      if (!priorRow) {
+        return c.json(
+          { error: 'Required prior asset not found. Please complete Lesson 4 first.' },
+          400
+        )
+      }
+
+      let rawOutputObj: Record<string, unknown>
+      try {
+        rawOutputObj = JSON.parse(priorRow.raw_output ?? '{}') as Record<string, unknown>
+      } catch {
+        rawOutputObj = {}
+      }
+
+      let editedContent: Record<string, unknown> = {}
+      if (priorRow.edited_content != null) {
+        try {
+          editedContent = JSON.parse(priorRow.edited_content) as Record<string, unknown>
+        } catch {
+          editedContent = {}
+        }
+      }
+
+      const alternatives = (rawOutputObj.alternative_statements as unknown[] | undefined) ?? []
+      const selectedIndex =
+        typeof editedContent.selected_index === 'number' ? editedContent.selected_index : -1
+      const primaryPs = rawOutputObj.primary_positioning_statement
+      const positioningStatement =
+        selectedIndex >= 0 && selectedIndex < alternatives.length
+          ? String(alternatives[selectedIndex] ?? '')
+          : typeof primaryPs === 'string'
+            ? primaryPs
+            : ''
+
+      type DiffItem = { title?: string; description?: string }
+      const diffArr = (rawOutputObj.differentiators as DiffItem[] | undefined) ?? []
+      const differentiators = diffArr
+        .map((d, i) => `${i + 1}. ${d.title ?? ''} — ${d.description ?? ''}`)
+        .join('\n')
+
+      priorAssetData = { positioningStatement, differentiators }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      await logAiGenFailed(c.env.DB, userId, lessonId, message)
+      return c.json({ error: 'Generation failed. Please try again.' }, 500)
+    }
   }
 
   const rateKey = `${RATE_LIMIT_KEY_PREFIX}${userId}`
@@ -98,10 +164,18 @@ builder.post('/generate', async (c) => {
   rateState.count += 1
   await c.env.KV.put(rateKey, JSON.stringify(rateState), { expirationTtl: WINDOW_SECONDS })
 
-  const systemPrompt = lesson.builder_prompt_template.replace(
+  let prompt = lesson.builder_prompt_template.replaceAll(
     '{context_card}',
-    JSON.stringify(contextCard)
+    JSON.stringify(dbContextCard)
   )
+
+  if (priorAssetData) {
+    prompt = prompt.replaceAll('{positioning_statement}', priorAssetData.positioningStatement)
+    prompt = prompt.replaceAll('{differentiators}', priorAssetData.differentiators)
+  }
+
+  prompt = prompt.replaceAll('{positioning_statement}', '')
+  prompt = prompt.replaceAll('{differentiators}', '')
 
   const userMessage =
     'Generate the positioning assets for this agent based on the context provided.'
@@ -109,7 +183,7 @@ builder.post('/generate', async (c) => {
   let rawOutput: string
   try {
     rawOutput = await callOpenAI(
-      systemPrompt,
+      prompt,
       userMessage,
       c.env.OPENAI_API_KEY
     )
@@ -141,7 +215,7 @@ builder.post('/generate', async (c) => {
   `).bind(userId, assetType).run()
 
   const assetId = crypto.randomUUID()
-  const inputSnapshot = JSON.stringify(contextCard)
+  const inputSnapshot = JSON.stringify(dbContextCard)
   const rawOutputStr = rawOutput
 
   await c.env.DB.prepare(`
