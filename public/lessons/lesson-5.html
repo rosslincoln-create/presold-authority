@@ -918,7 +918,7 @@
   var currentAssetId = null;
   var currentVersion = 0;
   var selectedHeadlineIndex = 0;
-  var versionHistory = [];
+  var versions = [];
   var lastSavedUpdatedAt = null;
 
   fetch('/api/auth/check', { credentials: 'include' })
@@ -1029,10 +1029,14 @@
   }
 
   function syncActiveVersionFromDOM() {
-    for (var i = 0; i < versionHistory.length; i++) {
-      if (versionHistory[i].version === currentVersion) {
-        versionHistory[i].state = collectStateFromDOM();
-        versionHistory[i].assetId = currentAssetId;
+    for (var i = 0; i < versions.length; i++) {
+      if (versions[i].versionNumber === currentVersion) {
+        var next = collectStateFromDOM();
+        if (versions[i] && typeof versions[i] === 'object') {
+          Object.assign(versions[i], next);
+        } else {
+          versions[i] = next;
+        }
         return;
       }
     }
@@ -1045,6 +1049,7 @@
       bullets.push(inp ? inp.value : '');
     }
     return {
+      assetId: currentAssetId,
       rawOutput: currentRawOutput ? JSON.parse(JSON.stringify(currentRawOutput)) : null,
       selectedHeadlineIndex: selectedHeadlineIndex,
       aboutText: el('aboutSectionTextarea') ? el('aboutSectionTextarea').value : '',
@@ -1052,7 +1057,8 @@
         hook: el('pinnedHook') ? el('pinnedHook').value : '',
         bullets: bullets,
         cta: el('pinnedCta') ? el('pinnedCta').value : ''
-      }
+      },
+      versionNumber: currentVersion
     };
   }
 
@@ -1179,32 +1185,55 @@
   function renderVersionBar(activeVer) {
     var bar = el('versionBar');
     if (!bar) return;
-    bar.innerHTML = '';
-    versionHistory.forEach(function(v) {
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'version-tab' + (v.version === activeVer ? ' active' : '');
-      btn.textContent = 'Gen ' + v.version;
-      btn.addEventListener('click', function() {
-        syncActiveVersionFromDOM();
-        currentVersion = v.version;
-        currentAssetId = v.assetId;
-        var st = v.state;
-        if (st && st.rawOutput) {
-          renderOutput(st.rawOutput, v.version, {
-            selectedHeadlineIndex: st.selectedHeadlineIndex,
-            aboutText: st.aboutText,
-            pinnedPost: st.pinnedPost
-          });
-        }
-      });
-      bar.appendChild(btn);
-    });
-    var regenWrap = document.createElement('div');
-    regenWrap.className = 'regen-reason-wrap';
+
+    function ensureRegenWrap() {
+      var existing = bar.querySelector('.regen-reason-wrap');
+      if (existing) return existing;
+      var wrap = document.createElement('div');
+      wrap.className = 'regen-reason-wrap';
+      bar.appendChild(wrap);
+      return wrap;
+    }
+
+    var regenWrap = ensureRegenWrap();
     var sel = el('regenReasonSelect');
-    if (sel) regenWrap.appendChild(sel);
-    bar.appendChild(regenWrap);
+    if (sel && sel.parentNode !== regenWrap) regenWrap.appendChild(sel);
+
+    versions.forEach(function(v) {
+      var ver = v && typeof v.versionNumber === 'number' ? v.versionNumber : null;
+      if (ver == null) return;
+
+      var existingBtn = bar.querySelector('button.version-tab[data-version="' + ver + '"]');
+      if (!existingBtn) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'version-tab';
+        btn.textContent = 'Gen ' + ver;
+        btn.setAttribute('data-version', String(ver));
+        btn.addEventListener('click', function() {
+          syncActiveVersionFromDOM();
+          currentVersion = ver;
+          currentAssetId = v.assetId;
+          if (v && v.rawOutput) {
+            renderOutput(v.rawOutput, ver, {
+              selectedHeadlineIndex: v.selectedHeadlineIndex,
+              aboutText: v.aboutText,
+              pinnedPost: v.pinnedPost
+            });
+          }
+          syncActiveVersionFromDOM();
+          renderVersionBar(ver);
+        });
+        bar.insertBefore(btn, regenWrap);
+      }
+    });
+
+    // Active tab highlight
+    bar.querySelectorAll('button.version-tab').forEach(function(btn) {
+      var dv = btn.getAttribute('data-version');
+      var n = dv != null ? Number(dv) : NaN;
+      btn.classList.toggle('active', n === activeVer);
+    });
   }
 
   function showError(msg) {
@@ -1273,6 +1302,7 @@
       var out = data.output;
 
       var st = {
+        assetId: data.assetId,
         rawOutput: out,
         selectedHeadlineIndex: 0,
         aboutText: (out && out.about_section) ? out.about_section : '',
@@ -1280,15 +1310,12 @@
           hook: (out && out.pinned_post) ? out.pinned_post.hook : '',
           bullets: (out && out.pinned_post && out.pinned_post.bullets) ? out.pinned_post.bullets.slice(0, 5) : [],
           cta: (out && out.pinned_post) ? out.pinned_post.cta : ''
-        }
+        },
+        versionNumber: data.version
       };
       while (st.pinnedPost.bullets.length < 5) st.pinnedPost.bullets.push('');
 
-      versionHistory.push({
-        version: data.version,
-        assetId: data.assetId,
-        state: st
-      });
+      versions.push(st);
 
       renderOutput(out, data.version, {
         selectedHeadlineIndex: 0,
@@ -1451,12 +1478,17 @@
 
         var idx = typeof o.selected_headline_index === 'number' ? o.selected_headline_index : 0;
         var st = {
+          assetId: data.assetId,
           rawOutput: raw,
           selectedHeadlineIndex: idx,
           aboutText: o.about_section != null ? o.about_section : '',
-          pinnedPost: o.pinned_post || { hook: '', bullets: [], cta: '' }
+          pinnedPost: o.pinned_post || { hook: '', bullets: [], cta: '' },
+          versionNumber: data.version
         };
-        versionHistory = [{ version: data.version, assetId: data.assetId, state: st }];
+        if (!Array.isArray(st.pinnedPost.bullets)) st.pinnedPost.bullets = [];
+        st.pinnedPost.bullets = st.pinnedPost.bullets.slice(0, 5);
+        while (st.pinnedPost.bullets.length < 5) st.pinnedPost.bullets.push('');
+        versions = [st];
 
         renderOutput(raw, data.version, {
           selectedHeadlineIndex: idx,
