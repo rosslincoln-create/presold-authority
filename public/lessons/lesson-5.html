@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 5: Profile + Pinned Post Install — Pre-Sold Authority</title>
+  <link rel="stylesheet" href="/style-premium.css">
+  <style>
+    /* ── Layout ── */
+    body { background: #09090b; color: #f4f4f5; font-family: 'Inter', system-ui, sans-serif; margin: 0; }
+
+    .lesson-shell {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      min-height: 100vh;
+      background: #111113;
+      border-right: 1px solid #27272a;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+    .sidebar-nav { padding: 16px 0; }
+    .sidebar-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #71717a;
+      text-transform: uppercase;
+      padding: 12px 20px 6px;
+    }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      font-size: 13px;
+      color: #a1a1aa;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .sidebar-link:hover { color: #f4f4f5; background: #27272a; }
+    .sidebar-link.active { color: #fbbf24; border-left-color: #fbbf24; background: rgba(251,191,36,0.06); }
+    .lesson-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      font-size: 12.5px;
+      color: #71717a;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .lesson-nav-item:hover { color: #a1a1aa; background: #27272a; }
+    .lesson-nav-item.current { color: #fbbf24; border-left-color: #fbbf24; }
+    .lesson-nav-item.complete { color: #4ade80; }
+    .lesson-badge {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: #3f3f46;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; flex-shrink: 0;
+    }
+    .lesson-badge.complete { background: #166534; color: #4ade80; }
+    .lesson-badge.current  { background: rgba(251,191,36,0.2); color: #fbbf24; }
+
+    .main-content {
+      flex: 1;
+      padding: 40px 48px;
+      max-width: 860px;
+    }
+
+    .breadcrumb {
+      font-size: 12px; color: #71717a;
+      margin-bottom: 8px;
+    }
+    .breadcrumb a { color: #71717a; text-decoration: none; }
+    .breadcrumb a:hover { color: #a1a1aa; }
+    .breadcrumb span { margin: 0 6px; }
+
+    .module-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      margin-bottom: 10px;
+    }
+
+    h1.lesson-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 12px;
+      line-height: 1.2;
+    }
+
+    .lesson-meta-row {
+      font-size: 14px;
+      color: #71717a;
+      margin-bottom: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .lesson-meta-row .meta-dot { color: #52525b; }
+
+    .lesson-status-stack {
+      margin-bottom: 20px;
+    }
+    .lesson-status-stack .context-preview-pill + .context-preview-pill {
+      margin-top: 10px;
+    }
+
+    .dependency-banner {
+      display: none;
+      width: 100%;
+      box-sizing: border-box;
+      background: rgba(251,191,36,0.08);
+      border: 1px solid rgba(251,191,36,0.25);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 14px;
+      color: #fbbf24;
+      margin-bottom: 28px;
+      line-height: 1.55;
+    }
+    .dependency-banner.visible { display: block; }
+    .dependency-banner a { color: #fcd34d; font-weight: 600; text-decoration: none; }
+    .dependency-banner a:hover { text-decoration: underline; }
+
+    #positioningReadyPill {
+      display: none;
+    }
+    #positioningReadyPill.visible {
+      display: inline-flex;
+    }
+
+    .video-wrapper {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .video-placeholder-text {
+      text-align: center;
+      color: #52525b;
+    }
+    .video-placeholder-text .play-icon {
+      font-size: 48px; display: block; margin-bottom: 12px;
+    }
+    .video-placeholder-text p { font-size: 14px; margin: 0; }
+
+    .lesson-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #d4d4d8;
+      margin-bottom: 48px;
+    }
+    .lesson-body h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 36px 0 12px;
+    }
+    .lesson-body p { margin: 0 0 16px; }
+    .lesson-body ul {
+      padding-left: 20px;
+      margin: 0 0 16px;
+    }
+    .lesson-body ul li { margin-bottom: 8px; }
+    .lesson-body .highlight-box {
+      background: rgba(251,191,36,0.07);
+      border-left: 3px solid #fbbf24;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 24px 0;
+      font-size: 14px;
+      color: #e4e4e7;
+    }
+
+    .notes-section {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 36px;
+    }
+    .notes-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .notes-icon { font-size: 16px; }
+    .notes-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #e4e4e7;
+      flex: 1;
+    }
+    .notes-status {
+      font-size: 12px;
+      color: #52525b;
+      transition: color 0.3s;
+    }
+    .notes-status.saving { color: #fbbf24; }
+    .notes-status.saved  { color: #4ade80; }
+    .notes-textarea {
+      width: 100%;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      border-radius: 8px;
+      color: #d4d4d8;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 12px 14px;
+      resize: vertical;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: border-color 0.15s;
+    }
+    .notes-textarea:focus {
+      outline: none;
+      border-color: #71717a;
+    }
+    .builder-section {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      padding: 36px 40px;
+      margin-bottom: 40px;
+    }
+    .builder-header {
+      margin-bottom: 24px;
+    }
+    .builder-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.2);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .builder-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 8px;
+    }
+    .builder-header p {
+      font-size: 14px;
+      color: #a1a1aa;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .builder-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .btn-cta-blue {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-cta-blue:hover:not(:disabled) { background: #1d4ed8; }
+    .btn-cta-blue:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-cta-blue.btn-disabled-hard:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: #a1a1aa;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: 1px solid #3f3f46;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-secondary:hover:not(:disabled) { border-color: #71717a; color: #e4e4e7; }
+    .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .inline-error {
+      display: none;
+      font-size: 13px;
+      color: #f87171;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 8px;
+    }
+    .inline-error.visible { display: block; }
+
+    .saved-banner {
+      display: none;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #4ade80;
+      margin-bottom: 20px;
+      align-items: center;
+      gap: 8px;
+    }
+    .saved-banner.visible { display: flex; }
+
+    .lesson-complete-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+      font-size: 14px;
+      color: #a1a1aa;
+    }
+    .lesson-complete-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #fbbf24;
+      cursor: pointer;
+    }
+    .lesson-complete-row label {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .lesson-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 32px;
+      border-top: 1px solid #27272a;
+      margin-top: 8px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #a1a1aa;
+      text-decoration: none;
+      padding: 10px 18px;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { border-color: #52525b; color: #e4e4e7; }
+    .nav-btn.next-btn {
+      background: #18181b;
+      color: #f4f4f5;
+      border-color: #3f3f46;
+    }
+    .nav-btn.next-btn:hover { border-color: #fbbf24; color: #fbbf24; }
+    .complete-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #4ade80;
+    }
+
+    /* ── Builder: AI Generation ── */
+    .generate-input-section {
+      margin-bottom: 28px;
+    }
+    .generate-input-section label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #a1a1aa;
+      margin-bottom: 6px;
+    }
+    .generate-input-section .input-hint {
+      font-size: 12px;
+      color: #52525b;
+      margin-top: 4px;
+    }
+    .context-preview-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.15);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: #4ade80;
+      margin-bottom: 0;
+    }
+    .context-preview-pill.warn {
+      background: rgba(251,191,36,0.08);
+      border-color: rgba(251,191,36,0.2);
+      color: #fbbf24;
+    }
+
+    /* Loading state */
+    .generate-loading {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 0;
+      font-size: 14px;
+      color: #a1a1aa;
+    }
+    .generate-loading.visible { display: flex; }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid #3f3f46;
+      border-top-color: #fbbf24;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Output area */
+    .output-area {
+      display: none;
+    }
+    .output-area.visible { display: block; }
+
+    .output-version-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .version-tab {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid #3f3f46;
+      color: #71717a;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .version-tab.active {
+      background: rgba(251,191,36,0.1);
+      border-color: rgba(251,191,36,0.3);
+      color: #fbbf24;
+    }
+    .regen-reason-wrap {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .regen-reason-select {
+      font-size: 12px;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      color: #a1a1aa;
+      border-radius: 6px;
+      padding: 4px 8px;
+      display: none;
+    }
+    .regen-reason-select.visible { display: block; }
+
+    /* Headline selector */
+    .headline-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .headline-option {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 14px 16px 32px;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+    }
+    .headline-option:hover { border-color: #52525b; }
+    .headline-option.selected {
+      border-color: #fbbf24;
+      background: rgba(251,191,36,0.05);
+    }
+    .headline-option-text {
+      font-size: 14px;
+      color: #d4d4d8;
+      line-height: 1.6;
+      padding-right: 8px;
+    }
+    .headline-option.selected .headline-option-text { color: #f4f4f5; }
+    .headline-char-count {
+      position: absolute;
+      bottom: 10px;
+      right: 14px;
+      font-size: 11px;
+      color: #71717a;
+    }
+
+    /* Output sub-sections */
+    .output-subsection {
+      margin-bottom: 28px;
+    }
+    .output-subsection-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #71717a;
+      margin-bottom: 12px;
+    }
+    .about-textarea {
+      width: 100%;
+      min-height: 300px;
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 14px 16px;
+      color: #d4d4d8;
+      font-size: 14px;
+      line-height: 1.65;
+      font-family: inherit;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+    .about-textarea:focus {
+      outline: none;
+      border-color: #52525b;
+    }
+    .pinned-textarea {
+      width: 100%;
+      min-height: 72px;
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 14px 16px;
+      color: #d4d4d8;
+      font-size: 14px;
+      line-height: 1.65;
+      font-family: inherit;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+    .pinned-textarea:focus {
+      outline: none;
+      border-color: #52525b;
+    }
+    .about-char-hint {
+      font-size: 12px;
+      color: #71717a;
+      margin-top: 8px;
+    }
+
+    .featured-item-card {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+    .featured-item-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fbbf24;
+      margin-bottom: 8px;
+    }
+    .featured-item-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin-bottom: 6px;
+    }
+    .featured-item-desc {
+      font-size: 13px;
+      color: #a1a1aa;
+      line-height: 1.55;
+    }
+
+    .pinned-field {
+      margin-bottom: 14px;
+    }
+    .pinned-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #a1a1aa;
+      margin-bottom: 6px;
+    }
+    .pinned-field input,
+    .pinned-field .pinned-input {
+      width: 100%;
+      box-sizing: border-box;
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #d4d4d8;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    .pinned-field input:focus {
+      outline: none;
+      border-color: #52525b;
+    }
+
+    /* Save confirmation */
+    .save-confirm-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #27272a;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  (function() {
+    fetch('/api/auth/check', { credentials: 'include' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403) {
+          window.location.href = '/login';
+        }
+      })
+      .catch(function() {});
+  })();
+</script>
+
+<div class="lesson-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="/assets/brand/logo-mark.png" alt="PSA">
+      <span class="sidebar-logo-text">Pre-Sold<br>Authority</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Navigation</div>
+      <a href="/dashboard" class="sidebar-link">← Dashboard</a>
+      <a href="/lessons" class="sidebar-link active">Lessons</a>
+      <a href="/assets" class="sidebar-link">My Assets</a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 1 — The Authority Shift</div>
+      <a href="/lessons/lesson-1.html" class="lesson-nav-item complete" id="nav-l1">
+        <span class="lesson-badge complete" id="badge-l1">1</span>
+        Why Agents Look Interchangeable
+      </a>
+      <a href="/lessons/lesson-2.html" class="lesson-nav-item complete" id="nav-l2">
+        <span class="lesson-badge complete" id="badge-l2">2</span>
+        Visibility vs. Authority
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 2 — The System</div>
+      <a href="/lessons/lesson-3.html" class="lesson-nav-item complete" id="nav-l3">
+        <span class="lesson-badge complete" id="badge-l3">3</span>
+        The Context Card
+      </a>
+      <a href="/lessons/lesson-4.html" class="lesson-nav-item complete" id="nav-l4">
+        <span class="lesson-badge complete" id="badge-l4">4</span>
+        Authority Positioning
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 3 — Content</div>
+      <a href="/lessons/lesson-5.html" class="lesson-nav-item current" id="nav-l5">
+        <span class="lesson-badge current" id="badge-l5">5</span>
+        Profile + Pinned Post
+      </a>
+      <a href="/lessons/lesson-6.html" class="lesson-nav-item" id="nav-l6">
+        <span class="lesson-badge" id="badge-l6">6</span>
+        Content Pillars
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 4 — Conversion</div>
+      <a href="/lessons/lesson-7.html" class="lesson-nav-item" id="nav-l7">
+        <span class="lesson-badge" id="badge-l7">7</span>
+        Posts + DM Flow
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 5 — Install</div>
+      <a href="/lessons/lesson-8.html" class="lesson-nav-item" id="nav-l8">
+        <span class="lesson-badge" id="badge-l8">8</span>
+        Boundaries + Weekly Rhythm
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+
+    <div class="breadcrumb">
+      <a href="/dashboard">Dashboard</a><span>›</span>
+      <a href="/lessons">Lessons</a><span>›</span>
+      Module 3
+    </div>
+
+    <div class="module-label">Module 3 — Authority Content That Attracts Serious Clients</div>
+    <h1 class="lesson-title">Lesson 5: Profile + Pinned Post Install</h1>
+    <div class="lesson-meta-row">
+      <span>8–12 minutes</span>
+      <span class="meta-dot">·</span>
+      <span>Builder: Profile + Pinned Post Generator</span>
+    </div>
+
+    <div class="lesson-status-stack">
+      <div id="contextStatusPill" class="context-preview-pill warn">
+        ⚠ Loading your Context Card…
+      </div>
+      <div id="positioningReadyPill" class="context-preview-pill"></div>
+    </div>
+
+    <div class="dependency-banner" id="dependencyBanner">
+      ⚠️ Complete Lesson 4 first — Your positioning statement is needed to generate your profile copy.
+      <a href="/lessons/lesson-4.html" style="margin-left:8px;">Go to Lesson 4 →</a>
+    </div>
+
+    <div class="video-wrapper" id="videoWrapper">
+      <div class="video-placeholder-text" id="videoPlaceholder">
+        <span class="play-icon">▶</span>
+        <p>Lesson video coming soon</p>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+      <h2>What Your Profile Is Actually For</h2>
+      <p>Most agents treat their LinkedIn profile like a résumé — a record of where they've worked and what they've done. That framing produces profiles that feel passive and interchangeable. A profile built for authority works differently: it's a trust asset. Every section — your headline, your About copy, your pinned post — is working to answer the question a serious prospect is silently asking: 'Is this the right person for me?'</p>
+
+      <p>In this lesson, you'll generate three connected outputs: a headline that signals exactly who you serve, an About section that reads like a calm expert introducing themselves, and a pinned post that gives prospects one place to understand you before they ever reach out. These aren't decoration. They're the first layer of the pre-sold experience — the part that happens before the conversation starts.</p>
+
+      <p>Your positioning statement from Lesson 4 is the foundation. The AI will use it alongside your context card to write profile copy that's consistent, specific to your market, and ready to deploy.</p>
+    </div>
+
+    <div class="notes-section" id="notesSection">
+      <div class="notes-header">
+        <span class="notes-icon">📝</span>
+        <span class="notes-title">My Notes</span>
+        <span class="notes-status" id="notesStatus"></span>
+      </div>
+      <textarea
+        id="notesTextarea"
+        class="notes-textarea"
+        placeholder="Take notes as you work through this lesson — saved automatically to your account…"
+        rows="5"
+      ></textarea>
+    </div>
+
+    <div class="builder-section">
+      <div class="builder-header">
+        <span class="builder-tag">Implementation Step</span>
+        <h2>Generate Your Profile Copy</h2>
+        <p>Produces your LinkedIn headline, About section, featured section plan, and pinned post draft — based on your positioning and context card.</p>
+      </div>
+
+      <div class="saved-banner" id="savedBanner">
+        Saved to My Assets ✓
+      </div>
+
+      <div class="generate-input-section" id="generateControls">
+        <p style="font-size:14px;color:#a1a1aa;margin:0 0 16px;">Your positioning output and Context Card are used as inputs. Click Generate to produce your profile copy.</p>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <button type="button" class="btn-cta-blue btn-disabled-hard" id="generateBtn" disabled>
+            ▶ Generate Profile Copy
+          </button>
+          <button type="button" class="btn-secondary" id="regenBtn" style="display:none;">
+            ↺ Regenerate
+          </button>
+          <select class="regen-reason-select" id="regenReasonSelect">
+            <option value="">Why regenerating? (optional)</option>
+            <option value="too_generic">Too generic</option>
+            <option value="not_my_tone">Not my tone</option>
+            <option value="too_long">Too long</option>
+            <option value="compliance">Compliance concern</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="generate-loading" id="generateLoading">
+        <div class="spinner"></div>
+        <span>Generating your profile copy…</span>
+      </div>
+
+      <div class="output-area" id="outputArea">
+
+        <div class="output-version-bar" id="versionBar"></div>
+
+        <div class="output-subsection">
+          <div class="output-subsection-label">Choose Your LinkedIn Headline</div>
+          <p style="font-size:13px;color:#71717a;margin:0 0 12px;">Select the headline that feels most like you. Each is ≤220 characters.</p>
+          <div class="headline-options" id="headlineOptions"></div>
+        </div>
+
+        <div class="output-subsection">
+          <div class="output-subsection-label">Your LinkedIn About Section</div>
+          <p style="font-size:13px;color:#71717a;margin:0 0 12px;">Edit directly. Aim for 250–400 words. Review for compliance with your brokerage's advertising guidelines before publishing.</p>
+          <textarea id="aboutSectionTextarea" class="about-textarea" placeholder="Your About section…"></textarea>
+          <div class="about-char-hint" id="aboutCharHint">0 characters</div>
+        </div>
+
+        <div class="output-subsection">
+          <div class="output-subsection-label">Featured Section Plan (3 Items)</div>
+          <p style="font-size:13px;color:#71717a;margin:0 0 12px;">These are recommendations for your LinkedIn Featured section. Add the actual links or files directly in LinkedIn.</p>
+          <div id="featuredItemsContainer"></div>
+        </div>
+
+        <div class="output-subsection">
+          <div class="output-subsection-label">Your Pinned Post</div>
+          <p style="font-size:13px;color:#71717a;margin:0 0 12px;">Edit the hook and bullets to match your exact voice before publishing.</p>
+          <div class="pinned-field">
+            <label for="pinnedHook">Hook</label>
+            <textarea id="pinnedHook" class="pinned-textarea" rows="2" style="resize: vertical;"></textarea>
+          </div>
+          <div class="pinned-field" id="pinnedBulletsWrap"></div>
+          <div class="pinned-field">
+            <label for="pinnedCta">CTA</label>
+            <textarea id="pinnedCta" class="pinned-textarea" rows="2" style="resize: vertical;"></textarea>
+          </div>
+        </div>
+
+        <div class="save-confirm-row">
+          <button type="button" class="btn-cta-blue" id="saveBtn">Save to My Assets</button>
+          <span id="saveStatus" style="font-size:13px;color:#52525b;"></span>
+          <span id="lastSavedAt" style="font-size:13px;color:#52525b;"></span>
+        </div>
+
+      </div>
+
+      <div class="inline-error" id="builderError"></div>
+    </div>
+
+    <div class="lesson-complete-row">
+      <input type="checkbox" id="lessonCompleteCheckbox" />
+      <label for="lessonCompleteCheckbox">Lesson complete</label>
+    </div>
+
+    <div class="lesson-nav-footer">
+      <a href="/lessons/lesson-4.html" class="nav-btn">← Lesson 4: Your Authority Positioning</a>
+      <div class="complete-chip" id="completeChip" style="display:none;">✓ Lesson complete</div>
+      <div style="flex:1;min-width:8px;"></div>
+      <a href="/lessons/lesson-6.html" class="nav-btn next-btn">Lesson 6: Content Pillars &amp; Topic Map →</a>
+    </div>
+
+  </main>
+</div>
+
+<script>
+(function() {
+
+  function esc(s) {
+    if (!s) return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function el(id) { return document.getElementById(id); }
+
+  var positioningReady = false;
+  var positioningAsset = null;
+  var contextCardComplete = false;
+
+  var currentRawOutput = null;
+  var currentAssetId = null;
+  var currentVersion = 0;
+  var selectedHeadlineIndex = 0;
+  var versionHistory = [];
+  var lastSavedUpdatedAt = null;
+
+  fetch('/api/auth/check', { credentials: 'include' })
+    .then(function(r) {
+      if (r.status === 401 || r.status === 403) window.location.href = '/login';
+    })
+    .catch(function() {});
+
+  function truncate80(str) {
+    var t = String(str || '').trim();
+    if (t.length <= 80) return t;
+    return t.slice(0, 80) + '…';
+  }
+
+  function getPositioningPreviewText(asset) {
+    if (!asset || typeof asset !== 'object') return '';
+    var edited = asset;
+    var idx = typeof edited.selected_index === 'number' ? edited.selected_index : -1;
+    var alts = Array.isArray(edited.alternative_statements) ? edited.alternative_statements : [];
+    if (idx >= 0 && idx < alts.length) return String(alts[idx] || '');
+    return String(edited.primary_positioning_statement || '');
+  }
+
+  function parsePositioningResponse(res, data) {
+    if (res.status === 404) return { ready: false, asset: null };
+    if (!data) return { ready: false, asset: null };
+    if (Array.isArray(data.assets) && data.assets.length === 0) return { ready: false, asset: null };
+    if (Array.isArray(data.assets) && data.assets.length > 0) {
+      var first = data.assets[0];
+      var raw = first && first.raw_output;
+      var obj = null;
+      if (typeof raw === 'string') {
+        try { obj = JSON.parse(raw); } catch (e) { obj = null; }
+      } else if (raw && typeof raw === 'object') {
+        obj = raw;
+      }
+      return { ready: !!obj, asset: obj };
+    }
+    if (!data.output || typeof data.output !== 'object') return { ready: false, asset: null };
+    var o = data.output;
+    var has =
+      !!o.primary_positioning_statement ||
+      (Array.isArray(o.alternative_statements) && o.alternative_statements.length > 0);
+    if (!has) return { ready: false, asset: null };
+    return { ready: true, asset: o };
+  }
+
+  function renderContextPill(data) {
+    var pill = el('contextStatusPill');
+    if (!pill) return;
+    var cc = (data && data.contextCard) ? data.contextCard : null;
+    var hasBasics = cc && cc.full_name && cc.market_location && cc.agent_role;
+    var hasPositioning = cc && cc.process_step_1 && cc.process_step_2 && cc.process_step_3;
+    contextCardComplete = !!(hasBasics && hasPositioning);
+    if (hasBasics && hasPositioning) {
+      pill.className = 'context-preview-pill';
+      pill.textContent = '✓ Context Card loaded — ' + esc(cc.full_name) + ', ' + esc(cc.market_location);
+    } else {
+      pill.className = 'context-preview-pill warn';
+      pill.innerHTML = '⚠ Your Context Card is incomplete — <a href="/context-card-edit.html" style="color:#fbbf24;margin-left:4px;">complete it first</a>';
+    }
+  }
+
+  function updateDependencyUI() {
+    var banner = el('dependencyBanner');
+    var posPill = el('positioningReadyPill');
+    var gen = el('generateBtn');
+    if (!banner || !posPill || !gen) return;
+
+    if (!positioningReady) {
+      banner.classList.add('visible');
+      posPill.classList.remove('visible');
+      posPill.textContent = '';
+    } else {
+      banner.classList.remove('visible');
+      var preview = truncate80(getPositioningPreviewText(positioningAsset));
+      posPill.className = 'context-preview-pill visible';
+      posPill.textContent = '✓ Positioning ready — based on: ' + esc(preview);
+    }
+
+    var can = positioningReady && contextCardComplete;
+    gen.disabled = !can;
+    gen.classList.toggle('btn-disabled-hard', !can);
+  }
+
+  function loadVideo() {
+    fetch('/api/settings/lesson_5_video_url', { credentials: 'include' })
+      .then(function(res) {
+        if (!res.ok) return;
+        return res.json();
+      })
+      .then(function(data) {
+        if (!data) return;
+        var url = data.value || data.url || null;
+        if (!url || typeof url !== 'string') return;
+        var wrap = el('videoWrapper');
+        var ph = el('videoPlaceholder');
+        if (!wrap) return;
+        if (ph) ph.style.display = 'none';
+        var iframe = document.createElement('iframe');
+        iframe.src = url;
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.setAttribute('loading', 'lazy');
+        iframe.title = 'Lesson 5 video';
+        wrap.appendChild(iframe);
+      })
+      .catch(function() {});
+  }
+
+  function syncActiveVersionFromDOM() {
+    for (var i = 0; i < versionHistory.length; i++) {
+      if (versionHistory[i].version === currentVersion) {
+        versionHistory[i].state = collectStateFromDOM();
+        versionHistory[i].assetId = currentAssetId;
+        return;
+      }
+    }
+  }
+
+  function collectStateFromDOM() {
+    var bullets = [];
+    for (var b = 0; b < 5; b++) {
+      var inp = el('bulletInput' + b);
+      bullets.push(inp ? inp.value : '');
+    }
+    return {
+      rawOutput: currentRawOutput ? JSON.parse(JSON.stringify(currentRawOutput)) : null,
+      selectedHeadlineIndex: selectedHeadlineIndex,
+      aboutText: el('aboutSectionTextarea') ? el('aboutSectionTextarea').value : '',
+      pinnedPost: {
+        hook: el('pinnedHook') ? el('pinnedHook').value : '',
+        bullets: bullets,
+        cta: el('pinnedCta') ? el('pinnedCta').value : ''
+      }
+    };
+  }
+
+  function renderHeadlines(headlines) {
+    var container = el('headlineOptions');
+    if (!container) return;
+    container.innerHTML = '';
+    var list = Array.isArray(headlines) ? headlines.slice() : [];
+    while (list.length < 10) list.push('');
+    for (var i = 0; i < 10; i++) {
+      (function(idx) {
+        var text = list[idx] || '';
+        var count = String(text).length;
+        var div = document.createElement('div');
+        div.className = 'headline-option' + (idx === selectedHeadlineIndex ? ' selected' : '');
+        div.innerHTML =
+          '<div class="headline-option-text">' + esc(text) + '</div>' +
+          '<span class="headline-char-count">' + count + ' chars</span>';
+        div.addEventListener('click', function() {
+          selectedHeadlineIndex = idx;
+          container.querySelectorAll('.headline-option').forEach(function(node, j) {
+            node.classList.toggle('selected', j === idx);
+          });
+          syncActiveVersionFromDOM();
+        });
+        container.appendChild(div);
+      })(i);
+    }
+  }
+
+  function renderFeatured(items) {
+    var c = el('featuredItemsContainer');
+    if (!c) return;
+    c.innerHTML = '';
+    var arr = Array.isArray(items) ? items.slice(0, 3) : [];
+    while (arr.length < 3) arr.push({ title: '', description: '' });
+    for (var i = 0; i < 3; i++) {
+      var it = arr[i] || {};
+      var div = document.createElement('div');
+      div.className = 'featured-item-card';
+      div.innerHTML =
+        '<div class="featured-item-badge">Item ' + (i + 1) + '</div>' +
+        '<div class="featured-item-title">' + esc(it.title || '') + '</div>' +
+        '<div class="featured-item-desc">' + esc(it.description || '') + '</div>';
+      c.appendChild(div);
+    }
+  }
+
+  function renderPinnedInputs(pinned, override) {
+    var hook = (override && override.hook != null) ? override.hook : (pinned && pinned.hook) ? pinned.hook : '';
+    var cta = (override && override.cta != null) ? override.cta : (pinned && pinned.cta) ? pinned.cta : '';
+    var bullets = (override && override.bullets) ? override.bullets : (pinned && pinned.bullets) ? pinned.bullets : [];
+    if (!Array.isArray(bullets)) bullets = [];
+    while (bullets.length < 5) bullets.push('');
+
+    if (el('pinnedHook')) {
+      el('pinnedHook').value = hook;
+      el('pinnedHook').oninput = syncActiveVersionFromDOM;
+    }
+    if (el('pinnedCta')) {
+      el('pinnedCta').value = cta;
+      el('pinnedCta').oninput = syncActiveVersionFromDOM;
+    }
+
+    var wrap = el('pinnedBulletsWrap');
+    if (!wrap) return;
+    wrap.innerHTML = '<div style="font-size:12px;font-weight:600;color:#a1a1aa;margin-bottom:8px;">Bullets</div>';
+    for (var i = 0; i < 5; i++) {
+      var row = document.createElement('div');
+      row.className = 'pinned-field';
+      row.innerHTML =
+        '<label for="bulletInput' + i + '">Bullet ' + (i + 1) + '</label>' +
+        '<input type="text" class="pinned-input" id="bulletInput' + i + '" />';
+      wrap.appendChild(row);
+      var inp = el('bulletInput' + i);
+      if (inp) inp.value = bullets[i] || '';
+      if (inp) inp.oninput = syncActiveVersionFromDOM;
+    }
+  }
+
+  function updateAboutCharHint() {
+    var ta = el('aboutSectionTextarea');
+    var hint = el('aboutCharHint');
+    if (!ta || !hint) return;
+    hint.textContent = ta.value.length + ' characters';
+  }
+
+  function renderOutput(rawOutput, versionNum, editOpts) {
+    editOpts = editOpts || {};
+    currentRawOutput = rawOutput ? JSON.parse(JSON.stringify(rawOutput)) : null;
+
+    if (typeof editOpts.selectedHeadlineIndex === 'number') {
+      selectedHeadlineIndex = editOpts.selectedHeadlineIndex;
+    } else {
+      selectedHeadlineIndex = 0;
+    }
+    if (selectedHeadlineIndex < 0 || selectedHeadlineIndex > 9) selectedHeadlineIndex = 0;
+
+    var headlines = currentRawOutput && Array.isArray(currentRawOutput.headlines) ? currentRawOutput.headlines : [];
+
+    renderHeadlines(headlines);
+
+    var aboutDefault = (currentRawOutput && currentRawOutput.about_section) ? currentRawOutput.about_section : '';
+    var aboutVal = editOpts.aboutText != null ? editOpts.aboutText : aboutDefault;
+    if (el('aboutSectionTextarea')) {
+      el('aboutSectionTextarea').value = aboutVal;
+      el('aboutSectionTextarea').oninput = function() {
+        updateAboutCharHint();
+        syncActiveVersionFromDOM();
+      };
+    }
+    updateAboutCharHint();
+
+    var fi = currentRawOutput && currentRawOutput.featured_items ? currentRawOutput.featured_items : [];
+    renderFeatured(fi);
+
+    var pp = currentRawOutput && currentRawOutput.pinned_post ? currentRawOutput.pinned_post : {};
+    renderPinnedInputs(pp, editOpts.pinnedPost);
+
+    el('outputArea').classList.add('visible');
+    renderVersionBar(versionNum);
+  }
+
+  function renderVersionBar(activeVer) {
+    var bar = el('versionBar');
+    if (!bar) return;
+    bar.innerHTML = '';
+    versionHistory.forEach(function(v) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'version-tab' + (v.version === activeVer ? ' active' : '');
+      btn.textContent = 'Gen ' + v.version;
+      btn.addEventListener('click', function() {
+        syncActiveVersionFromDOM();
+        currentVersion = v.version;
+        currentAssetId = v.assetId;
+        var st = v.state;
+        if (st && st.rawOutput) {
+          renderOutput(st.rawOutput, v.version, {
+            selectedHeadlineIndex: st.selectedHeadlineIndex,
+            aboutText: st.aboutText,
+            pinnedPost: st.pinnedPost
+          });
+        }
+      });
+      bar.appendChild(btn);
+    });
+    var regenWrap = document.createElement('div');
+    regenWrap.className = 'regen-reason-wrap';
+    var sel = el('regenReasonSelect');
+    if (sel) regenWrap.appendChild(sel);
+    bar.appendChild(regenWrap);
+  }
+
+  function showError(msg) {
+    var errEl = el('builderError');
+    if (!errEl) return;
+    errEl.textContent = msg;
+    errEl.classList.add('visible');
+  }
+  function clearError() {
+    var errEl = el('builderError');
+    if (errEl) { errEl.textContent = ''; errEl.classList.remove('visible'); }
+  }
+
+  function buildEditedContentPayload() {
+    var bullets = [];
+    for (var b = 0; b < 5; b++) {
+      var inp = el('bulletInput' + b);
+      bullets.push(inp ? inp.value : '');
+    }
+    var base = currentRawOutput ? JSON.parse(JSON.stringify(currentRawOutput)) : {};
+    return Object.assign({}, base, {
+      selected_headline_index: selectedHeadlineIndex,
+      about_section: el('aboutSectionTextarea') ? el('aboutSectionTextarea').value : '',
+      featured_items: (currentRawOutput && currentRawOutput.featured_items) ? currentRawOutput.featured_items : [],
+      pinned_post: {
+        hook: el('pinnedHook') ? el('pinnedHook').value : '',
+        bullets: bullets,
+        cta: el('pinnedCta') ? el('pinnedCta').value : ''
+      }
+    });
+  }
+
+  async function runGenerate() {
+    if (!positioningReady || !contextCardComplete) return;
+    syncActiveVersionFromDOM();
+    clearError();
+    el('generateLoading').classList.add('visible');
+    el('generateBtn').disabled = true;
+    el('regenBtn').disabled = true;
+
+    var regenReason = '';
+    var sel = el('regenReasonSelect');
+    if (sel && sel.classList.contains('visible')) {
+      regenReason = sel.value || '';
+    }
+
+    try {
+      var body = { lessonId: 'lesson-5', priorAssetType: 'positioning', additionalInput: {} };
+      if (regenReason) body.additionalInput.regenerationReason = regenReason;
+
+      var res = await fetch('/api/builder/generate', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      var data = await res.json().catch(function() { return {}; });
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Generation failed. Please try again.');
+      }
+
+      currentAssetId = data.assetId;
+      currentVersion = data.version;
+      var out = data.output;
+
+      var st = {
+        rawOutput: out,
+        selectedHeadlineIndex: 0,
+        aboutText: (out && out.about_section) ? out.about_section : '',
+        pinnedPost: {
+          hook: (out && out.pinned_post) ? out.pinned_post.hook : '',
+          bullets: (out && out.pinned_post && out.pinned_post.bullets) ? out.pinned_post.bullets.slice(0, 5) : [],
+          cta: (out && out.pinned_post) ? out.pinned_post.cta : ''
+        }
+      };
+      while (st.pinnedPost.bullets.length < 5) st.pinnedPost.bullets.push('');
+
+      versionHistory.push({
+        version: data.version,
+        assetId: data.assetId,
+        state: st
+      });
+
+      renderOutput(out, data.version, {
+        selectedHeadlineIndex: 0,
+        aboutText: st.aboutText,
+        pinnedPost: st.pinnedPost
+      });
+
+      syncActiveVersionFromDOM();
+
+      el('generateBtn').style.display = 'none';
+      el('regenBtn').style.display = 'inline-flex';
+      if (sel) sel.classList.add('visible');
+
+      el('savedBanner').classList.remove('visible');
+      el('saveStatus').textContent = '';
+      lastSavedUpdatedAt = null;
+      el('lastSavedAt').textContent = '';
+
+    } catch (err) {
+      showError(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      el('generateLoading').classList.remove('visible');
+      var can = positioningReady && contextCardComplete;
+      el('generateBtn').disabled = !can;
+      el('generateBtn').classList.toggle('btn-disabled-hard', !can);
+      el('regenBtn').disabled = false;
+    }
+  }
+
+  el('generateBtn').addEventListener('click', runGenerate);
+  el('regenBtn').addEventListener('click', runGenerate);
+
+  el('saveBtn').addEventListener('click', async function() {
+    if (!currentRawOutput || !currentAssetId) {
+      showError('Nothing to save yet. Generate your profile copy first.');
+      return;
+    }
+    clearError();
+    syncActiveVersionFromDOM();
+    var saveBtn = el('saveBtn');
+    var saveStatus = el('saveStatus');
+    saveBtn.disabled = true;
+    saveStatus.textContent = 'Saving…';
+    saveStatus.style.color = '#fbbf24';
+
+    try {
+      var editedPayload = buildEditedContentPayload();
+
+      var res = await fetch('/api/builder/outputs/' + currentAssetId, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ editedContent: editedPayload })
+      });
+
+      if (!res.ok) {
+        var d = await res.json().catch(function() { return {}; });
+        throw new Error(d.error || 'Save failed');
+      }
+
+      saveStatus.textContent = 'Saved to My Assets ✓';
+      saveStatus.style.color = '#4ade80';
+      el('savedBanner').classList.add('visible');
+      lastSavedUpdatedAt = new Date().toISOString();
+      el('lastSavedAt').textContent = 'Last saved ' + new Date(lastSavedUpdatedAt).toLocaleString();
+
+      setTimeout(function() {
+        saveStatus.textContent = '';
+      }, 3500);
+
+    } catch (err) {
+      saveStatus.textContent = 'Save failed';
+      saveStatus.style.color = '#f87171';
+      showError(err.message || 'Save failed. Please try again.');
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
+
+  var notesTimer = null;
+  function saveNotes(text) {
+    var statusEl = el('notesStatus');
+    if (statusEl) { statusEl.textContent = 'Saving…'; statusEl.className = 'notes-status saving'; }
+    fetch('/api/lessons/lesson-5/progress', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notes: text })
+    }).then(function(res) {
+      if (res.ok && statusEl) {
+        statusEl.textContent = 'Saved'; statusEl.className = 'notes-status saved';
+        setTimeout(function() { statusEl.textContent = ''; statusEl.className = 'notes-status'; }, 2000);
+      }
+    }).catch(function() {
+      if (statusEl) { statusEl.textContent = 'Not saved'; statusEl.className = 'notes-status'; }
+    });
+  }
+
+  var notesTA = el('notesTextarea');
+  if (notesTA) {
+    notesTA.addEventListener('input', function() {
+      clearTimeout(notesTimer);
+      var text = this.value;
+      notesTimer = setTimeout(function() { saveNotes(text); }, 1000);
+    });
+  }
+
+  function loadLessonProgress() {
+    return fetch('/api/lessons/lesson-5/progress', { credentials: 'include' })
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        if (!data) return;
+        if (data.notes && notesTA) notesTA.value = data.notes;
+        var cb = el('lessonCompleteCheckbox');
+        if (cb) cb.checked = !!data.is_complete;
+        if (data.is_complete) {
+          var chip = el('completeChip');
+          if (chip) chip.style.display = 'inline-flex';
+        }
+      })
+      .catch(function() {});
+  }
+
+  if (el('lessonCompleteCheckbox')) {
+    el('lessonCompleteCheckbox').addEventListener('change', function() {
+      var checked = this.checked;
+      fetch('/api/lessons/lesson-5/progress', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_complete: checked })
+      }).then(function(res) {
+        if (res.ok) {
+          var chip = el('completeChip');
+          if (chip) chip.style.display = checked ? 'inline-flex' : 'none';
+        }
+      }).catch(function() {});
+    });
+  }
+
+  function loadProfileCopyAsset() {
+    return fetch('/api/builder/outputs/profile-copy', { credentials: 'include' })
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        if (!data || !data.output) return;
+
+        currentAssetId = data.assetId;
+        currentVersion = data.version;
+        if (data.updatedAt) {
+          lastSavedUpdatedAt = data.updatedAt;
+          el('lastSavedAt').textContent = 'Last saved ' + new Date(data.updatedAt).toLocaleString();
+        }
+
+        var o = data.output;
+        var raw = {
+          headlines: o.headlines,
+          about_section: o.about_section,
+          featured_items: o.featured_items,
+          pinned_post: o.pinned_post
+        };
+
+        var idx = typeof o.selected_headline_index === 'number' ? o.selected_headline_index : 0;
+        var st = {
+          rawOutput: raw,
+          selectedHeadlineIndex: idx,
+          aboutText: o.about_section != null ? o.about_section : '',
+          pinnedPost: o.pinned_post || { hook: '', bullets: [], cta: '' }
+        };
+        versionHistory = [{ version: data.version, assetId: data.assetId, state: st }];
+
+        renderOutput(raw, data.version, {
+          selectedHeadlineIndex: idx,
+          aboutText: st.aboutText,
+          pinnedPost: st.pinnedPost
+        });
+
+        el('regenBtn').style.display = 'inline-flex';
+        el('generateBtn').style.display = 'none';
+        var rs = el('regenReasonSelect');
+        if (rs) rs.classList.add('visible');
+        syncActiveVersionFromDOM();
+      })
+      .catch(function() {});
+  }
+
+  Promise.all([
+    fetch('/api/context-card', { credentials: 'include' }).then(function(r) {
+      return r.json().then(function(d) { return { ok: r.ok, data: d }; });
+    }),
+    fetch('/api/builder/outputs/positioning', { credentials: 'include' }).then(function(r) {
+      return r.json().then(function(d) { return { status: r.status, data: d }; });
+    })
+  ]).then(function(pair) {
+    var ctx = pair[0];
+    var pos = pair[1];
+
+    if (ctx.ok && ctx.data) renderContextPill(ctx.data);
+    else {
+      var pill = el('contextStatusPill');
+      if (pill) {
+        pill.className = 'context-preview-pill warn';
+        pill.textContent = '⚠ Could not load Context Card';
+      }
+      contextCardComplete = false;
+    }
+
+    var pr = parsePositioningResponse({ status: pos.status }, pos.data);
+    positioningReady = pr.ready;
+    positioningAsset = pr.asset;
+
+    updateDependencyUI();
+  }).catch(function() {
+    var pill = el('contextStatusPill');
+    if (pill) {
+      pill.className = 'context-preview-pill warn';
+      pill.textContent = '⚠ Could not load Context Card';
+    }
+    positioningReady = false;
+    updateDependencyUI();
+  }).then(function() {
+    loadVideo();
+    return loadLessonProgress();
+  }).then(function() {
+    return loadProfileCopyAsset();
+  }).then(function() {
+    updateDependencyUI();
+  });
+
+})();
+</script>
+
+</body>
+</html>
