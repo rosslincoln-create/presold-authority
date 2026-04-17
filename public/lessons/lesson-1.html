@@ -508,6 +508,16 @@
       font-size: 13px;
       color: #4ade80;
     }
+    .lesson-complete-row {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 0 4px 0;
+    }
+    .lesson-complete-row[style*="flex"],
+    .lesson-complete-row.visible {
+      display: flex;
+    }
   </style>
 </head>
 <body>
@@ -759,11 +769,10 @@
     <!-- /builder-section -->
 
     <!-- Lesson nav footer -->
+    <div class="lesson-complete-row" id="lessonCompleteRow" style="display:none;">
+      <span class="complete-chip" id="completeChip">✓ Lesson complete</span>
+    </div>
     <div class="lesson-nav-footer">
-      <div class="complete-chip" id="completeChip" style="display:none;">
-        ✓ Lesson complete
-      </div>
-      <div style="flex:1;"></div>
       <a href="/lessons/lesson-2.html" class="nav-btn next-btn">
         Next Lesson → Visibility vs. Authority
       </a>
@@ -927,7 +936,14 @@ async function submitAssessment() {
     renderChart(responses);
     document.getElementById('savedBanner').classList.add('visible');
     document.getElementById('resetBtn').style.display = 'inline-flex';
-    document.getElementById('completeChip').style.display = 'inline-flex';
+    fetch('/api/lessons/lesson-1/progress', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_complete: true, builder_completed: true })
+    }).catch(function() {});
+    var row = document.getElementById('lessonCompleteRow');
+    if (row) row.style.display = 'flex';
     btn.style.display = 'none';
 
     // Lock sliders
@@ -986,7 +1002,8 @@ async function loadSavedAssessment() {
     renderChart(r);
     document.getElementById('savedBanner').classList.add('visible');
     document.getElementById('resetBtn').style.display = 'inline-flex';
-    document.getElementById('completeChip').style.display = 'inline-flex';
+    var row = document.getElementById('lessonCompleteRow');
+    if (row) row.style.display = 'flex';
     document.getElementById('submitBtn').style.display = 'none';
 
   } catch (err) {

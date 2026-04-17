@@ -402,6 +402,16 @@
       font-size: 13px;
       color: #4ade80;
     }
+    .lesson-complete-row {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 0 4px 0;
+    }
+    .lesson-complete-row[style*="flex"],
+    .lesson-complete-row.visible {
+      display: flex;
+    }
 
     /* ── Builder: AI Generation ── */
     .generate-input-section {
@@ -837,10 +847,11 @@
       <div class="inline-error" id="builderError"></div>
     </div>
 
+    <div class="lesson-complete-row" id="lessonCompleteRow" style="display:none;">
+      <span class="complete-chip" id="completeChip">✓ Lesson complete</span>
+    </div>
     <div class="lesson-nav-footer">
       <a href="/lessons/lesson-3.html" class="nav-btn">← Previous: Lesson 3 — The Context Card</a>
-      <div class="complete-chip" id="completeChip" style="display:none;">✓ Lesson complete</div>
-      <div style="flex:1;min-width:8px;"></div>
       <a href="/lessons/lesson-5.html" class="nav-btn next-btn">Next: Lesson 5 — Profile + Pinned Post →</a>
     </div>
 
@@ -967,8 +978,8 @@
       if (data.notes && notesTA) notesTA.value = data.notes;
       // If lesson was previously completed, show complete chip
       if (data.is_complete) {
-        var chip = el('completeChip');
-        if (chip) chip.style.display = 'inline-flex';
+        var row = el('lessonCompleteRow');
+        if (row) row.style.display = 'flex';
       }
     })
     .catch(function() {});
@@ -993,6 +1004,8 @@
         renderOutput(data.output, data.version);
         el('regenBtn').style.display = 'inline-flex';
         el('generateBtn').style.display = 'none';
+        var sel = el('regenReasonSelect');
+        if (sel) sel.classList.add('visible');
         el('savedBanner').classList.add('visible');
         isSaved = true;
       })
@@ -1210,7 +1223,8 @@
       el('savedBanner').classList.add('visible');
       saveStatus.textContent = '✓ Saved';
       saveStatus.style.color = '#4ade80';
-      el('completeChip').style.display = 'inline-flex';
+      var row = el('lessonCompleteRow');
+      if (row) row.style.display = 'flex';
 
       // Update sidebar badge for lesson-4 to complete
       var badge4 = document.getElementById('badge-l4');

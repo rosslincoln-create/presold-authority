@@ -246,36 +246,64 @@ builder.get('/outputs/:assetType', async (c) => {
   const userId = c.get('userId' as never) as string
   const assetType = c.req.param('assetType')
 
-  const row = await c.env.DB.prepare(`
-    SELECT id, version, raw_output, edited_content, created_at, updated_at
+  // Fetch all versions for this user + asset type, oldest first
+  const rows = await c.env.DB.prepare(`
+    SELECT id, version, raw_output, edited_content, is_current, created_at, updated_at
     FROM generated_assets
-    WHERE user_id = ? AND asset_type = ? AND is_current = 1
-  `).bind(userId, assetType).first<{
+    WHERE user_id = ? AND asset_type = ?
+    ORDER BY version ASC
+  `).bind(userId, assetType).all<{
     id: string
     version: number
     raw_output: string | null
     edited_content: string | null
+    is_current: number
     created_at: string
     updated_at: string
   }>()
 
-  if (!row) {
+  if (!rows.results || rows.results.length === 0) {
     return c.json({ output: null })
   }
 
-  let output: unknown
+  // Find the current version row
+  const currentRow = rows.results.find(r => r.is_current === 1) ?? rows.results[rows.results.length - 1]
+
+  // Parse current version output (prefer edited_content)
+  let output: unknown = null
   try {
-    output = row.edited_content ? JSON.parse(row.edited_content) : null
+    output = currentRow.edited_content
+      ? JSON.parse(currentRow.edited_content)
+      : currentRow.raw_output
+        ? JSON.parse(currentRow.raw_output)
+        : null
   } catch {
     output = null
   }
 
+  // Build allVersions array (all rows, oldest first)
+  const allVersions = rows.results.map(r => {
+    let rawOutput: unknown = null
+    let editedContent: unknown = null
+    try { rawOutput = r.raw_output ? JSON.parse(r.raw_output) : null } catch { rawOutput = null }
+    try { editedContent = r.edited_content ? JSON.parse(r.edited_content) : null } catch { editedContent = null }
+    return {
+      assetId: r.id,
+      version: r.version,
+      rawOutput,
+      editedContent,
+      isCurrent: r.is_current === 1,
+      createdAt: r.created_at,
+    }
+  })
+
   return c.json({
-    assetId: row.id,
-    version: row.version,
+    assetId: currentRow.id,
+    version: currentRow.version,
     output,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    createdAt: currentRow.created_at,
+    updatedAt: currentRow.updated_at,
+    allVersions,
   })
 })
 

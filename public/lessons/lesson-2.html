@@ -584,6 +584,16 @@
       font-size: 13px;
       color: #4ade80;
     }
+    .lesson-complete-row {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 0 4px 0;
+    }
+    .lesson-complete-row[style*="flex"],
+    .lesson-complete-row.visible {
+      display: flex;
+    }
   </style>
 </head>
 <body>
@@ -902,10 +912,11 @@
       </div>
     </div>
 
+    <div class="lesson-complete-row" id="lessonCompleteRow" style="display:none;">
+      <span class="complete-chip" id="completeChip">✓ Lesson complete</span>
+    </div>
     <div class="lesson-nav-footer">
       <a href="/lessons/lesson-1.html" class="nav-btn">← Previous: Lesson 1</a>
-      <div class="complete-chip" id="completeChip" style="display:none;">✓ Lesson complete</div>
-      <div style="flex:1;min-width:8px;"></div>
       <a href="/lessons/lesson-3.html" class="nav-btn next-btn">Next: Lesson 3 — The Context Card →</a>
     </div>
 
@@ -1112,7 +1123,14 @@
         throw new Error(data.error || 'Save failed');
       }
       document.getElementById('savedBanner').classList.add('visible');
-      document.getElementById('completeChip').style.display = 'inline-flex';
+      fetch('/api/lessons/lesson-2/progress', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_complete: true, builder_completed: true })
+      }).catch(function() {});
+      var row = document.getElementById('lessonCompleteRow');
+      if (row) row.style.display = 'flex';
       renderResults(data.score, data.gaps, data.responses);
       setLockedUI(true);
     } catch (e) {
@@ -1131,7 +1149,8 @@
     }
     document.getElementById('resultsPanel').classList.remove('visible');
     document.getElementById('savedBanner').classList.remove('visible');
-    document.getElementById('completeChip').style.display = 'none';
+    var row = document.getElementById('lessonCompleteRow');
+    if (row) row.style.display = 'none';
     document.getElementById('auditError').classList.remove('visible');
     document.getElementById('auditError').textContent = '';
     setLockedUI(false);
@@ -1150,7 +1169,8 @@
       if (!data || !data.responses) return;
       applyResponsesFromObject(data.responses);
       document.getElementById('savedBanner').classList.add('visible');
-      document.getElementById('completeChip').style.display = 'inline-flex';
+      var row = document.getElementById('lessonCompleteRow');
+      if (row) row.style.display = 'flex';
       renderResults(data.score, data.gaps, data.responses);
       setLockedUI(true);
     } catch (e) {}

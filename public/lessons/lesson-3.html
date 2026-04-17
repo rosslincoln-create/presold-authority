@@ -402,6 +402,16 @@
       font-size: 13px;
       color: #4ade80;
     }
+    .lesson-complete-row {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 0 4px 0;
+    }
+    .lesson-complete-row[style*="flex"],
+    .lesson-complete-row.visible {
+      display: flex;
+    }
   </style>
 </head>
 <body>
@@ -559,10 +569,11 @@
       <div class="inline-error" id="contextError"></div>
     </div>
 
+    <div class="lesson-complete-row" id="lessonCompleteRow" style="display:none;">
+      <span class="complete-chip" id="completeChip">✓ Lesson complete</span>
+    </div>
     <div class="lesson-nav-footer">
       <a href="/lessons/lesson-2.html" class="nav-btn">← Previous: Lesson 2 — Visibility vs. Authority</a>
-      <div class="complete-chip" id="completeChip" style="display:none;">✓ Lesson complete</div>
-      <div style="flex:1;min-width:8px;"></div>
       <a href="/lessons/lesson-4.html" class="nav-btn next-btn">Next: Lesson 4 — Your Authority Positioning →</a>
     </div>
 
@@ -661,15 +672,15 @@
   function setConfirmedUI(confirmed) {
     var banner = document.getElementById('confirmedBanner');
     var btn = document.getElementById('submitContextBtn');
-    var chip = document.getElementById('completeChip');
+    var row = document.getElementById('lessonCompleteRow');
     if (confirmed) {
       banner.classList.add('visible');
       btn.style.display = 'none';
-      chip.style.display = 'inline-flex';
+      if (row) row.style.display = 'flex';
     } else {
       banner.classList.remove('visible');
       btn.style.display = 'inline-flex';
-      chip.style.display = 'none';
+      if (row) row.style.display = 'none';
     }
   }
 

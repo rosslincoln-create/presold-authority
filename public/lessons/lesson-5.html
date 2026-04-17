@@ -357,6 +357,17 @@
     .saved-banner.visible { display: flex; }
 
     .lesson-complete-row {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 0 4px 0;
+    }
+    .lesson-complete-row[style*="flex"],
+    .lesson-complete-row.visible {
+      display: flex;
+    }
+
+    .lesson-complete-row {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -886,10 +897,11 @@
       <label for="lessonCompleteCheckbox">Lesson complete</label>
     </div>
 
+    <div class="lesson-complete-row" id="lessonCompleteRow" style="display:none;">
+      <span class="complete-chip" id="completeChip">✓ Lesson complete</span>
+    </div>
     <div class="lesson-nav-footer">
       <a href="/lessons/lesson-4.html" class="nav-btn">← Lesson 4: Your Authority Positioning</a>
-      <div class="complete-chip" id="completeChip" style="display:none;">✓ Lesson complete</div>
-      <div style="flex:1;min-width:8px;"></div>
       <a href="/lessons/lesson-6.html" class="nav-btn next-btn">Lesson 6: Content Pillars &amp; Topic Map →</a>
     </div>
 
@@ -940,6 +952,17 @@
     var alts = Array.isArray(edited.alternative_statements) ? edited.alternative_statements : [];
     if (idx >= 0 && idx < alts.length) return String(alts[idx] || '');
     return String(edited.primary_positioning_statement || '');
+  }
+
+  function getMaxVersionNumber() {
+    var max = 0;
+    for (var i = 0; i < versions.length; i++) {
+      var v = versions[i];
+      if (v && typeof v.versionNumber === 'number' && v.versionNumber > max) {
+        max = v.versionNumber;
+      }
+    }
+    return max;
   }
 
   function parsePositioningResponse(res, data) {
@@ -1199,6 +1222,14 @@
     var sel = el('regenReasonSelect');
     if (sel && sel.parentNode !== regenWrap) regenWrap.appendChild(sel);
 
+    // Remove tab buttons no longer present in the versions array
+    var validNums = versions.map(function(v) { return v && v.versionNumber; });
+    bar.querySelectorAll('button.version-tab').forEach(function(btn) {
+      if (validNums.indexOf(Number(btn.getAttribute('data-version'))) === -1) {
+        btn.parentNode.removeChild(btn);
+      }
+    });
+
     versions.forEach(function(v) {
       var ver = v && typeof v.versionNumber === 'number' ? v.versionNumber : null;
       if (ver == null) return;
@@ -1299,7 +1330,7 @@
 
       currentAssetId = data.assetId;
       var out = data.output;
-      var nextVer = versions.length + 1;
+      var nextVer = getMaxVersionNumber() + 1;
       currentVersion = nextVer;
 
       var st = {
@@ -1432,8 +1463,8 @@
         var cb = el('lessonCompleteCheckbox');
         if (cb) cb.checked = !!data.is_complete;
         if (data.is_complete) {
-          var chip = el('completeChip');
-          if (chip) chip.style.display = 'inline-flex';
+          var row = el('lessonCompleteRow');
+          if (row) row.style.display = 'flex';
         }
       })
       .catch(function() {});
@@ -1449,8 +1480,8 @@
         body: JSON.stringify({ is_complete: checked })
       }).then(function(res) {
         if (res.ok) {
-          var chip = el('completeChip');
-          if (chip) chip.style.display = checked ? 'inline-flex' : 'none';
+          var row = el('lessonCompleteRow');
+          if (row) row.style.display = checked ? 'flex' : 'none';
         }
       }).catch(function() {});
     });
@@ -1469,38 +1500,77 @@
           el('lastSavedAt').textContent = 'Last saved ' + new Date(data.updatedAt).toLocaleString();
         }
 
-        var o = data.output;
-        var parsedRawOutput = {
-          headlines: o.headlines,
-          about_section: o.about_section,
-          featured_items: o.featured_items,
-          pinned_post: o.pinned_post
-        };
+        var allVersions = Array.isArray(data.allVersions) ? data.allVersions : null;
 
-        var idx = typeof o.selected_headline_index === 'number' ? o.selected_headline_index : 0;
-        var pinned = o.pinned_post || (parsedRawOutput && parsedRawOutput.pinned_post) || { hook: '', bullets: [], cta: '' };
-        if (!pinned || typeof pinned !== 'object') pinned = { hook: '', bullets: [], cta: '' };
-        var bullets = Array.isArray(pinned.bullets) ? pinned.bullets.slice(0, 5) : [];
-        while (bullets.length < 5) bullets.push('');
-        var st = {
-          assetId: data.assetId,
-          rawOutput: parsedRawOutput,
-          selectedHeadlineIndex: idx,
-          aboutText: o.about_section != null ? o.about_section : (parsedRawOutput ? parsedRawOutput.about_section : ''),
-          pinnedPost: {
-            hook: pinned.hook || '',
-            bullets: bullets,
-            cta: pinned.cta || ''
-          },
-          versionNumber: currentVersion
-        };
-        versions = [st];
+        if (allVersions && allVersions.length > 0) {
+          // Backend returned full history — build versions array from it
+          versions = allVersions.map(function(v) {
+            var raw = v.rawOutput;
+            if (typeof raw === 'string') { try { raw = JSON.parse(raw); } catch(e) { raw = null; } }
+            var ec = v.editedContent;
+            if (typeof ec === 'string') { try { ec = JSON.parse(ec); } catch(e) { ec = null; } }
 
-        renderOutput(parsedRawOutput, currentVersion, {
-          selectedHeadlineIndex: idx,
-          aboutText: st.aboutText,
-          pinnedPost: st.pinnedPost
-        });
+            // Prefer editedContent for display (reflects student edits); fall back to rawOutput
+            var display = ec || raw || {};
+            var idx = typeof display.selected_headline_index === 'number' ? display.selected_headline_index : 0;
+            var pinned = display.pinned_post || (raw && raw.pinned_post) || {};
+            if (!pinned || typeof pinned !== 'object') pinned = {};
+            var bullets = Array.isArray(pinned.bullets) ? pinned.bullets.slice(0, 5) : [];
+            while (bullets.length < 5) bullets.push('');
+
+            return {
+              assetId: v.assetId,
+              rawOutput: raw,
+              selectedHeadlineIndex: idx,
+              aboutText: display.about_section != null ? display.about_section : (raw ? raw.about_section || '' : ''),
+              pinnedPost: { hook: pinned.hook || '', bullets: bullets, cta: pinned.cta || '' },
+              versionNumber: v.version
+            };
+          });
+        } else {
+          // Fallback: backend returned only current version (pre-fix or single version)
+          var o = data.output;
+          var raw = {
+            headlines: o.headlines,
+            about_section: o.about_section,
+            featured_items: o.featured_items,
+            pinned_post: o.pinned_post
+          };
+          var idx = typeof o.selected_headline_index === 'number' ? o.selected_headline_index : 0;
+          var pinned = o.pinned_post || {};
+          if (!pinned || typeof pinned !== 'object') pinned = {};
+          var bullets = Array.isArray(pinned.bullets) ? pinned.bullets.slice(0, 5) : [];
+          while (bullets.length < 5) bullets.push('');
+
+          versions = [{
+            assetId: data.assetId,
+            rawOutput: raw,
+            selectedHeadlineIndex: idx,
+            aboutText: o.about_section != null ? o.about_section : '',
+            pinnedPost: { hook: pinned.hook || '', bullets: bullets, cta: pinned.cta || '' },
+            versionNumber: currentVersion
+          }];
+        }
+
+        // Find and render the current version entry
+        var currentEntry = null;
+        for (var i = 0; i < versions.length; i++) {
+          if (versions[i].versionNumber === currentVersion) {
+            currentEntry = versions[i];
+            break;
+          }
+        }
+        if (!currentEntry && versions.length > 0) {
+          currentEntry = versions[versions.length - 1];
+        }
+
+        if (currentEntry) {
+          renderOutput(currentEntry.rawOutput, currentVersion, {
+            selectedHeadlineIndex: currentEntry.selectedHeadlineIndex,
+            aboutText: currentEntry.aboutText,
+            pinnedPost: currentEntry.pinnedPost
+          });
+        }
 
         el('regenBtn').style.display = 'inline-flex';
         el('generateBtn').style.display = 'none';

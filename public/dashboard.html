@@ -388,7 +388,14 @@
       // Lessons 1-4
       ['lesson-1','lesson-2','lesson-3','lesson-4'].forEach(function(id, i) {
         var lesson = lessons.find(function(l) { return l.id === id; });
-        var done = lesson && lesson.is_complete;
+        var done = false;
+        if (lesson) {
+          if (id === 'lesson-1' || id === 'lesson-2' || id === 'lesson-3') {
+            done = (lesson.is_complete === true || lesson.builder_completed === true);
+          } else {
+            done = (lesson.is_complete === true);
+          }
+        }
         var el = document.getElementById('check-l' + (i+1));
         var icon = document.getElementById('icon-l' + (i+1));
         if (el) el.className = 'checklist li' + (done ? ' done' : '');
