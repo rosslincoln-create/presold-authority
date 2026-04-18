@@ -892,11 +892,6 @@
       <div class="inline-error" id="builderError"></div>
     </div>
 
-    <div class="lesson-complete-row">
-      <input type="checkbox" id="lessonCompleteCheckbox" />
-      <label for="lessonCompleteCheckbox">Lesson complete</label>
-    </div>
-
     <div class="lesson-complete-row" id="lessonCompleteRow" style="display:none;">
       <span class="complete-chip" id="completeChip">✓ Lesson complete</span>
     </div>
@@ -1408,6 +1403,16 @@
         throw new Error(d.error || 'Save failed');
       }
 
+      fetch('/api/lessons/lesson-5/progress', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_complete: true, builder_completed: true })
+      }).catch(function() {});
+
+      var row = el('lessonCompleteRow');
+      if (row) row.style.display = 'flex';
+
       saveStatus.textContent = 'Saved to My Assets ✓';
       saveStatus.style.color = '#4ade80';
       el('savedBanner').classList.add('visible');
@@ -1460,31 +1465,12 @@
       .then(function(data) {
         if (!data) return;
         if (data.notes && notesTA) notesTA.value = data.notes;
-        var cb = el('lessonCompleteCheckbox');
-        if (cb) cb.checked = !!data.is_complete;
-        if (data.is_complete) {
+        if (data.is_complete || data.builder_completed) {
           var row = el('lessonCompleteRow');
           if (row) row.style.display = 'flex';
         }
       })
       .catch(function() {});
-  }
-
-  if (el('lessonCompleteCheckbox')) {
-    el('lessonCompleteCheckbox').addEventListener('change', function() {
-      var checked = this.checked;
-      fetch('/api/lessons/lesson-5/progress', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ is_complete: checked })
-      }).then(function(res) {
-        if (res.ok) {
-          var row = el('lessonCompleteRow');
-          if (row) row.style.display = checked ? 'flex' : 'none';
-        }
-      }).catch(function() {});
-    });
   }
 
   function loadProfileCopyAsset() {

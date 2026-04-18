@@ -977,7 +977,7 @@
       if (!data) return;
       if (data.notes && notesTA) notesTA.value = data.notes;
       // If lesson was previously completed, show complete chip
-      if (data.is_complete) {
+      if (data.is_complete || data.builder_completed) {
         var row = el('lessonCompleteRow');
         if (row) row.style.display = 'flex';
       }
@@ -1211,20 +1211,20 @@
         throw new Error(d.error || 'Save failed');
       }
 
-      // Mark lesson as complete
-      await fetch('/api/lessons/lesson-4/progress', {
+      fetch('/api/lessons/lesson-4/progress', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ builder_completed: true, is_complete: true })
-      });
+        body: JSON.stringify({ is_complete: true, builder_completed: true })
+      }).catch(function() {});
+
+      var row = el('lessonCompleteRow');
+      if (row) row.style.display = 'flex';
 
       isSaved = true;
       el('savedBanner').classList.add('visible');
       saveStatus.textContent = '✓ Saved';
       saveStatus.style.color = '#4ade80';
-      var row = el('lessonCompleteRow');
-      if (row) row.style.display = 'flex';
 
       // Update sidebar badge for lesson-4 to complete
       var badge4 = document.getElementById('badge-l4');
