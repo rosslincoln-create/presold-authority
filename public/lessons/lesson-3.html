@@ -582,6 +582,8 @@
 
 <script>
 (function() {
+  function el(id) { return document.getElementById(id); }
+
   function nonEmpty(v) {
     if (v === undefined || v === null) return false;
     return String(v).trim().length > 0;
@@ -704,7 +706,9 @@
       var res = await fetch('/api/lessons/lesson-3/progress', { credentials: 'include' });
       if (!res.ok) return;
       var data = await res.json().catch(function() { return null; });
-      if (data && data.builder_completed === true) {
+      if (data && (data.is_complete || data.builder_completed)) {
+        var row = el('lessonCompleteRow');
+        if (row) row.style.display = 'flex';
         setConfirmedUI(true);
       }
     } catch (e) {}
@@ -731,6 +735,8 @@
         throw new Error(data.error || 'Save failed');
       }
       setConfirmedUI(true);
+      var row = el('lessonCompleteRow');
+      if (row) row.style.display = 'flex';
     } catch (e) {
       errEl.textContent = e.message || 'Something went wrong. Please try again.';
       errEl.classList.add('visible');
