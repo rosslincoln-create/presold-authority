@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 6: Content Pillars &amp; Topic Map — Pre-Sold Authority</title>
+  <link rel="stylesheet" href="/style-premium.css">
+  <style>
+    /* ── Layout ── */
+    body { background: #09090b; color: #f4f4f5; font-family: 'Inter', system-ui, sans-serif; margin: 0; }
+
+    .lesson-shell {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      min-height: 100vh;
+      background: #111113;
+      border-right: 1px solid #27272a;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+    .sidebar-nav { padding: 16px 0; }
+    .sidebar-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #71717a;
+      text-transform: uppercase;
+      padding: 12px 20px 6px;
+    }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      font-size: 13px;
+      color: #a1a1aa;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .sidebar-link:hover { color: #f4f4f5; background: #27272a; }
+    .sidebar-link.active { color: #fbbf24; border-left-color: #fbbf24; background: rgba(251,191,36,0.06); }
+    .lesson-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      font-size: 12.5px;
+      color: #71717a;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .lesson-nav-item:hover { color: #a1a1aa; background: #27272a; }
+    .lesson-nav-item.current { color: #fbbf24; border-left-color: #fbbf24; }
+    .lesson-nav-item.complete { color: #4ade80; }
+    .lesson-badge {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: #3f3f46;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; flex-shrink: 0;
+    }
+    .lesson-badge.complete { background: #166534; color: #4ade80; }
+    .lesson-badge.current  { background: rgba(251,191,36,0.2); color: #fbbf24; }
+
+    .main-content {
+      flex: 1;
+      padding: 40px 48px;
+      max-width: 860px;
+    }
+
+    .breadcrumb {
+      font-size: 12px; color: #71717a;
+      margin-bottom: 8px;
+    }
+    .breadcrumb a { color: #71717a; text-decoration: none; }
+    .breadcrumb a:hover { color: #a1a1aa; }
+    .breadcrumb span { margin: 0 6px; }
+
+    .module-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      margin-bottom: 10px;
+    }
+
+    h1.lesson-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 12px;
+      line-height: 1.2;
+    }
+
+    .lesson-meta-row {
+      font-size: 14px;
+      color: #71717a;
+      margin-bottom: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .lesson-meta-row .meta-dot { color: #52525b; }
+
+    .lesson-status-stack {
+      margin-bottom: 20px;
+    }
+
+    .video-wrapper {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .video-placeholder-text {
+      text-align: center;
+      color: #52525b;
+    }
+    .video-placeholder-text .play-icon {
+      font-size: 48px; display: block; margin-bottom: 12px;
+    }
+    .video-placeholder-text p { font-size: 14px; margin: 0; }
+
+    .lesson-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #d4d4d8;
+      margin-bottom: 48px;
+    }
+    .lesson-body h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 36px 0 12px;
+    }
+    .lesson-body p { margin: 0 0 16px; }
+
+    .notes-section {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 36px;
+    }
+    .notes-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .notes-icon { font-size: 16px; }
+    .notes-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #e4e4e7;
+      flex: 1;
+    }
+    .notes-status {
+      font-size: 12px;
+      color: #52525b;
+      transition: color 0.3s;
+    }
+    .notes-status.saving { color: #fbbf24; }
+    .notes-status.saved  { color: #4ade80; }
+    .notes-textarea {
+      width: 100%;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      border-radius: 8px;
+      color: #d4d4d8;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 12px 14px;
+      resize: vertical;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: border-color 0.15s;
+    }
+    .notes-textarea:focus {
+      outline: none;
+      border-color: #71717a;
+    }
+    .builder-section {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      padding: 36px 40px;
+      margin-bottom: 40px;
+    }
+    .builder-header {
+      margin-bottom: 24px;
+    }
+    .builder-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.2);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .builder-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 8px;
+    }
+    .builder-header p {
+      font-size: 14px;
+      color: #a1a1aa;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .builder-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .btn-cta-blue {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-cta-blue:hover:not(:disabled) { background: #1d4ed8; }
+    .btn-cta-blue:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-cta-blue.btn-disabled-hard:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: #a1a1aa;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: 1px solid #3f3f46;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-secondary:hover:not(:disabled) { border-color: #71717a; color: #e4e4e7; }
+    .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .inline-error {
+      display: none;
+      font-size: 13px;
+      color: #f87171;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 8px;
+    }
+    .inline-error.visible { display: block; }
+
+    .saved-banner {
+      display: none;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #4ade80;
+      margin-bottom: 20px;
+      align-items: center;
+      gap: 8px;
+    }
+    .saved-banner.visible { display: flex; }
+
+    .lesson-complete-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+      font-size: 14px;
+      color: #a1a1aa;
+    }
+    .lesson-complete-row[style*="none"] {
+      display: none !important;
+    }
+
+    .lesson-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 32px;
+      border-top: 1px solid #27272a;
+      margin-top: 8px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #a1a1aa;
+      text-decoration: none;
+      padding: 10px 18px;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { border-color: #52525b; color: #e4e4e7; }
+    .nav-btn.next-btn {
+      background: #18181b;
+      color: #f4f4f5;
+      border-color: #3f3f46;
+    }
+    .nav-btn.next-btn:hover { border-color: #fbbf24; color: #fbbf24; }
+    .complete-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #4ade80;
+    }
+
+    /* ── Builder: AI Generation ── */
+    .generate-input-section {
+      margin-bottom: 28px;
+    }
+    .context-preview-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.15);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: #4ade80;
+      margin-bottom: 0;
+    }
+    .context-preview-pill.warn {
+      background: rgba(251,191,36,0.08);
+      border-color: rgba(251,191,36,0.2);
+      color: #fbbf24;
+    }
+
+    .generate-loading {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 0;
+      font-size: 14px;
+      color: #a1a1aa;
+    }
+    .generate-loading.visible { display: flex; }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid #3f3f46;
+      border-top-color: #fbbf24;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .output-area {
+      display: none;
+    }
+    .output-area.visible { display: block; }
+
+    .output-version-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .version-tab {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid #3f3f46;
+      color: #71717a;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .version-tab.active {
+      background: rgba(251,191,36,0.1);
+      border-color: rgba(251,191,36,0.3);
+      color: #fbbf24;
+    }
+    .regen-reason-wrap {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .regen-reason-select {
+      font-size: 12px;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      color: #a1a1aa;
+      border-radius: 6px;
+      padding: 4px 8px;
+      display: none;
+    }
+    .regen-reason-select.visible { display: block; }
+
+    /* Content pillars grid */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 1100px) {
+      .pillars-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 560px) {
+      .pillars-grid { grid-template-columns: 1fr; }
+    }
+
+    .pillar-card {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 16px 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pillar-num-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      align-self: flex-start;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: #93c5fd;
+      background: rgba(37, 99, 235, 0.18);
+      border: 1px solid rgba(37, 99, 235, 0.45);
+      border-radius: 6px;
+      padding: 4px 10px;
+    }
+    .pillar-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #f4f4f5;
+      line-height: 1.35;
+      margin: 0;
+    }
+    .pillar-purpose {
+      font-size: 13px;
+      font-style: italic;
+      color: #a1a1aa;
+      line-height: 1.5;
+      margin: 0;
+    }
+    .pillar-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .pillar-label.topics { color: #fbbf24; }
+    .pillar-label.avoid { color: #71717a; }
+    .topic-pill {
+      font-size: 13px;
+      color: #d4d4d8;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      padding: 8px 10px;
+      line-height: 1.45;
+    }
+    .avoid-row {
+      font-size: 12px;
+      color: #a1a1aa;
+      border-left: 3px solid #52525b;
+      padding: 6px 0 6px 10px;
+      line-height: 1.45;
+    }
+
+    .filter-lines-panel {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 22px 24px 24px;
+      margin-bottom: 8px;
+    }
+    .filter-lines-panel h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 8px;
+    }
+    .filter-lines-panel .filter-sub {
+      font-size: 13px;
+      color: #a1a1aa;
+      line-height: 1.55;
+      margin: 0 0 18px;
+    }
+    .filter-line-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid #27272a;
+    }
+    .filter-line-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .filter-line-num {
+      flex-shrink: 0;
+      font-size: 14px;
+      font-weight: 800;
+      color: #fbbf24;
+      min-width: 22px;
+    }
+    .filter-line-text {
+      font-size: 14px;
+      color: #a1a1aa;
+      line-height: 1.55;
+    }
+
+    .save-confirm-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #27272a;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  (function() {
+    fetch('/api/auth/check', { credentials: 'include' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403) {
+          window.location.href = '/login';
+        }
+      })
+      .catch(function() {});
+  })();
+</script>
+
+<div class="lesson-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="/assets/brand/logo-mark.png" alt="PSA">
+      <span class="sidebar-logo-text">Pre-Sold<br>Authority</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Navigation</div>
+      <a href="/dashboard" class="sidebar-link">← Dashboard</a>
+      <a href="/lessons" class="sidebar-link active">Lessons</a>
+      <a href="/assets" class="sidebar-link">My Assets</a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 1 — The Authority Shift</div>
+      <a href="/lessons/lesson-1.html" class="lesson-nav-item complete" id="nav-l1">
+        <span class="lesson-badge complete" id="badge-l1">1</span>
+        Why Agents Look Interchangeable
+      </a>
+      <a href="/lessons/lesson-2.html" class="lesson-nav-item complete" id="nav-l2">
+        <span class="lesson-badge complete" id="badge-l2">2</span>
+        Visibility vs. Authority
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 2 — The System</div>
+      <a href="/lessons/lesson-3.html" class="lesson-nav-item complete" id="nav-l3">
+        <span class="lesson-badge complete" id="badge-l3">3</span>
+        The Context Card
+      </a>
+      <a href="/lessons/lesson-4.html" class="lesson-nav-item complete" id="nav-l4">
+        <span class="lesson-badge complete" id="badge-l4">4</span>
+        Authority Positioning
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 3 — Content</div>
+      <a href="/lessons/lesson-5.html" class="lesson-nav-item complete" id="nav-l5">
+        <span class="lesson-badge complete" id="badge-l5">5</span>
+        Profile + Pinned Post
+      </a>
+      <a href="/lessons/lesson-6.html" class="lesson-nav-item current" id="nav-l6">
+        <span class="lesson-badge current" id="badge-l6">6</span>
+        Content Pillars
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 4 — Conversion</div>
+      <a href="/lessons/lesson-7.html" class="lesson-nav-item" id="nav-l7">
+        <span class="lesson-badge" id="badge-l7">7</span>
+        Posts + DM Flow
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 5 — Install</div>
+      <a href="/lessons/lesson-8.html" class="lesson-nav-item" id="nav-l8">
+        <span class="lesson-badge" id="badge-l8">8</span>
+        Boundaries + Weekly Rhythm
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+
+    <div class="breadcrumb">
+      <a href="/dashboard">Dashboard</a><span>›</span>
+      <a href="/lessons">Lessons</a><span>›</span>
+      Module 3
+    </div>
+
+    <div class="module-label">Module 3 — Authority Content That Attracts Serious Clients</div>
+    <h1 class="lesson-title">Lesson 6: Content Pillars &amp; Topic Map</h1>
+    <div class="lesson-meta-row">
+      <span>8–12 minutes</span>
+      <span class="meta-dot">·</span>
+      <span>Builder: Content Pillars &amp; Topic Map</span>
+    </div>
+
+    <div class="lesson-status-stack">
+      <div id="contextStatusPill" class="context-preview-pill warn">
+        ⚠ Loading your Context Card…
+      </div>
+    </div>
+
+    <div class="video-wrapper" id="videoWrapper">
+      <div class="video-placeholder-text" id="videoPlaceholder">
+        <span class="play-icon">▶</span>
+        <p>Lesson video coming soon</p>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+      <h2>Content That Attracts Serious Clients</h2>
+      <p>Most agents are told to post consistently — without any system for what to post or why. The result is random content that attracts random people. In this lesson, we build the opposite: a structured topic map where every piece of content serves a specific strategic purpose.</p>
+
+      <p>Content pillars give you four distinct territories to post from. Inside each pillar, you'll have 10 ready-to-use topics — all aimed at decision-stage buyers and sellers who are already thinking seriously about a transaction. This is not entertainment content. It's trust-building content.</p>
+
+      <p>You'll also generate filter lines — subtle phrases you embed in your posts that communicate 'this is for serious people' without sounding exclusionary or harsh. When these lines are in your content consistently, low-intent browsers naturally move on, and serious prospects lean in.</p>
+    </div>
+
+    <div class="notes-section" id="notesSection">
+      <div class="notes-header">
+        <span class="notes-icon">📝</span>
+        <span class="notes-title">My Notes</span>
+        <span class="notes-status" id="notesStatus"></span>
+      </div>
+      <textarea
+        id="notesTextarea"
+        class="notes-textarea"
+        placeholder="Take notes as you work through this lesson — saved automatically to your account…"
+        rows="5"
+      ></textarea>
+    </div>
+
+    <div class="builder-section">
+      <div class="builder-header">
+        <span class="builder-tag">Implementation Step</span>
+        <h2>Generate Your Content Pillars</h2>
+        <p>Produces 4 authority content pillars, 10 decision-stage topics per pillar, and 10 filter lines — based on your context card.</p>
+      </div>
+
+      <div class="saved-banner" id="savedBanner">
+        Saved to Asset Library ✓
+      </div>
+
+      <div class="generate-input-section" id="generateControls">
+        <p style="font-size:14px;color:#a1a1aa;margin:0 0 16px;">Your Context Card is used as the input. Click Generate to produce your content pillars.</p>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <button type="button" class="btn-cta-blue btn-disabled-hard" id="generateBtn" disabled>
+            ▶ Generate My Content Pillars
+          </button>
+          <button type="button" class="btn-secondary" id="regenBtn" style="display:none;">
+            ↺ Regenerate
+          </button>
+          <select class="regen-reason-select" id="regenReasonSelect">
+            <option value="">Why regenerating? (optional)</option>
+            <option value="too_generic_market">Too generic — not specific to my market</option>
+            <option value="not_my_tone">Not my tone</option>
+            <option value="wrong_audience">Wrong audience focus</option>
+            <option value="compliance">Compliance concern</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="generate-loading" id="generateLoading">
+        <div class="spinner"></div>
+        <span>Building your content pillar framework…</span>
+      </div>
+
+      <div class="output-area" id="outputArea">
+
+        <div class="output-version-bar" id="versionBar"></div>
+
+        <div id="pillarsContainer"></div>
+
+        <div id="filterLinesMount"></div>
+
+        <div class="save-confirm-row">
+          <button type="button" class="btn-cta-blue" id="saveBtn">Save to My Assets</button>
+          <span id="saveStatus" style="font-size:13px;color:#52525b;"></span>
+          <span id="lastSavedAt" style="font-size:13px;color:#52525b;"></span>
+        </div>
+
+      </div>
+
+      <div class="inline-error" id="builderError"></div>
+    </div>
+
+    <div class="lesson-complete-row" id="lessonCompleteRow" style="display:none;">
+      <span class="complete-chip" id="completeChip">✓ Lesson complete</span>
+    </div>
+    <div class="lesson-nav-footer">
+      <a href="/lessons/lesson-5.html" class="nav-btn">← Lesson 5: Profile + Pinned Post</a>
+      <a href="/lessons/lesson-7.html" class="nav-btn next-btn">Lesson 7: Post Generator + DM Flow →</a>
+    </div>
+
+  </main>
+</div>
+
+<script>
+(function() {
+
+  function esc(s) {
+    if (!s) return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function el(id) { return document.getElementById(id); }
+
+  var contextCardComplete = false;
+
+  var currentDisplayOutput = null;
+  var currentAssetId = null;
+  var currentVersion = 0;
+  var versions = [];
+  var lastSavedUpdatedAt = null;
+
+  fetch('/api/auth/check', { credentials: 'include' })
+    .then(function(r) {
+      if (r.status === 401 || r.status === 403) window.location.href = '/login';
+    })
+    .catch(function() {});
+
+  function getMaxVersionNumber() {
+    var max = 0;
+    for (var i = 0; i < versions.length; i++) {
+      var v = versions[i];
+      if (v && typeof v.versionNumber === 'number' && v.versionNumber > max) {
+        max = v.versionNumber;
+      }
+    }
+    return max;
+  }
+
+  function renderContextPill(data) {
+    var pill = el('contextStatusPill');
+    if (!pill) return;
+    var cc = (data && data.contextCard) ? data.contextCard : null;
+    var hasBasics = cc && cc.full_name && cc.market_location && cc.agent_role;
+    var hasPositioning = cc && cc.process_step_1 && cc.process_step_2 && cc.process_step_3;
+    contextCardComplete = !!(hasBasics && hasPositioning);
+    if (hasBasics && hasPositioning) {
+      pill.className = 'context-preview-pill';
+      pill.textContent = '✓ Context Card Ready';
+    } else {
+      pill.className = 'context-preview-pill warn';
+      pill.innerHTML = '⚠ Your Context Card is incomplete — <a href="/context-card-edit.html" style="color:#fbbf24;margin-left:4px;">complete it first</a>';
+    }
+  }
+
+  function updateGenerateEnabled() {
+    var gen = el('generateBtn');
+    if (!gen) return;
+    var can = contextCardComplete;
+    gen.disabled = !can;
+    gen.classList.toggle('btn-disabled-hard', !can);
+  }
+
+  function loadVideo() {
+    fetch('/api/settings/lesson_6_video_url', { credentials: 'include' })
+      .then(function(res) {
+        if (!res.ok) return;
+        return res.json();
+      })
+      .then(function(data) {
+        if (!data) return;
+        var url = data.value || data.url || null;
+        if (!url || typeof url !== 'string') return;
+        var wrap = el('videoWrapper');
+        var ph = el('videoPlaceholder');
+        if (!wrap) return;
+        if (ph) ph.style.display = 'none';
+        var iframe = document.createElement('iframe');
+        iframe.src = url;
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.setAttribute('loading', 'lazy');
+        iframe.title = 'Lesson 6 video';
+        wrap.appendChild(iframe);
+      })
+      .catch(function() {});
+  }
+
+  function syncActiveVersionFromDOM() {
+    for (var i = 0; i < versions.length; i++) {
+      if (versions[i].versionNumber === currentVersion) {
+        if (versions[i] && typeof versions[i] === 'object' && currentDisplayOutput) {
+          versions[i].displayOutput = JSON.parse(JSON.stringify(currentDisplayOutput));
+        }
+        return;
+      }
+    }
+  }
+
+  function pillarBadgeLetter(num) {
+    var n = Number(num);
+    if (n === 1) return 'P1';
+    if (n === 2) return 'P2';
+    if (n === 3) return 'P3';
+    if (n === 4) return 'P4';
+    return 'P' + String(num);
+  }
+
+  function renderPillarsAndFilters(data) {
+    var pillarsC = el('pillarsContainer');
+    var mount = el('filterLinesMount');
+    if (!pillarsC || !mount) return;
+
+    data = data || {};
+    var pillars = Array.isArray(data.pillars) ? data.pillars : [];
+    var filterLines = Array.isArray(data.filter_lines) ? data.filter_lines : [];
+
+    var grid = document.createElement('div');
+    grid.className = 'pillars-grid';
+
+    for (var p = 0; p < pillars.length; p++) {
+      var pillar = pillars[p] || {};
+      var pnum = pillar.pillar_number != null ? pillar.pillar_number : (p + 1);
+      var topics = Array.isArray(pillar.topics) ? pillar.topics : [];
+      var avoid = Array.isArray(pillar.avoid_topics) ? pillar.avoid_topics : [];
+
+      var card = document.createElement('div');
+      card.className = 'pillar-card';
+      var inner = '';
+      inner += '<div class="pillar-num-badge">' + esc(pillarBadgeLetter(pnum)) + '</div>';
+      inner += '<h3 class="pillar-title">' + esc(pillar.pillar_title || '') + '</h3>';
+      inner += '<p class="pillar-purpose">' + esc(pillar.pillar_purpose || '') + '</p>';
+      inner += '<div class="pillar-label topics">Topics</div>';
+      for (var t = 0; t < topics.length; t++) {
+        inner += '<div class="topic-pill">' + esc(topics[t]) + '</div>';
+      }
+      inner += '<div class="pillar-label avoid">Avoid</div>';
+      for (var a = 0; a < avoid.length; a++) {
+        inner += '<div class="avoid-row">' + esc(avoid[a]) + '</div>';
+      }
+      card.innerHTML = inner;
+      grid.appendChild(card);
+    }
+    pillarsC.innerHTML = '';
+    pillarsC.appendChild(grid);
+
+    var flHtml = '';
+    flHtml += '<div class="filter-lines-panel">';
+    flHtml += '<h3>Filter Lines</h3>';
+    flHtml += '<p class="filter-sub">Embed these phrases naturally into your posts to attract serious prospects and let tire-kickers self-select out.</p>';
+    for (var f = 0; f < filterLines.length; f++) {
+      flHtml += '<div class="filter-line-row">';
+      flHtml += '<span class="filter-line-num">' + (f + 1) + '</span>';
+      flHtml += '<span class="filter-line-text">' + esc(filterLines[f]) + '</span>';
+      flHtml += '</div>';
+    }
+    flHtml += '</div>';
+    mount.innerHTML = flHtml;
+  }
+
+  function renderOutput(displayOutput, versionNum) {
+    currentDisplayOutput = displayOutput
+      ? JSON.parse(JSON.stringify(displayOutput))
+      : null;
+
+    renderPillarsAndFilters(currentDisplayOutput);
+    el('outputArea').classList.add('visible');
+    renderVersionBar(versionNum);
+  }
+
+  function renderVersionBar(activeVer) {
+    var bar = el('versionBar');
+    if (!bar) return;
+
+    function ensureRegenWrap() {
+      var existing = bar.querySelector('.regen-reason-wrap');
+      if (existing) return existing;
+      var wrap = document.createElement('div');
+      wrap.className = 'regen-reason-wrap';
+      bar.appendChild(wrap);
+      return wrap;
+    }
+
+    var regenWrap = ensureRegenWrap();
+    var sel = el('regenReasonSelect');
+    if (sel && sel.parentNode !== regenWrap) regenWrap.appendChild(sel);
+
+    var validNums = versions.map(function(v) { return v && v.versionNumber; });
+    bar.querySelectorAll('button.version-tab').forEach(function(btn) {
+      if (validNums.indexOf(Number(btn.getAttribute('data-version'))) === -1) {
+        btn.parentNode.removeChild(btn);
+      }
+    });
+
+    versions.forEach(function(v) {
+      var ver = v && typeof v.versionNumber === 'number' ? v.versionNumber : null;
+      if (ver == null) return;
+
+      var existingBtn = bar.querySelector('button.version-tab[data-version="' + ver + '"]');
+      if (!existingBtn) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'version-tab';
+        btn.textContent = 'Gen ' + ver;
+        btn.setAttribute('data-version', String(ver));
+        btn.addEventListener('click', function() {
+          syncActiveVersionFromDOM();
+          currentVersion = ver;
+          currentAssetId = v.assetId;
+          var disp = v.displayOutput ? JSON.parse(JSON.stringify(v.displayOutput)) : null;
+          renderOutput(disp, ver);
+          el('savedBanner').classList.remove('visible');
+          var ss = el('saveStatus');
+          if (ss) ss.textContent = '';
+        });
+        bar.insertBefore(btn, regenWrap);
+      }
+    });
+
+    bar.querySelectorAll('button.version-tab').forEach(function(btn) {
+      var dv = btn.getAttribute('data-version');
+      var n = dv != null ? Number(dv) : NaN;
+      btn.classList.toggle('active', n === activeVer);
+    });
+  }
+
+  function showError(msg) {
+    var errEl = el('builderError');
+    if (!errEl) return;
+    errEl.textContent = msg;
+    errEl.classList.add('visible');
+  }
+  function clearError() {
+    var errEl = el('builderError');
+    if (errEl) { errEl.textContent = ''; errEl.classList.remove('visible'); }
+  }
+
+  function buildEditedContentPayload() {
+    return currentDisplayOutput ? JSON.parse(JSON.stringify(currentDisplayOutput)) : {};
+  }
+
+  async function runGenerate() {
+    if (!contextCardComplete) return;
+    syncActiveVersionFromDOM();
+    clearError();
+    el('generateLoading').classList.add('visible');
+    el('generateBtn').disabled = true;
+    el('regenBtn').disabled = true;
+
+    var regenReason = '';
+    var sel = el('regenReasonSelect');
+    if (sel && sel.classList.contains('visible')) {
+      regenReason = sel.value || '';
+    }
+
+    try {
+      var body = { lessonId: 'lesson-6' };
+      if (regenReason) {
+        body.additionalInput = { regenerationReason: regenReason };
+      }
+
+      var res = await fetch('/api/builder/generate', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      var data = await res.json().catch(function() { return {}; });
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Generation failed. Please try again.');
+      }
+
+      currentAssetId = data.assetId;
+      var out = data.output;
+      var nextVer = getMaxVersionNumber() + 1;
+      currentVersion = nextVer;
+
+      var st = {
+        assetId: data.assetId,
+        displayOutput: out ? JSON.parse(JSON.stringify(out)) : {},
+        versionNumber: nextVer
+      };
+      versions.push(st);
+
+      renderOutput(st.displayOutput, nextVer);
+      syncActiveVersionFromDOM();
+
+      el('generateBtn').style.display = 'none';
+      el('regenBtn').style.display = 'inline-flex';
+      if (sel) sel.classList.add('visible');
+
+      el('savedBanner').classList.remove('visible');
+      el('saveStatus').textContent = '';
+      lastSavedUpdatedAt = null;
+      el('lastSavedAt').textContent = '';
+
+    } catch (err) {
+      showError(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      el('generateLoading').classList.remove('visible');
+      el('generateBtn').disabled = !contextCardComplete;
+      el('generateBtn').classList.toggle('btn-disabled-hard', !contextCardComplete);
+      el('regenBtn').disabled = false;
+    }
+  }
+
+  el('generateBtn').addEventListener('click', runGenerate);
+  el('regenBtn').addEventListener('click', runGenerate);
+
+  el('saveBtn').addEventListener('click', async function() {
+    if (!currentDisplayOutput || !currentAssetId) {
+      showError('Nothing to save yet. Generate your content pillars first.');
+      return;
+    }
+    clearError();
+    syncActiveVersionFromDOM();
+    var saveBtn = el('saveBtn');
+    var saveStatus = el('saveStatus');
+    saveBtn.disabled = true;
+    saveStatus.textContent = 'Saving…';
+    saveStatus.style.color = '#fbbf24';
+
+    try {
+      var editedPayload = buildEditedContentPayload();
+
+      var res = await fetch('/api/builder/outputs/' + currentAssetId, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ editedContent: editedPayload })
+      });
+
+      if (!res.ok) {
+        var d = await res.json().catch(function() { return {}; });
+        throw new Error(d.error || 'Save failed');
+      }
+
+      fetch('/api/lessons/lesson-6/progress', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_complete: true, builder_completed: true })
+      }).catch(function() {});
+
+      var row = el('lessonCompleteRow');
+      if (row) row.style.display = 'flex';
+
+      saveStatus.textContent = 'Saved to Asset Library ✓';
+      saveStatus.style.color = '#4ade80';
+      el('savedBanner').classList.add('visible');
+      lastSavedUpdatedAt = new Date().toISOString();
+      el('lastSavedAt').textContent = 'Last saved ' + new Date(lastSavedUpdatedAt).toLocaleString();
+
+      setTimeout(function() {
+        saveStatus.textContent = '';
+      }, 3500);
+
+    } catch (err) {
+      saveStatus.textContent = 'Save failed';
+      saveStatus.style.color = '#f87171';
+      showError(err.message || 'Save failed. Please try again.');
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
+
+  var notesTimer = null;
+  function saveNotes(text) {
+    var statusEl = el('notesStatus');
+    if (statusEl) { statusEl.textContent = 'Saving…'; statusEl.className = 'notes-status saving'; }
+    fetch('/api/lessons/lesson-6/progress', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notes: text })
+    }).then(function(res) {
+      if (res.ok && statusEl) {
+        statusEl.textContent = 'Saved'; statusEl.className = 'notes-status saved';
+        setTimeout(function() { statusEl.textContent = ''; statusEl.className = 'notes-status'; }, 2000);
+      }
+    }).catch(function() {
+      if (statusEl) { statusEl.textContent = 'Not saved'; statusEl.className = 'notes-status'; }
+    });
+  }
+
+  var notesTA = el('notesTextarea');
+  if (notesTA) {
+    notesTA.addEventListener('input', function() {
+      clearTimeout(notesTimer);
+      var text = this.value;
+      notesTimer = setTimeout(function() { saveNotes(text); }, 1000);
+    });
+  }
+
+  function loadLessonProgress() {
+    return fetch('/api/lessons/lesson-6/progress', { credentials: 'include' })
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        if (!data) return;
+        if (data.notes && notesTA) notesTA.value = data.notes;
+        if (data.is_complete || data.builder_completed) {
+          var row = el('lessonCompleteRow');
+          if (row) row.style.display = 'flex';
+        }
+      })
+      .catch(function() {});
+  }
+
+  function loadContentPillarsAsset() {
+    return fetch('/api/builder/outputs/content-pillars', { credentials: 'include' })
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        if (!data) return;
+
+        var allVersions = Array.isArray(data.allVersions) ? data.allVersions : null;
+
+        if (allVersions && allVersions.length > 0) {
+          versions = allVersions.map(function(v) {
+            var ec = v.editedContent;
+            var raw = v.rawOutput;
+            var display = ec != null ? ec : raw;
+            if (!display || typeof display !== 'object') display = {};
+            return {
+              assetId: v.assetId,
+              versionNumber: v.version,
+              displayOutput: JSON.parse(JSON.stringify(display))
+            };
+          });
+
+          var last = versions[versions.length - 1];
+          currentAssetId = last.assetId;
+          currentVersion = last.versionNumber;
+          if (data.updatedAt) {
+            lastSavedUpdatedAt = data.updatedAt;
+            el('lastSavedAt').textContent = 'Last saved ' + new Date(data.updatedAt).toLocaleString();
+          }
+
+          renderOutput(last.displayOutput, currentVersion);
+        } else if (data.output != null && data.assetId) {
+          var verNum = typeof data.version === 'number' ? data.version : 1;
+          versions = [{
+            assetId: data.assetId,
+            versionNumber: verNum,
+            displayOutput: JSON.parse(JSON.stringify(data.output))
+          }];
+          currentVersion = verNum;
+          currentAssetId = data.assetId;
+          if (data.updatedAt) {
+            lastSavedUpdatedAt = data.updatedAt;
+            el('lastSavedAt').textContent = 'Last saved ' + new Date(data.updatedAt).toLocaleString();
+          }
+          renderOutput(versions[0].displayOutput, currentVersion);
+        } else {
+          return;
+        }
+
+        el('regenBtn').style.display = 'inline-flex';
+        el('generateBtn').style.display = 'none';
+        var rs = el('regenReasonSelect');
+        if (rs) rs.classList.add('visible');
+        syncActiveVersionFromDOM();
+      })
+      .catch(function() {});
+  }
+
+  fetch('/api/context-card', { credentials: 'include' })
+    .then(function(r) {
+      return r.json().then(function(d) { return { ok: r.ok, data: d }; });
+    })
+    .then(function(ctx) {
+      if (ctx.ok && ctx.data) renderContextPill(ctx.data);
+      else {
+        var pill = el('contextStatusPill');
+        if (pill) {
+          pill.className = 'context-preview-pill warn';
+          pill.textContent = '⚠ Could not load Context Card';
+        }
+        contextCardComplete = false;
+      }
+      updateGenerateEnabled();
+    })
+    .catch(function() {
+      var pill = el('contextStatusPill');
+      if (pill) {
+        pill.className = 'context-preview-pill warn';
+        pill.textContent = '⚠ Could not load Context Card';
+      }
+      contextCardComplete = false;
+      updateGenerateEnabled();
+    })
+    .then(function() {
+      loadVideo();
+      return loadLessonProgress();
+    })
+    .then(function() {
+      return loadContentPillarsAsset();
+    })
+    .then(function() {
+      updateGenerateEnabled();
+    });
+
+})();
+</script>
+
+</body>
+</html>
