@@ -28,7 +28,6 @@ builder.post('/generate', async (c) => {
     'lesson-4': 'positioning',
     'lesson-5': 'profile-copy',
     'lesson-6': 'content-pillars',
-    'lesson-7': 'posts-dm-flow',
     'lesson-8': 'boundary-library',
   }
 
@@ -38,6 +37,7 @@ builder.post('/generate', async (c) => {
     contextCard?: unknown
     additionalInput?: Record<string, unknown>
     priorAssetType?: string | null
+    assetType?: string
   }
   try {
     body = await c.req.json()
@@ -46,6 +46,7 @@ builder.post('/generate', async (c) => {
   }
 
   const { lessonId, contextCard, additionalInput, priorAssetType } = body
+  const bodyAssetType = typeof body.assetType === 'string' ? body.assetType : undefined
 
   void contextCard
   void additionalInput
@@ -62,9 +63,50 @@ builder.post('/generate', async (c) => {
     return c.json({ error: 'Builder not available for this lesson' }, 400)
   }
 
-  const assetType = LESSON_ID_TO_ASSET_TYPE[lessonId] ?? null
+  // For lessons with compound prompts (multiple builders per lesson),
+  // assetType comes from the request body instead of the map.
+  const assetType = LESSON_ID_TO_ASSET_TYPE[lessonId] ?? bodyAssetType ?? null
   if (!assetType) {
-    return c.json({ error: 'Builder not available for this lesson' }, 400)
+    return c.json({ error: 'assetType is required for this lesson' }, 400)
+  }
+
+  // Detect compound prompt (used for lessons with multiple builders, e.g. Lesson 7)
+  let resolvedPromptTemplate = lesson.builder_prompt_template
+  let resolvedOutputSchema = lesson.output_schema
+
+  let parsedTemplate: unknown = null
+  try { parsedTemplate = JSON.parse(lesson.builder_prompt_template) } catch { /* not JSON */ }
+
+  if (
+    parsedTemplate &&
+    typeof parsedTemplate === 'object' &&
+    !Array.isArray(parsedTemplate)
+  ) {
+    // Compound prompt — select sub-prompt by assetType
+    if (!bodyAssetType) {
+      return c.json({ error: 'assetType is required for this lesson builder' }, 400)
+    }
+    const compound = parsedTemplate as Record<string, string>
+    if (!compound[bodyAssetType]) {
+      return c.json({ error: `No prompt found for asset type: ${bodyAssetType}` }, 400)
+    }
+    resolvedPromptTemplate = compound[bodyAssetType]
+
+    // Also select the matching output schema if compound
+    if (lesson.output_schema) {
+      let parsedSchema: unknown = null
+      try { parsedSchema = JSON.parse(lesson.output_schema) } catch { /* not JSON */ }
+      if (
+        parsedSchema &&
+        typeof parsedSchema === 'object' &&
+        !Array.isArray(parsedSchema) &&
+        (parsedSchema as Record<string, unknown>)[bodyAssetType]
+      ) {
+        resolvedOutputSchema = JSON.stringify(
+          (parsedSchema as Record<string, unknown>)[bodyAssetType]
+        )
+      }
+    }
   }
 
   const dbContextCard = await c.env.DB.prepare(
@@ -164,18 +206,31 @@ builder.post('/generate', async (c) => {
   rateState.count += 1
   await c.env.KV.put(rateKey, JSON.stringify(rateState), { expirationTtl: WINDOW_SECONDS })
 
-  let prompt = lesson.builder_prompt_template.replaceAll(
+  let prompt = resolvedPromptTemplate.replaceAll(
     '{context_card}',
     JSON.stringify(dbContextCard)
   )
 
   if (priorAssetData) {
-    prompt = prompt.replaceAll('{positioning_statement}', priorAssetData.positioningStatement)
-    prompt = prompt.replaceAll('{differentiators}', priorAssetData.differentiators)
+    // Legacy named placeholders (Lesson 5 — positioning asset)
+    prompt = prompt.replaceAll(
+      '{positioning_statement}',
+      (priorAssetData as Record<string, unknown>).positioningStatement as string ?? ''
+    )
+    prompt = prompt.replaceAll(
+      '{differentiators}',
+      JSON.stringify((priorAssetData as Record<string, unknown>).differentiators ?? '')
+    )
+    // Generic prior asset placeholder (Lesson 7+ — full asset JSON)
+    prompt = prompt.replaceAll(
+      '{prior_asset}',
+      JSON.stringify(priorAssetData)
+    )
+  } else {
+    prompt = prompt.replaceAll('{positioning_statement}', '')
+    prompt = prompt.replaceAll('{differentiators}', '')
+    prompt = prompt.replaceAll('{prior_asset}', '')
   }
-
-  prompt = prompt.replaceAll('{positioning_statement}', '')
-  prompt = prompt.replaceAll('{differentiators}', '')
 
   const userMessage =
     'Generate the positioning assets for this agent based on the context provided.'
