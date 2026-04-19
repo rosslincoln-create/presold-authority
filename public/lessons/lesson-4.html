@@ -991,17 +991,47 @@
     fetch('/api/builder/outputs/positioning', { credentials: 'include' })
       .then(function(res) { return res.ok ? res.json() : null; })
       .then(function(data) {
-        if (!data || !data.output) return;
-        currentAssetId = data.assetId;
-        currentVersion = data.version;
-        currentOutput = data.output;
-        if (typeof data.output.selected_index === 'number') {
-          selectedStatementIndex = data.output.selected_index;
+        if (!data) return;
+
+        var allVersions = Array.isArray(data.allVersions) ? data.allVersions : null;
+
+        if (allVersions && allVersions.length > 0) {
+          versionHistory = allVersions.map(function(v) {
+            var ec = v.editedContent != null ? v.editedContent : v.edited_content;
+            var raw = v.rawOutput != null ? v.rawOutput : v.raw_output;
+            var display = ec != null ? ec : raw;
+            if (!display || typeof display !== 'object') display = {};
+            return {
+              version: v.version,
+              assetId: v.assetId,
+              output: JSON.parse(JSON.stringify(display))
+            };
+          });
+          var last = versionHistory[versionHistory.length - 1];
+          currentAssetId = last.assetId;
+          currentVersion = last.version;
+          currentOutput = last.output;
+          if (typeof currentOutput.selected_index === 'number') {
+            selectedStatementIndex = currentOutput.selected_index;
+          } else {
+            selectedStatementIndex = 0;
+          }
+          renderOutput(currentOutput, currentVersion);
+        } else if (data.output != null && data.assetId) {
+          currentAssetId = data.assetId;
+          currentVersion = data.version;
+          currentOutput = data.output;
+          if (typeof data.output.selected_index === 'number') {
+            selectedStatementIndex = data.output.selected_index;
+          } else {
+            selectedStatementIndex = 0;
+          }
+          versionHistory = [{ version: data.version, assetId: data.assetId, output: data.output }];
+          renderOutput(data.output, data.version);
         } else {
-          selectedStatementIndex = 0;
+          return;
         }
-        versionHistory = [{ version: data.version, assetId: data.assetId, output: data.output }];
-        renderOutput(data.output, data.version);
+
         el('regenBtn').style.display = 'inline-flex';
         el('generateBtn').style.display = 'none';
         var sel = el('regenReasonSelect');

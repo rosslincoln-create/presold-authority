@@ -118,6 +118,7 @@ builder.post('/generate', async (c) => {
   }
 
   let priorAssetData: { positioningStatement: string; differentiators: string } | undefined
+  let priorAssetForPrompt: Record<string, unknown> | undefined
   if (priorAssetType) {
     try {
       const priorRow = await c.env.DB.prepare(`
@@ -133,12 +134,17 @@ builder.post('/generate', async (c) => {
       }>()
 
       if (!priorRow) {
-        return c.json(
-          { error: 'Required prior asset not found. Please complete Lesson 4 first.' },
-          400
-        )
+        if (priorAssetType === 'content-pillars') {
+          priorAssetForPrompt = {}
+        } else {
+          return c.json(
+            { error: 'Required prior asset not found. Please complete Lesson 4 first.' },
+            400
+          )
+        }
       }
 
+      if (priorRow) {
       let rawOutputObj: Record<string, unknown>
       try {
         rawOutputObj = JSON.parse(priorRow.raw_output ?? '{}') as Record<string, unknown>
@@ -155,24 +161,31 @@ builder.post('/generate', async (c) => {
         }
       }
 
-      const alternatives = (rawOutputObj.alternative_statements as unknown[] | undefined) ?? []
-      const selectedIndex =
-        typeof editedContent.selected_index === 'number' ? editedContent.selected_index : -1
-      const primaryPs = rawOutputObj.primary_positioning_statement
-      const positioningStatement =
-        selectedIndex >= 0 && selectedIndex < alternatives.length
-          ? String(alternatives[selectedIndex] ?? '')
-          : typeof primaryPs === 'string'
-            ? primaryPs
-            : ''
+      if (priorAssetType === 'content-pillars') {
+        const merged =
+          editedContent && Object.keys(editedContent).length > 0 ? editedContent : rawOutputObj
+        priorAssetForPrompt = merged
+      } else {
+        const alternatives = (rawOutputObj.alternative_statements as unknown[] | undefined) ?? []
+        const selectedIndex =
+          typeof editedContent.selected_index === 'number' ? editedContent.selected_index : -1
+        const primaryPs = rawOutputObj.primary_positioning_statement
+        const positioningStatement =
+          selectedIndex >= 0 && selectedIndex < alternatives.length
+            ? String(alternatives[selectedIndex] ?? '')
+            : typeof primaryPs === 'string'
+              ? primaryPs
+              : ''
 
-      type DiffItem = { title?: string; description?: string }
-      const diffArr = (rawOutputObj.differentiators as DiffItem[] | undefined) ?? []
-      const differentiators = diffArr
-        .map((d, i) => `${i + 1}. ${d.title ?? ''} — ${d.description ?? ''}`)
-        .join('\n')
+        type DiffItem = { title?: string; description?: string }
+        const diffArr = (rawOutputObj.differentiators as DiffItem[] | undefined) ?? []
+        const differentiators = diffArr
+          .map((d, i) => `${i + 1}. ${d.title ?? ''} — ${d.description ?? ''}`)
+          .join('\n')
 
-      priorAssetData = { positioningStatement, differentiators }
+        priorAssetData = { positioningStatement, differentiators }
+      }
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       await logAiGenFailed(c.env.DB, userId, lessonId, message)
@@ -221,11 +234,10 @@ builder.post('/generate', async (c) => {
       '{differentiators}',
       JSON.stringify((priorAssetData as Record<string, unknown>).differentiators ?? '')
     )
-    // Generic prior asset placeholder (Lesson 7+ — full asset JSON)
-    prompt = prompt.replaceAll(
-      '{prior_asset}',
-      JSON.stringify(priorAssetData)
-    )
+  } else if (priorAssetForPrompt) {
+    prompt = prompt.replaceAll('{positioning_statement}', '')
+    prompt = prompt.replaceAll('{differentiators}', '')
+    prompt = prompt.replaceAll('{prior_asset}', JSON.stringify(priorAssetForPrompt))
   } else {
     prompt = prompt.replaceAll('{positioning_statement}', '')
     prompt = prompt.replaceAll('{differentiators}', '')
