@@ -513,6 +513,17 @@
     }
     .regen-reason-select.visible { display: block; }
 
+    .version-selection-note {
+      display: block !important;
+      font-size: 0.8rem;
+      color: #a1a1aa !important;
+      margin: 0.4rem 0 1rem 0;
+      padding: 0;
+      font-style: italic;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
     /* Positioning statement selector */
     .positioning-options {
       display: flex;
@@ -837,6 +848,11 @@
         </div>
 
         <!-- Save row -->
+        <p class="version-selection-note">
+          If you have generated multiple versions, select your preferred tab
+          before saving — your chosen positioning statement will be used in
+          Lesson 5.
+        </p>
         <div class="save-confirm-row">
           <button type="button" class="btn-cta-blue" id="saveBtn">Save to My Assets ✓</button>
           <span id="saveStatus" style="font-size:13px;color:#52525b;"></span>

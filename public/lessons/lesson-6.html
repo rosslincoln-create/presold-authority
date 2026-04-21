@@ -451,6 +451,17 @@
     }
     .regen-reason-select.visible { display: block; }
 
+    .version-selection-note {
+      display: block !important;
+      font-size: 0.8rem;
+      color: #a1a1aa !important;
+      margin: 0.4rem 0 1rem 0;
+      padding: 0;
+      font-style: italic;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
     /* Content pillars grid */
     .pillars-grid {
       display: grid;
@@ -746,6 +757,11 @@
 
         <div id="filterLinesMount"></div>
 
+        <p class="version-selection-note">
+          If you have generated multiple versions, select your preferred tab
+          before saving — that pillar set will be used to generate your
+          Lesson 7 posts.
+        </p>
         <div class="save-confirm-row">
           <button type="button" class="btn-cta-blue" id="saveBtn">Save to My Assets</button>
           <span id="saveStatus" style="font-size:13px;color:#52525b;"></span>
