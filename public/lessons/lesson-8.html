@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 8: Boundary Language + Weekly Rhythm — Pre-Sold Authority</title>
+  <link rel="stylesheet" href="/style-premium.css">
+  <style>
+    /* ── Layout ── */
+    body { background: #09090b; color: #f4f4f5; font-family: 'Inter', system-ui, sans-serif; margin: 0; }
+
+    .lesson-shell {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      min-height: 100vh;
+      background: #111113;
+      border-right: 1px solid #27272a;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+    .sidebar-nav { padding: 16px 0; }
+    .sidebar-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #71717a;
+      text-transform: uppercase;
+      padding: 12px 20px 6px;
+    }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      font-size: 13px;
+      color: #a1a1aa;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .sidebar-link:hover { color: #f4f4f5; background: #27272a; }
+    .sidebar-link.active { color: #fbbf24; border-left-color: #fbbf24; background: rgba(251,191,36,0.06); }
+    .lesson-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      font-size: 12.5px;
+      color: #71717a;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .lesson-nav-item:hover { color: #a1a1aa; background: #27272a; }
+    .lesson-nav-item.current { color: #fbbf24; border-left-color: #fbbf24; }
+    .lesson-nav-item.complete { color: #4ade80; }
+    .lesson-badge {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: #3f3f46;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; flex-shrink: 0;
+    }
+    .lesson-badge.complete { background: #166534; color: #4ade80; }
+    .lesson-badge.current  { background: rgba(251,191,36,0.2); color: #fbbf24; }
+
+    .main-content {
+      flex: 1;
+      padding: 40px 48px;
+      max-width: 860px;
+    }
+
+    .breadcrumb {
+      font-size: 12px; color: #71717a;
+      margin-bottom: 8px;
+    }
+    .breadcrumb a { color: #71717a; text-decoration: none; }
+    .breadcrumb a:hover { color: #a1a1aa; }
+    .breadcrumb span { margin: 0 6px; }
+
+    .module-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      margin-bottom: 10px;
+    }
+
+    h1.lesson-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 12px;
+      line-height: 1.2;
+    }
+
+    .lesson-meta-row {
+      font-size: 14px;
+      color: #71717a;
+      margin-bottom: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .lesson-meta-row .meta-dot { color: #52525b; }
+
+    .lesson-status-stack {
+      margin-bottom: 20px;
+    }
+
+    .video-wrapper {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .video-placeholder-text {
+      text-align: center;
+      color: #52525b;
+    }
+    .video-placeholder-text .play-icon {
+      font-size: 48px; display: block; margin-bottom: 12px;
+    }
+    .video-placeholder-text p { font-size: 14px; margin: 0; }
+
+    .lesson-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #d4d4d8;
+      margin-bottom: 48px;
+    }
+    .lesson-body h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 36px 0 12px;
+    }
+    .lesson-body p { margin: 0 0 16px; }
+
+    .part-heading {
+      font-size: 18px;
+      font-weight: 700;
+      color: #e4e4e7;
+      margin: 0 0 16px;
+      line-height: 1.3;
+    }
+
+    .notes-section {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 36px;
+    }
+    .notes-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .notes-icon { font-size: 16px; }
+    .notes-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #e4e4e7;
+      flex: 1;
+    }
+    .notes-status {
+      font-size: 12px;
+      color: #52525b;
+      transition: color 0.3s;
+    }
+    .notes-status.saving { color: #fbbf24; }
+    .notes-status.saved  { color: #4ade80; }
+    .notes-textarea {
+      width: 100%;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      border-radius: 8px;
+      color: #d4d4d8;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 12px 14px;
+      resize: vertical;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: border-color 0.15s;
+    }
+    .notes-textarea:focus {
+      outline: none;
+      border-color: #71717a;
+    }
+
+    .builder-section {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      padding: 36px 40px;
+      margin-bottom: 40px;
+    }
+    .builder-header {
+      margin-bottom: 24px;
+    }
+    .builder-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.2);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .builder-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 8px;
+    }
+    .builder-header p {
+      font-size: 14px;
+      color: #a1a1aa;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .builder-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .btn-cta-blue {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-cta-blue:hover:not(:disabled) { background: #1d4ed8; }
+    .btn-cta-blue:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-cta-blue.btn-disabled-hard:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: #a1a1aa;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: 1px solid #3f3f46;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-secondary:hover:not(:disabled) { border-color: #71717a; color: #e4e4e7; }
+    .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .inline-error {
+      display: none;
+      font-size: 13px;
+      color: #f87171;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 8px;
+    }
+    .inline-error.visible { display: block; }
+
+    .saved-banner {
+      display: none;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #4ade80;
+      margin-bottom: 20px;
+      align-items: center;
+      gap: 8px;
+    }
+    .saved-banner.visible { display: flex; }
+
+    .lesson-complete-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+      font-size: 14px;
+      color: #a1a1aa;
+    }
+    .lesson-complete-row[style*="none"] {
+      display: none !important;
+    }
+
+    .lesson-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 32px;
+      border-top: 1px solid #27272a;
+      margin-top: 8px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #a1a1aa;
+      text-decoration: none;
+      padding: 10px 18px;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { border-color: #52525b; color: #e4e4e7; }
+    .nav-btn.next-btn {
+      background: #18181b;
+      color: #f4f4f5;
+      border-color: #3f3f46;
+    }
+    .nav-btn.next-btn:hover { border-color: #fbbf24; color: #fbbf24; }
+    .complete-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #4ade80;
+    }
+
+    /* ── Builder: AI Generation ── */
+    .generate-input-section {
+      margin-bottom: 28px;
+    }
+    .context-preview-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.15);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: #4ade80;
+      margin-bottom: 0;
+    }
+    .context-preview-pill.warn {
+      background: rgba(251,191,36,0.08);
+      border-color: rgba(251,191,36,0.2);
+      color: #fbbf24;
+    }
+
+    .generate-loading {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 0;
+      font-size: 14px;
+      color: #a1a1aa;
+    }
+    .generate-loading.visible { display: flex; }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid #3f3f46;
+      border-top-color: #fbbf24;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .output-area {
+      display: none;
+    }
+    .output-area.visible { display: block; }
+
+    .output-version-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .version-tab {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid #3f3f46;
+      color: #71717a;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .version-tab.active {
+      background: rgba(251,191,36,0.1);
+      border-color: rgba(251,191,36,0.3);
+      color: #fbbf24;
+    }
+    .regen-reason-wrap {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .regen-reason-select {
+      font-size: 12px;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      color: #a1a1aa;
+      border-radius: 6px;
+      padding: 4px 8px;
+      display: none;
+    }
+    .regen-reason-select.visible { display: block; }
+
+    /* Boundary panels */
+    .boundary-panel {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 22px 24px 24px;
+      margin-bottom: 20px;
+    }
+    .boundary-panel h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin: 0 0 8px;
+    }
+    .boundary-panel .boundary-sub {
+      font-size: 13px;
+      color: #a1a1aa;
+      line-height: 1.55;
+      margin: 0 0 18px;
+    }
+    .boundary-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid #27272a;
+    }
+    .boundary-row:last-child { border-bottom: none; }
+    .boundary-num {
+      flex-shrink: 0;
+      font-size: 14px;
+      font-weight: 800;
+      color: #fbbf24;
+      min-width: 22px;
+    }
+    .boundary-text {
+      font-size: 14px;
+      color: #d4d4d8;
+      line-height: 1.55;
+    }
+    .objection-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .objection-card {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .objection-text {
+      font-size: 13px;
+      font-weight: 800;
+      color: #a1a1aa;
+      margin: 0 0 8px;
+    }
+    .objection-response {
+      font-size: 14px;
+      color: #d4d4d8;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* Weekly rhythm selector */
+    .rhythm-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 820px) {
+      .rhythm-grid { grid-template-columns: 1fr; }
+    }
+    .rhythm-card {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 16px 16px 16px;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+    }
+    .rhythm-card:hover { border-color: #52525b; }
+    .rhythm-card.selected {
+      border-color: #fbbf24;
+      background: rgba(251,191,36,0.05);
+    }
+    .rhythm-badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .rhythm-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: #93c5fd;
+      background: rgba(37, 99, 235, 0.18);
+      border: 1px solid rgba(37, 99, 235, 0.45);
+      border-radius: 6px;
+      padding: 4px 10px;
+    }
+    .rhythm-recommended {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      background: rgba(251,191,36,0.12);
+      border: 1px solid rgba(251,191,36,0.25);
+      border-radius: 999px;
+      padding: 3px 10px;
+    }
+    .rhythm-label {
+      font-size: 15px;
+      font-weight: 800;
+      color: #f4f4f5;
+      margin: 0 0 10px;
+      line-height: 1.35;
+    }
+    .rhythm-activities {
+      margin: 0 0 10px;
+      padding-left: 18px;
+      color: #a1a1aa;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .rhythm-activities li { margin-bottom: 6px; }
+    .rhythm-bestfor {
+      font-size: 13px;
+      color: #d4d4d8;
+      line-height: 1.55;
+      margin: 0;
+    }
+    .rhythm-bestfor b { color: #a1a1aa; }
+    .rhythm-save-success {
+      display: none;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #4ade80;
+    }
+    .rhythm-save-success.visible { display: block; }
+
+    .save-confirm-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #27272a;
+    }
+
+    /* Congrats panel */
+    .congrats-panel {
+      display: none;
+      background: rgba(74,222,128,0.06);
+      border: 1px solid rgba(74,222,128,0.14);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin: -10px 0 28px;
+    }
+    .congrats-panel.visible { display: block; }
+    .congrats-panel h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #e4e4e7;
+    }
+    .congrats-panel p {
+      margin: 0 0 14px;
+      font-size: 14px;
+      line-height: 1.65;
+      color: #d4d4d8;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  (function() {
+    fetch('/api/auth/check', { credentials: 'include' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403) {
+          window.location.href = '/login';
+        }
+      })
+      .catch(function() {});
+  })();
+</script>
+
+<div class="lesson-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="/assets/brand/logo-mark.png" alt="PSA">
+      <span class="sidebar-logo-text">Pre-Sold<br>Authority</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Navigation</div>
+      <a href="/dashboard" class="sidebar-link">← Dashboard</a>
+      <a href="/lessons" class="sidebar-link active">Lessons</a>
+      <a href="/assets" class="sidebar-link">My Assets</a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 1 — The Authority Shift</div>
+      <a href="/lessons/lesson-1.html" class="lesson-nav-item complete" id="nav-l1">
+        <span class="lesson-badge complete" id="badge-l1">1</span>
+        Why Agents Look Interchangeable
+      </a>
+      <a href="/lessons/lesson-2.html" class="lesson-nav-item complete" id="nav-l2">
+        <span class="lesson-badge complete" id="badge-l2">2</span>
+        Visibility vs. Authority
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 2 — The System</div>
+      <a href="/lessons/lesson-3.html" class="lesson-nav-item complete" id="nav-l3">
+        <span class="lesson-badge complete" id="badge-l3">3</span>
+        The Context Card
+      </a>
+      <a href="/lessons/lesson-4.html" class="lesson-nav-item complete" id="nav-l4">
+        <span class="lesson-badge complete" id="badge-l4">4</span>
+        Authority Positioning
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 3 — Content</div>
+      <a href="/lessons/lesson-5.html" class="lesson-nav-item complete" id="nav-l5">
+        <span class="lesson-badge complete" id="badge-l5">5</span>
+        Profile + Pinned Post
+      </a>
+      <a href="/lessons/lesson-6.html" class="lesson-nav-item complete" id="nav-l6">
+        <span class="lesson-badge complete" id="badge-l6">6</span>
+        Content Pillars
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 4 — Conversion</div>
+      <a href="/lessons/lesson-7.html" class="lesson-nav-item complete" id="nav-l7">
+        <span class="lesson-badge complete" id="badge-l7">7</span>
+        Posts + DM Flow
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px;">Module 5 — Install</div>
+      <a href="/lessons/lesson-8.html" class="lesson-nav-item current" id="nav-l8">
+        <span class="lesson-badge current" id="badge-l8">8</span>
+        Boundaries + Weekly Rhythm
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+
+    <div class="breadcrumb">
+      <a href="/dashboard">Dashboard</a><span>›</span>
+      <a href="/lessons">Lessons</a><span>›</span>
+      Module 5
+    </div>
+
+    <div class="module-label">Module 5 — Installing the System Into Your Business</div>
+    <h1 class="lesson-title">Lesson 8: Boundary Language + Weekly Rhythm</h1>
+    <div class="lesson-meta-row">
+      <span>10–15 minutes</span>
+      <span class="meta-dot">·</span>
+      <span>Builders: Boundary Language Library + Weekly Rhythm Selector</span>
+    </div>
+
+    <div class="lesson-status-stack">
+      <div id="contextStatusPill" class="context-preview-pill warn">
+        ⚠ Loading your Context Card…
+      </div>
+    </div>
+
+    <div class="video-wrapper" id="videoWrapper">
+      <div class="video-placeholder-text" id="videoPlaceholder">
+        <span class="play-icon">▶</span>
+        <p>Lesson video coming soon</p>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+      <h2>Installing the System That Protects Your Time</h2>
+      <p>Authority attracts attention. But without language that sets expectations and a rhythm that keeps you consistent, the system stalls. This final lesson installs the last two components: the boundary language that keeps serious clients moving forward and filters the rest, and the weekly rhythm that makes the whole system sustainable.</p>
+      <p>Part A generates your boundary language library — a set of professional phrases for your posts, your DMs, your calls, and your objection responses. These are not scripts. They are calm, clear phrases that reinforce your positioning and protect your time without sounding harsh or salesy.</p>
+      <p>Part B is your weekly rhythm selector. You choose the time commitment that fits your current capacity — 30, 60, or 90 minutes per week. The system works when it is consistent. Choose the rhythm you will actually maintain, not the one that sounds most impressive.</p>
+    </div>
+
+    <h2 class="part-heading">Part A — Your Boundary Language Library</h2>
+
+    <div class="builder-section">
+      <div class="builder-header">
+        <span class="builder-tag">Implementation Step</span>
+        <h2>Generate Your Boundary Language</h2>
+        <p>Produces professional phrases for posts, DMs, calls, and objection handling — written in your tone and for your market.</p>
+      </div>
+
+      <div class="saved-banner" id="savedBannerA">
+        Boundary Language saved to Asset Library ✓
+      </div>
+
+      <div class="generate-input-section" id="generateControlsA">
+        <p style="font-size:14px;color:#a1a1aa;margin:0 0 16px;">Your Context Card is used as the input. Click Generate to produce your boundary language library.</p>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <button type="button" class="btn-cta-blue btn-disabled-hard" id="generateBtnA" disabled>
+            ▶ Generate My Boundary Language
+          </button>
+          <button type="button" class="btn-secondary" id="regenBtnA" style="display:none;">
+            ↺ Regenerate
+          </button>
+          <select class="regen-reason-select" id="regenReasonSelectA">
+            <option value="">Why regenerating? (optional)</option>
+            <option value="too_harsh">Too harsh</option>
+            <option value="not_my_tone">Not my tone</option>
+            <option value="too_formal">Too formal</option>
+            <option value="compliance">Compliance concern</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="generate-loading" id="generateLoadingA">
+        <div class="spinner"></div>
+        <span>Generating your boundary language library…</span>
+      </div>
+
+      <div class="output-area" id="outputAreaA">
+
+        <div class="output-version-bar" id="versionBarA"></div>
+
+        <div id="boundaryMount"></div>
+
+        <div class="save-confirm-row">
+          <button type="button" class="btn-cta-blue" id="saveBtnA">Save Boundary Language to My Assets</button>
+          <span id="saveStatusA" style="font-size:13px;color:#52525b;"></span>
+          <span id="lastSavedAtA" style="font-size:13px;color:#52525b;"></span>
+        </div>
+
+      </div>
+
+      <div class="inline-error" id="builderErrorA"></div>
+    </div>
+
+    <h2 class="part-heading">Part B — Your Weekly Rhythm</h2>
+
+    <div class="builder-section">
+      <div class="builder-header">
+        <span class="builder-tag">Implementation Step</span>
+        <h2>Choose Your Weekly Rhythm</h2>
+        <p>Pick the commitment you will actually maintain. Consistency beats intensity every time.</p>
+      </div>
+
+      <div class="rhythm-grid" id="rhythmGrid">
+        <div class="rhythm-card" data-rhythm="30" id="rhythm30">
+          <div class="rhythm-badge-row">
+            <span class="rhythm-badge">30 min / week</span>
+          </div>
+          <div class="rhythm-label">Minimum Viable Rhythm</div>
+          <ul class="rhythm-activities">
+            <li>1 authority post published</li>
+            <li>Light engagement (10–15 min responding to comments/DMs)</li>
+            <li>Weekly content review (5 min — check what's performing)</li>
+          </ul>
+          <p class="rhythm-bestfor"><b>Best for:</b> Agents in a heavy transaction period who need to stay visible without adding significant time load.</p>
+        </div>
+
+        <div class="rhythm-card" data-rhythm="60" id="rhythm60">
+          <div class="rhythm-badge-row">
+            <span class="rhythm-badge">60 min / week</span>
+            <span class="rhythm-recommended">Recommended</span>
+          </div>
+          <div class="rhythm-label">Strong Consistent Rhythm</div>
+          <ul class="rhythm-activities">
+            <li>2 authority posts published</li>
+            <li>Active engagement (20–25 min)</li>
+            <li>Content pillar review (10 min — pick next week's topics)</li>
+            <li>DM follow-up check (10 min)</li>
+          </ul>
+          <p class="rhythm-bestfor"><b>Best for:</b> Agents ready to build consistent inbound momentum. This is the recommended starting rhythm for most agents.</p>
+        </div>
+
+        <div class="rhythm-card" data-rhythm="90" id="rhythm90">
+          <div class="rhythm-badge-row">
+            <span class="rhythm-badge">90 min / week</span>
+          </div>
+          <div class="rhythm-label">Accelerated Authority Build</div>
+          <ul class="rhythm-activities">
+            <li>3 authority posts published</li>
+            <li>Deeper engagement (30 min)</li>
+            <li>Pillar and topic review (15 min)</li>
+            <li>DM follow-up and sequence check (15 min)</li>
+          </ul>
+          <p class="rhythm-bestfor"><b>Best for:</b> Agents actively building their authority presence and willing to invest more time for faster compounding.</p>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <button type="button" class="btn-cta-blue btn-disabled-hard" id="saveRhythmBtn" disabled>Save My Weekly Rhythm</button>
+        <span id="rhythmStatus" style="font-size:13px;color:#52525b;"></span>
+      </div>
+      <div class="rhythm-save-success" id="rhythmSaveSuccess">Weekly rhythm saved ✓ — your system is installed.</div>
+      <div class="inline-error" id="rhythmError"></div>
+    </div>
+
+    <div class="notes-section" id="notesSection">
+      <div class="notes-header">
+        <span class="notes-icon">📝</span>
+        <span class="notes-title">My Notes</span>
+        <span class="notes-status" id="notesStatus"></span>
+      </div>
+      <textarea
+        id="notesTextarea"
+        class="notes-textarea"
+        placeholder="Take notes as you work through this lesson — saved automatically to your account…"
+        rows="5"
+      ></textarea>
+    </div>
+
+    <div class="lesson-complete-row" id="lessonCompleteRow" style="display:none;">
+      <span class="complete-chip" id="completeChip">✓ Lesson complete</span>
+    </div>
+
+    <div class="congrats-panel" id="congratsPanel">
+      <h3>Your Pre-Sold Authority System is Installed</h3>
+      <p>You now have your positioning, your profile copy, your content pillars, your first 10 posts, your DM flow, and your boundary language — all built for your market and saved to your asset library. Your next step is to deploy. Start with your LinkedIn headline today.</p>
+      <a href="/assets" class="nav-btn next-btn">View My Asset Library →</a>
+    </div>
+
+    <div class="lesson-nav-footer">
+      <a href="/lessons/lesson-7.html" class="nav-btn">← Lesson 7: Post Generator + DM Flow</a>
+      <a href="/assets" class="nav-btn next-btn">View My Asset Library →</a>
+    </div>
+
+  </main>
+</div>
+
+<script>
+(function() {
+
+  function esc(s) {
+    if (!s) return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function el(id) { return document.getElementById(id); }
+
+  var contextCardComplete = false;
+
+  var currentDisplayOutputA = null;
+  var currentAssetIdA = null;
+  var currentVersionA = 0;
+  var allVersionsA = [];
+  var lastSavedUpdatedAtA = null;
+
+  var selectedRhythm = null; // "30" | "60" | "90"
+  var rhythmSaved = false;
+
+  var persistedRhythmPrefix = null; // "weekly_rhythm:60"
+
+  fetch('/api/auth/check', { credentials: 'include' })
+    .then(function(r) {
+      if (r.status === 401 || r.status === 403) window.location.href = '/login';
+    })
+    .catch(function() {});
+
+  function getMaxVersionNumber(versions) {
+    var max = 0;
+    for (var i = 0; i < versions.length; i++) {
+      var v = versions[i];
+      if (v && typeof v.versionNumber === 'number' && v.versionNumber > max) {
+        max = v.versionNumber;
+      }
+    }
+    return max;
+  }
+
+  function parseVersionDisplay(v) {
+    var ec = v.editedContent != null ? v.editedContent : v.edited_content;
+    var raw = v.rawOutput != null ? v.rawOutput : v.raw_output;
+    var display = ec != null ? ec : raw;
+    if (!display || typeof display !== 'object') display = {};
+    return JSON.parse(JSON.stringify(display));
+  }
+
+  function renderContextPill(data) {
+    var pill = el('contextStatusPill');
+    if (!pill) return;
+    var cc = (data && data.contextCard) ? data.contextCard : null;
+    var hasBasics = cc && cc.full_name && cc.market_location && cc.agent_role;
+    var hasPositioning = cc && cc.process_step_1 && cc.process_step_2 && cc.process_step_3;
+    contextCardComplete = !!(hasBasics && hasPositioning);
+    if (hasBasics && hasPositioning) {
+      pill.className = 'context-preview-pill';
+      pill.textContent = '✓ Context Card Ready';
+    } else {
+      pill.className = 'context-preview-pill warn';
+      pill.innerHTML = '⚠ Your Context Card is incomplete — <a href="/context-card-edit.html" style="color:#fbbf24;margin-left:4px;">complete it first</a>';
+    }
+  }
+
+  function updateGenerateEnabled() {
+    var genA = el('generateBtnA');
+    var can = contextCardComplete;
+    if (genA) {
+      genA.disabled = !can;
+      genA.classList.toggle('btn-disabled-hard', !can);
+    }
+  }
+
+  function loadVideo() {
+    fetch('/api/settings/lesson_8_video_url', { credentials: 'include' })
+      .then(function(res) {
+        if (!res.ok) return;
+        return res.json();
+      })
+      .then(function(data) {
+        if (!data) return;
+        var url = data.value || data.url || null;
+        if (!url || typeof url !== 'string') return;
+        var wrap = el('videoWrapper');
+        var ph = el('videoPlaceholder');
+        if (!wrap) return;
+        if (ph) ph.style.display = 'none';
+        var iframe = document.createElement('iframe');
+        iframe.src = url;
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.setAttribute('loading', 'lazy');
+        iframe.title = 'Lesson 8 video';
+        wrap.appendChild(iframe);
+      })
+      .catch(function() {});
+  }
+
+  function syncActiveVersionFromDOMA() {
+    for (var i = 0; i < allVersionsA.length; i++) {
+      if (allVersionsA[i].versionNumber === currentVersionA) {
+        if (allVersionsA[i] && typeof allVersionsA[i] === 'object' && currentDisplayOutputA) {
+          allVersionsA[i].displayOutput = JSON.parse(JSON.stringify(currentDisplayOutputA));
+        }
+        return;
+      }
+    }
+  }
+
+  function renderBoundaryPanel(title, sub, lines) {
+    lines = Array.isArray(lines) ? lines : [];
+    var html = '';
+    html += '<div class="boundary-panel">';
+    html += '<h3>' + esc(title) + '</h3>';
+    html += '<p class="boundary-sub">' + esc(sub) + '</p>';
+    for (var i = 0; i < lines.length; i++) {
+      html += '<div class="boundary-row">';
+      html += '<span class="boundary-num">' + (i + 1) + '</span>';
+      html += '<span class="boundary-text">' + esc(lines[i]) + '</span>';
+      html += '</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function renderObjections(items) {
+    items = Array.isArray(items) ? items : [];
+    var html = '';
+    html += '<div class="boundary-panel">';
+    html += '<h3>Objection Responses</h3>';
+    html += '<p class="boundary-sub">Calm, authority-based responses to common commission and skepticism objections.</p>';
+    html += '<div class="objection-grid">';
+    for (var i = 0; i < items.length; i++) {
+      var it = items[i] || {};
+      html += '<div class="objection-card">';
+      html += '<p class="objection-text">' + esc(it.objection || '') + '</p>';
+      html += '<p class="objection-response">' + esc(it.response || '') + '</p>';
+      html += '</div>';
+    }
+    html += '</div></div>';
+    return html;
+  }
+
+  function renderBoundaryLibrary(data) {
+    var mount = el('boundaryMount');
+    if (!mount) return;
+    data = data || {};
+    var html = '';
+
+    html += renderBoundaryPanel(
+      'Post Filter Lines',
+      'Embed these in your posts to attract serious prospects and let tire-kickers self-select out.',
+      data.post_filter_lines
+    );
+
+    html += renderBoundaryPanel(
+      'DM Boundary Lines',
+      'Use these when someone in your DMs is not showing signs of seriousness.',
+      data.dm_boundary_lines
+    );
+
+    html += renderBoundaryPanel(
+      'Call Opening Lines',
+      'Set a serious, calm tone in the first 30 seconds of every call.',
+      data.call_opening_lines
+    );
+
+    html += renderBoundaryPanel(
+      'Time Protection Lines',
+      'Professional phrases that protect your schedule without sounding dismissive.',
+      data.time_protection_lines
+    );
+
+    html += renderObjections(data.objection_responses);
+
+    mount.innerHTML = html;
+  }
+
+  function renderOutputA(displayOutput, versionNum) {
+    currentDisplayOutputA = displayOutput
+      ? JSON.parse(JSON.stringify(displayOutput))
+      : null;
+
+    renderBoundaryLibrary(currentDisplayOutputA);
+    el('outputAreaA').classList.add('visible');
+    renderVersionBarA(versionNum);
+  }
+
+  function renderVersionBarA(activeVer) {
+    var bar = el('versionBarA');
+    if (!bar) return;
+
+    function ensureRegenWrap() {
+      var existing = bar.querySelector('.regen-reason-wrap');
+      if (existing) return existing;
+      var wrap = document.createElement('div');
+      wrap.className = 'regen-reason-wrap';
+      bar.appendChild(wrap);
+      return wrap;
+    }
+
+    var regenWrap = ensureRegenWrap();
+    var sel = el('regenReasonSelectA');
+    if (sel && sel.parentNode !== regenWrap) regenWrap.appendChild(sel);
+
+    var validNums = allVersionsA.map(function(v) { return v && v.versionNumber; });
+    bar.querySelectorAll('button.version-tab').forEach(function(btn) {
+      if (validNums.indexOf(Number(btn.getAttribute('data-version'))) === -1) {
+        btn.parentNode.removeChild(btn);
+      }
+    });
+
+    allVersionsA.forEach(function(v) {
+      var ver = v && typeof v.versionNumber === 'number' ? v.versionNumber : null;
+      if (ver == null) return;
+
+      var existingBtn = bar.querySelector('button.version-tab[data-version="' + ver + '"]');
+      if (!existingBtn) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'version-tab';
+        btn.textContent = 'Gen ' + ver;
+        btn.setAttribute('data-version', String(ver));
+        btn.addEventListener('click', function() {
+          syncActiveVersionFromDOMA();
+          currentVersionA = ver;
+          currentAssetIdA = v.assetId;
+          var disp = v.displayOutput ? JSON.parse(JSON.stringify(v.displayOutput)) : null;
+          renderOutputA(disp, ver);
+          el('savedBannerA').classList.remove('visible');
+          var ss = el('saveStatusA');
+          if (ss) ss.textContent = '';
+        });
+        bar.insertBefore(btn, regenWrap);
+      }
+    });
+
+    bar.querySelectorAll('button.version-tab').forEach(function(btn) {
+      var dv = btn.getAttribute('data-version');
+      var n = dv != null ? Number(dv) : NaN;
+      btn.classList.toggle('active', n === activeVer);
+    });
+  }
+
+  function showErrorA(msg) {
+    var errEl = el('builderErrorA');
+    if (!errEl) return;
+    errEl.textContent = msg;
+    errEl.classList.add('visible');
+  }
+  function clearErrorA() {
+    var errEl = el('builderErrorA');
+    if (errEl) { errEl.textContent = ''; errEl.classList.remove('visible'); }
+  }
+
+  function buildEditedContentPayloadA() {
+    return currentDisplayOutputA ? JSON.parse(JSON.stringify(currentDisplayOutputA)) : {};
+  }
+
+  async function runGenerateA() {
+    if (!contextCardComplete) return;
+    syncActiveVersionFromDOMA();
+    clearErrorA();
+    el('generateLoadingA').classList.add('visible');
+    el('generateBtnA').disabled = true;
+    el('regenBtnA').disabled = true;
+
+    var regenReason = '';
+    var sel = el('regenReasonSelectA');
+    if (sel && sel.classList.contains('visible')) {
+      regenReason = sel.value || '';
+    }
+
+    try {
+      var body = {
+        lessonId: 'lesson-8',
+        assetType: 'boundary-library'
+      };
+      if (regenReason) {
+        body.additionalInput = { regenerationReason: regenReason };
+      }
+
+      var res = await fetch('/api/builder/generate', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      var data = await res.json().catch(function() { return {}; });
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Generation failed. Please try again.');
+      }
+
+      currentAssetIdA = data.assetId;
+      var out = data.output;
+      var nextVer = getMaxVersionNumber(allVersionsA) + 1;
+      currentVersionA = nextVer;
+
+      var st = {
+        assetId: data.assetId,
+        displayOutput: out ? JSON.parse(JSON.stringify(out)) : {},
+        versionNumber: nextVer
+      };
+      allVersionsA.push(st);
+
+      renderOutputA(st.displayOutput, nextVer);
+      syncActiveVersionFromDOMA();
+
+      el('generateBtnA').style.display = 'none';
+      el('regenBtnA').style.display = 'inline-flex';
+      if (sel) sel.classList.add('visible');
+
+      el('savedBannerA').classList.remove('visible');
+      el('saveStatusA').textContent = '';
+      lastSavedUpdatedAtA = null;
+      el('lastSavedAtA').textContent = '';
+
+    } catch (err) {
+      showErrorA(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      el('generateLoadingA').classList.remove('visible');
+      el('generateBtnA').disabled = !contextCardComplete;
+      el('generateBtnA').classList.toggle('btn-disabled-hard', !contextCardComplete);
+      el('regenBtnA').disabled = false;
+    }
+  }
+
+  el('generateBtnA').addEventListener('click', runGenerateA);
+  el('regenBtnA').addEventListener('click', runGenerateA);
+
+  function showCongratsIfComplete(isComplete) {
+    var panel = el('congratsPanel');
+    if (!panel) return;
+    panel.classList.toggle('visible', !!isComplete);
+  }
+
+  el('saveBtnA').addEventListener('click', async function() {
+    if (!currentDisplayOutputA || !currentAssetIdA) {
+      showErrorA('Nothing to save yet. Generate your boundary language first.');
+      return;
+    }
+    clearErrorA();
+    syncActiveVersionFromDOMA();
+    var saveBtn = el('saveBtnA');
+    var saveStatus = el('saveStatusA');
+    saveBtn.disabled = true;
+    saveStatus.textContent = 'Saving…';
+    saveStatus.style.color = '#fbbf24';
+
+    try {
+      var editedPayload = buildEditedContentPayloadA();
+
+      var res = await fetch('/api/builder/outputs/' + currentAssetIdA, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ editedContent: editedPayload })
+      });
+
+      if (!res.ok) {
+        var d = await res.json().catch(function() { return {}; });
+        throw new Error(d.error || 'Save failed');
+      }
+
+      fetch('/api/lessons/lesson-8/progress', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_complete: true, builder_completed: true })
+      }).catch(function() {});
+
+      var row = el('lessonCompleteRow');
+      if (row) row.style.display = 'flex';
+      showCongratsIfComplete(true);
+
+      saveStatus.textContent = 'Boundary Language saved to Asset Library ✓';
+      saveStatus.style.color = '#4ade80';
+      el('savedBannerA').classList.add('visible');
+      lastSavedUpdatedAtA = new Date().toISOString();
+      el('lastSavedAtA').textContent = 'Last saved ' + new Date(lastSavedUpdatedAtA).toLocaleString();
+
+      setTimeout(function() {
+        saveStatus.textContent = '';
+      }, 3500);
+
+    } catch (err) {
+      saveStatus.textContent = 'Save failed';
+      saveStatus.style.color = '#f87171';
+      showErrorA(err.message || 'Save failed. Please try again.');
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
+
+  function setRhythmSelected(next) {
+    selectedRhythm = next;
+    ['30', '60', '90'].forEach(function(v) {
+      var card = el('rhythm' + v);
+      if (card) card.classList.toggle('selected', v === selectedRhythm);
+    });
+    var btn = el('saveRhythmBtn');
+    if (btn) {
+      btn.disabled = !selectedRhythm;
+      btn.classList.toggle('btn-disabled-hard', !selectedRhythm);
+    }
+  }
+
+  function showRhythmError(msg) {
+    var errEl = el('rhythmError');
+    if (!errEl) return;
+    errEl.textContent = msg;
+    errEl.classList.add('visible');
+  }
+  function clearRhythmError() {
+    var errEl = el('rhythmError');
+    if (errEl) { errEl.textContent = ''; errEl.classList.remove('visible'); }
+  }
+
+  function showRhythmSavedUI(saved) {
+    rhythmSaved = !!saved;
+    var msg = el('rhythmSaveSuccess');
+    if (msg) msg.classList.toggle('visible', rhythmSaved);
+  }
+
+  function buildCombinedNotesField(rhythmPrefix, notesText) {
+    var prefix = rhythmPrefix ? String(rhythmPrefix) : '';
+    var text = (notesText != null ? String(notesText) : '');
+    if (!prefix) return text;
+    if (!text) return prefix;
+    return prefix + '\n' + text;
+  }
+
+  function parseCombinedNotesField(rawNotes) {
+    var s = rawNotes != null ? String(rawNotes) : '';
+    if (!s) return { rhythmPrefix: null, notesText: '' };
+    if (s.indexOf('weekly_rhythm:') !== 0) {
+      return { rhythmPrefix: null, notesText: s };
+    }
+    var firstLineEnd = s.indexOf('\n');
+    if (firstLineEnd === -1) {
+      return { rhythmPrefix: s.trim(), notesText: '' };
+    }
+    var prefix = s.slice(0, firstLineEnd).trim();
+    var rest = s.slice(firstLineEnd + 1);
+    return { rhythmPrefix: prefix, notesText: rest };
+  }
+
+  function attachRhythmHandlers() {
+    var grid = el('rhythmGrid');
+    if (!grid) return;
+    grid.querySelectorAll('.rhythm-card').forEach(function(card) {
+      card.addEventListener('click', function() {
+        var val = card.getAttribute('data-rhythm');
+        if (val === '30' || val === '60' || val === '90') {
+          setRhythmSelected(val);
+          clearRhythmError();
+        }
+      });
+    });
+  }
+
+  el('saveRhythmBtn').addEventListener('click', async function() {
+    if (!selectedRhythm) return;
+    clearRhythmError();
+    var btn = el('saveRhythmBtn');
+    var status = el('rhythmStatus');
+    btn.disabled = true;
+    status.textContent = 'Saving…';
+    status.style.color = '#fbbf24';
+
+    try {
+      var prefix = 'weekly_rhythm:' + selectedRhythm;
+      persistedRhythmPrefix = prefix;
+
+      var ta = el('notesTextarea');
+      var currentNotes = ta ? ta.value : '';
+      var combined = buildCombinedNotesField(prefix, currentNotes);
+
+      var res = await fetch('/api/lessons/lesson-8/progress', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes: combined })
+      });
+
+      if (!res.ok) {
+        var d = await res.json().catch(function() { return {}; });
+        throw new Error(d.error || 'Save failed');
+      }
+
+      status.textContent = '';
+      showRhythmSavedUI(true);
+
+    } catch (err) {
+      status.textContent = 'Save failed';
+      status.style.color = '#f87171';
+      showRhythmError(err.message || 'Save failed. Please try again.');
+    } finally {
+      btn.disabled = !selectedRhythm;
+      btn.classList.toggle('btn-disabled-hard', !selectedRhythm);
+    }
+  });
+
+  var notesTimer = null;
+  function saveNotes(text) {
+    var statusEl = el('notesStatus');
+    if (statusEl) { statusEl.textContent = 'Saving…'; statusEl.className = 'notes-status saving'; }
+
+    if (String(text || '').indexOf('weekly_rhythm:') === 0) {
+      if (statusEl) { statusEl.textContent = ''; statusEl.className = 'notes-status'; }
+      return;
+    }
+
+    var combined = buildCombinedNotesField(persistedRhythmPrefix, text);
+    fetch('/api/lessons/lesson-8/progress', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notes: combined })
+    }).then(function(res) {
+      if (res.ok && statusEl) {
+        statusEl.textContent = 'Saved'; statusEl.className = 'notes-status saved';
+        setTimeout(function() { statusEl.textContent = ''; statusEl.className = 'notes-status'; }, 2000);
+      }
+    }).catch(function() {
+      if (statusEl) { statusEl.textContent = 'Not saved'; statusEl.className = 'notes-status'; }
+    });
+  }
+
+  var notesTA = el('notesTextarea');
+  if (notesTA) {
+    notesTA.addEventListener('input', function() {
+      clearTimeout(notesTimer);
+      var text = this.value;
+      notesTimer = setTimeout(function() { saveNotes(text); }, 1000);
+    });
+  }
+
+  function loadLessonProgress() {
+    return fetch('/api/lessons/lesson-8/progress', { credentials: 'include' })
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        if (!data) return;
+
+        var parsed = parseCombinedNotesField(data.notes);
+        persistedRhythmPrefix = parsed.rhythmPrefix;
+
+        if (persistedRhythmPrefix && persistedRhythmPrefix.indexOf('weekly_rhythm:') === 0) {
+          var val = persistedRhythmPrefix.replace('weekly_rhythm:', '').trim();
+          if (val === '30' || val === '60' || val === '90') {
+            setRhythmSelected(val);
+            showRhythmSavedUI(true);
+          }
+        }
+
+        if (notesTA) notesTA.value = parsed.notesText || '';
+
+        if (data.is_complete || data.builder_completed) {
+          var row = el('lessonCompleteRow');
+          if (row) row.style.display = 'flex';
+          showCongratsIfComplete(true);
+        } else {
+          showCongratsIfComplete(false);
+        }
+      })
+      .catch(function() {});
+  }
+
+  function mapAllVersionsToState(data) {
+    return (Array.isArray(data.allVersions) ? data.allVersions : []).map(function(v) {
+      var display = parseVersionDisplay(v);
+      return {
+        assetId: v.assetId,
+        versionNumber: v.version,
+        displayOutput: display
+      };
+    });
+  }
+
+  function loadBoundaryAsset() {
+    return fetch('/api/builder/outputs/boundary-library', { credentials: 'include' })
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        if (!data) return;
+
+        var allVersions = Array.isArray(data.allVersions) ? data.allVersions : null;
+
+        if (allVersions && allVersions.length > 0) {
+          allVersionsA = mapAllVersionsToState(data);
+
+          var last = allVersionsA[allVersionsA.length - 1];
+          currentAssetIdA = last.assetId;
+          currentVersionA = last.versionNumber;
+          if (data.updatedAt) {
+            lastSavedUpdatedAtA = data.updatedAt;
+            el('lastSavedAtA').textContent = 'Last saved ' + new Date(data.updatedAt).toLocaleString();
+          }
+
+          renderOutputA(last.displayOutput, currentVersionA);
+        } else if (data.output != null && data.assetId) {
+          var verNum = typeof data.version === 'number' ? data.version : 1;
+          allVersionsA = [{
+            assetId: data.assetId,
+            versionNumber: verNum,
+            displayOutput: data.output ? JSON.parse(JSON.stringify(data.output)) : {}
+          }];
+          currentVersionA = verNum;
+          currentAssetIdA = data.assetId;
+          if (data.updatedAt) {
+            lastSavedUpdatedAtA = data.updatedAt;
+            el('lastSavedAtA').textContent = 'Last saved ' + new Date(data.updatedAt).toLocaleString();
+          }
+          renderOutputA(allVersionsA[0].displayOutput, currentVersionA);
+        } else {
+          return;
+        }
+
+        el('regenBtnA').style.display = 'inline-flex';
+        el('generateBtnA').style.display = 'none';
+        var rs = el('regenReasonSelectA');
+        if (rs) rs.classList.add('visible');
+        syncActiveVersionFromDOMA();
+      })
+      .catch(function() {});
+  }
+
+  attachRhythmHandlers();
+
+  fetch('/api/context-card', { credentials: 'include' })
+    .then(function(r) {
+      return r.json().then(function(d) { return { ok: r.ok, data: d }; });
+    })
+    .then(function(ctx) {
+      if (ctx.ok && ctx.data) renderContextPill(ctx.data);
+      else {
+        var pill = el('contextStatusPill');
+        if (pill) {
+          pill.className = 'context-preview-pill warn';
+          pill.textContent = '⚠ Could not load Context Card';
+        }
+        contextCardComplete = false;
+      }
+      updateGenerateEnabled();
+    })
+    .catch(function() {
+      var pill = el('contextStatusPill');
+      if (pill) {
+        pill.className = 'context-preview-pill warn';
+        pill.textContent = '⚠ Could not load Context Card';
+      }
+      contextCardComplete = false;
+      updateGenerateEnabled();
+    })
+    .then(function() {
+      return Promise.all([
+        loadVideo(),
+        loadLessonProgress(),
+        loadBoundaryAsset()
+      ]);
+    })
+    .then(function() {
+      updateGenerateEnabled();
+    });
+
+})();
+</script>
+
+</body>
+</html>
+
