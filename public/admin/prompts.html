@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · Prompt Management — Pre-Sold Authority</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/style-premium.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .admin-shell { min-height: 100vh; }
+
+    /* Top nav (copy identical across all admin pages) */
+    .admin-topbar {
+      width: 100%;
+      background: #18181b;
+      border-top: 3px solid #fbbf24;
+      border-bottom: 1px solid #27272a;
+    }
+    .admin-topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      box-sizing: border-box;
+    }
+    .admin-wordmark {
+      color: #fbbf24;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    .admin-nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+      flex: 1;
+    }
+    .admin-nav a {
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 2px 8px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s ease;
+    }
+    .admin-nav a:hover { color: var(--color-text-primary); }
+    .admin-nav a.active { border-bottom-color: #fbbf24; color: var(--color-text-primary); }
+    .admin-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+    .admin-badge {
+      background: #fbbf24;
+      color: #09090b;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .admin-email {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .admin-signout {
+      background: transparent;
+      border: 1px solid #3f3f46;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .admin-signout:hover { border-color: #ef4444; color: #ef4444; }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 18px 48px;
+      box-sizing: border-box;
+    }
+    h1 { font-size: 26px; font-weight: 800; margin: 0 0 6px; letter-spacing: -0.02em; }
+    .sub { color: var(--color-text-secondary); font-size: 14px; margin: 0 0 18px; }
+
+    .panel {
+      background: var(--color-bg-surface);
+      border: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 18px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+    @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
+
+    .label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .label {
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #a1a1aa;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .badge-live { color: #4ade80; background: rgba(74,222,128,0.10); border-color: rgba(74,222,128,0.20); }
+    .badge-draft { color: #fbbf24; background: rgba(251,191,36,0.10); border-color: rgba(251,191,36,0.22); }
+    .badge-muted { color: #a1a1aa; background: rgba(161,161,170,0.10); border-color: rgba(161,161,170,0.20); }
+
+    textarea {
+      width: 100%;
+      min-height: 300px;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      color: #e4e4e7;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 13px;
+      line-height: 1.55;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.15s ease;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      box-sizing: border-box;
+    }
+    textarea:focus { border-color: #71717a; }
+    .draft-textarea { min-height: 400px; }
+
+    .btn {
+      border: 1px solid #3f3f46;
+      background: transparent;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn:hover { border-color: #71717a; color: var(--color-text-primary); }
+    .btn-primary {
+      background: #2563eb;
+      border-color: transparent;
+      color: #fff;
+    }
+    .btn-primary:hover { background: #1d4ed8; color: #fff; }
+    .btn-amber { background: rgba(251,191,36,0.12); border-color: rgba(251,191,36,0.25); color: #fbbf24; }
+    .btn-amber:hover { border-color: rgba(251,191,36,0.55); color: #fbbf24; }
+    .btn-danger { border-color: rgba(248,113,113,0.35); color: #f87171; }
+    .btn-danger:hover { border-color: rgba(248,113,113,0.7); color: #f87171; }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      align-items: center;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      max-width: 520px;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: #e4e4e7;
+      display: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      z-index: 50;
+    }
+    .toast.visible { display: block; }
+    .toast-title { font-weight: 900; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .toast-msg { font-size: 13px; color: #d4d4d8; margin-top: 6px; line-height: 1.5; white-space: pre-wrap; }
+    .toast.error { border-color: rgba(248,113,113,0.35); }
+    .toast.error .toast-title { color: #f87171; }
+    .toast.ok { border-color: rgba(74,222,128,0.25); }
+    .toast.ok .toast-title { color: #4ade80; }
+
+    select {
+      background-color: #18181b;
+      color: #f4f4f5;
+      border: 1px solid #3f3f46;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 14px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    select option {
+      background-color: #18181b;
+      color: #f4f4f5;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #fbbf24;
+    }
+
+    select#lessonSelect {
+      max-width: 520px;
+      box-sizing: border-box;
+    }
+
+    pre {
+      width: 100%;
+      max-height: 420px;
+      overflow: auto;
+      background: #09090b;
+      border: 1px solid #27272a;
+      color: #d4d4d8;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+      box-sizing: border-box;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      text-align: left;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #71717a;
+      padding: 10px 10px;
+      border-bottom: 1px solid #27272a;
+    }
+    tbody td {
+      padding: 10px 10px;
+      border-bottom: 1px solid #27272a;
+      font-size: 13px;
+      vertical-align: top;
+      color: #d4d4d8;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    .muted { color: #a1a1aa; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+
+    <script>
+      (async () => {
+        const res = await fetch('/api/auth/check');
+        if (!res.ok) { window.location.href = '/login'; return; }
+        const data = await res.json();
+        if (data.role !== 'admin') { window.location.href = '/dashboard'; return; }
+        document.getElementById('adminEmail').textContent = data.email || '';
+      })();
+    </script>
+
+    <header class="admin-topbar">
+      <div class="admin-topbar-inner">
+        <div class="admin-wordmark">PSA Admin</div>
+        <nav class="admin-nav" aria-label="Admin">
+          <a href="/admin/students.html">Students</a>
+          <a href="/admin/prompts.html" class="active">Prompts</a>
+          <a href="/admin/settings.html">Settings</a>
+          <a href="/admin/events.html">Events</a>
+          <a href="/admin/analytics.html">Analytics</a>
+        </nav>
+        <div class="admin-right">
+          <span class="admin-badge">Admin</span>
+          <span class="admin-email" id="adminEmail"></span>
+          <button class="admin-signout" id="signOutBtn" type="button">Sign Out</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="page">
+      <h1>Prompt Management</h1>
+      <p class="sub">View, draft, preview, publish, and roll back AI prompts per lesson.</p>
+
+      <div class="panel" style="margin-bottom: 14px;">
+        <div class="label-row">
+          <div class="label">Lesson</div>
+        </div>
+        <select id="lessonSelect">
+          <option value="">Loading lessons…</option>
+        </select>
+        <div id="lessonMeta" class="muted" style="margin-top: 10px; font-size: 13px;"></div>
+      </div>
+
+      <div class="row">
+        <!-- Panel 1 -->
+        <section class="panel">
+          <div class="label-row">
+            <div class="label">Live Prompt <span class="badge badge-live">LIVE</span></div>
+          </div>
+          <div id="noBuilderNotice" class="muted" style="display:none; margin: 0 0 10px; font-size: 13px; line-height: 1.55;">
+            This lesson has no AI builder. Select a lesson from the dropdown above.
+          </div>
+          <textarea id="liveTextarea" readonly></textarea>
+          <div class="controls">
+            <button class="btn btn-primary" id="createDraftBtn" type="button">Create Draft</button>
+            <span class="muted" id="liveHint" style="font-size: 12px;"></span>
+          </div>
+        </section>
+
+        <!-- Panel 2 -->
+        <section class="panel" id="draftPanel" style="display:none;">
+          <div class="label-row">
+            <div class="label">Draft <span class="badge badge-draft">DRAFT</span></div>
+            <div class="muted" id="draftStatus" style="font-size:12px;"></div>
+          </div>
+          <textarea id="draftTextarea" class="draft-textarea"></textarea>
+          <div class="controls">
+            <button class="btn btn-amber" id="previewBtn" type="button">Preview with Sample Data</button>
+            <button class="btn btn-primary" id="publishBtn" type="button">Publish Draft</button>
+            <button class="btn btn-danger" id="discardBtn" type="button">Discard Draft</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Panel 3 -->
+      <section class="panel" id="previewPanel" style="display:none; margin-top: 14px;">
+        <div class="label-row">
+          <div class="label">Preview Output <span class="badge badge-muted">NOT SAVED</span></div>
+        </div>
+        <pre id="previewPre"></pre>
+        <div class="controls">
+          <button class="btn" id="closePreviewBtn" type="button">Close Preview</button>
+        </div>
+      </section>
+
+      <!-- Panel 4 -->
+      <section class="panel" id="historyPanel" style="margin-top: 14px;">
+        <div class="label-row">
+          <div class="label">Version History</div>
+        </div>
+        <div id="versionsEmpty" class="muted" style="display:none; padding: 8px 2px;">No prior versions yet.</div>
+        <div style="overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 12%;">Version #</th>
+                <th style="width: 28%;">Published At</th>
+                <th style="width: 30%;">Published By</th>
+                <th style="width: 30%;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="versionsBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast">
+    <div class="toast-title" id="toastTitle"></div>
+    <div class="toast-msg" id="toastMsg"></div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function showToast(type, title, msg, ms = 3500) {
+      const t = $('toast');
+      t.className = `toast visible ${type}`;
+      $('toastTitle').textContent = title;
+      $('toastMsg').textContent = msg || '';
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => {
+        t.className = 'toast';
+      }, ms);
+    }
+
+    function safeJsonPretty(s) {
+      try {
+        const obj = JSON.parse(s);
+        return JSON.stringify(obj, null, 2);
+      } catch {
+        return s;
+      }
+    }
+
+    function debounce(fn, ms) {
+      let t = null;
+      return (...args) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...args), ms);
+      };
+    }
+
+    let lessons = [];
+    let currentLessonId = null;
+    let lastLoadedDraft = null;
+
+    function setActiveNav() {
+      document.querySelectorAll('.admin-nav a').forEach(a => a.classList.remove('active'));
+      const href = '/admin/prompts.html';
+      const a = document.querySelector(`.admin-nav a[href="${href}"]`);
+      if (a) a.classList.add('active');
+    }
+
+    function resetPreview() {
+      $('previewPanel').style.display = 'none';
+      $('previewPre').textContent = '';
+    }
+
+    async function fetchLessons() {
+      const res = await fetch('/api/lessons', { credentials: 'include' });
+      if (!res.ok) throw new Error('Failed to load lessons');
+      const data = await res.json();
+      const list = [];
+      const modules = data && data.modules ? data.modules : {};
+      Object.keys(modules).forEach(mk => {
+        const arr = Array.isArray(modules[mk]) ? modules[mk] : [];
+        for (const l of arr) list.push(l);
+      });
+      return list.filter((l) => {
+        if (!l || typeof l.id !== 'string') return false;
+        if (!/^lesson-[45678]$/.test(l.id)) return false;
+        if (Object.prototype.hasOwnProperty.call(l, 'builder_prompt_template')) {
+          return l.builder_prompt_template != null;
+        }
+        return true;
+      });
+    }
+
+    function renderLessonSelect() {
+      const sel = $('lessonSelect');
+      sel.innerHTML = '';
+      for (const l of lessons) {
+        const opt = document.createElement('option');
+        opt.value = l.id;
+        opt.textContent = l.title || l.id;
+        sel.appendChild(opt);
+      }
+      const preferred = 'lesson-4';
+      currentLessonId = lessons.some(l => l.id === preferred) ? preferred : (lessons.length ? lessons[0].id : null);
+      if (currentLessonId) sel.value = currentLessonId;
+    }
+
+    function renderVersions(versions, lessonId) {
+      const body = $('versionsBody');
+      body.innerHTML = '';
+      const list = Array.isArray(versions) ? versions : [];
+
+      $('versionsEmpty').style.display = list.length ? 'none' : 'block';
+      if (!list.length) return;
+
+      // newest = highest number
+      const maxVerNum = list.length;
+      list.forEach((v, idx) => {
+        const tr = document.createElement('tr');
+        const verNumber = maxVerNum - idx;
+        tr.innerHTML = `
+          <td class="mono muted">${verNumber}</td>
+          <td class="muted">${escapeHtml(v.published_at || '—')}</td>
+          <td class="muted">${escapeHtml(v.published_by || '—')}</td>
+          <td>
+            <button class="btn btn-danger" type="button" data-rollback="${escapeAttr(v.id)}">Rollback</button>
+          </td>
+        `;
+        tr.querySelector('button').addEventListener('click', async () => {
+          const ok = window.confirm('Restore this version as the live prompt? The current live prompt will be archived.');
+          if (!ok) return;
+          try {
+            await postJson(`/api/admin/lessons/${encodeURIComponent(lessonId)}/prompts/${encodeURIComponent(v.id)}/rollback`, {});
+            showToast('ok', 'Rolled back', 'Live prompt updated.');
+            await loadLessonPrompts(lessonId);
+          } catch (e) {
+            showToast('error', 'Rollback failed', e.message || String(e));
+          }
+        });
+        body.appendChild(tr);
+      });
+    }
+
+    function showDraftPanel(show) {
+      $('draftPanel').style.display = show ? 'block' : 'none';
+      if (!show) $('draftStatus').textContent = '';
+    }
+
+    async function loadLessonPrompts(lessonId) {
+      resetPreview();
+      currentLessonId = lessonId;
+      $('lessonMeta').textContent = '';
+      $('liveTextarea').value = 'Loading…';
+      showDraftPanel(false);
+      $('draftTextarea').value = '';
+      lastLoadedDraft = null;
+      setNoBuilderUi(false);
+
+      const res = await fetch(`/api/admin/lessons/${encodeURIComponent(lessonId)}/prompts`, { credentials: 'include' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Failed to load prompt data');
+
+      const lesson = data.lesson || {};
+      $('lessonMeta').textContent = lesson.title ? `Lesson: ${lesson.title}` : `Lesson: ${lessonId}`;
+
+      if (data.no_builder === true) {
+        setNoBuilderUi(true);
+        $('liveTextarea').value = '';
+        return;
+      }
+
+      $('liveTextarea').value = lesson.builder_prompt_template || '';
+      const draft = lesson.builder_prompt_draft;
+      lastLoadedDraft = typeof draft === 'string' ? draft : null;
+      if (draft != null && draft !== '') {
+        $('draftTextarea').value = draft;
+        showDraftPanel(true);
+        $('draftStatus').textContent = 'Loaded saved draft';
+      }
+
+      renderVersions(data.versions, lessonId);
+    }
+
+    function setNoBuilderUi(on) {
+      const notice = $('noBuilderNotice');
+      const createBtn = $('createDraftBtn');
+      const history = $('historyPanel');
+      if (notice) notice.style.display = on ? 'block' : 'none';
+      if (createBtn) createBtn.style.display = on ? 'none' : 'inline-flex';
+      if (history) history.style.display = on ? 'none' : 'block';
+    }
+
+    async function postJson(url, body) {
+      const res = await fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body || {})
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+      return data;
+    }
+
+    const saveDraftDebounced = debounce(async () => {
+      if (!currentLessonId) return;
+      const draftText = $('draftTextarea').value;
+      $('draftStatus').textContent = 'Saving…';
+      try {
+        await postJson(`/api/admin/lessons/${encodeURIComponent(currentLessonId)}/prompts/draft`, { draftText });
+        $('draftStatus').textContent = 'Saved';
+        setTimeout(() => { if ($('draftStatus').textContent === 'Saved') $('draftStatus').textContent = ''; }, 1200);
+      } catch (e) {
+        $('draftStatus').textContent = 'Not saved';
+      }
+    }, 500);
+
+    function escapeHtml(s) {
+      return String(s || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+    function escapeAttr(s) {
+      return escapeHtml(s).replaceAll('\n', '&#10;');
+    }
+
+    $('createDraftBtn').addEventListener('click', () => {
+      const live = $('liveTextarea').value || '';
+      $('draftTextarea').value = live;
+      showDraftPanel(true);
+      $('draftStatus').textContent = 'Draft created from live prompt';
+      resetPreview();
+      $('draftTextarea').focus();
+    });
+
+    $('draftTextarea').addEventListener('blur', saveDraftDebounced);
+
+    $('previewBtn').addEventListener('click', async () => {
+      if (!currentLessonId) return;
+      const btn = $('previewBtn');
+      btn.disabled = true;
+      btn.textContent = 'Previewing…';
+      try {
+        const draftText = $('draftTextarea').value;
+        const data = await postJson(`/api/admin/lessons/${encodeURIComponent(currentLessonId)}/prompts/preview`, { draftText });
+        $('previewPre').textContent = safeJsonPretty(data.output || '');
+        $('previewPanel').style.display = 'block';
+      } catch (e) {
+        showToast('error', 'Preview failed', e.message || String(e));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Preview with Sample Data';
+      }
+    });
+
+    $('closePreviewBtn').addEventListener('click', () => {
+      resetPreview();
+    });
+
+    $('publishBtn').addEventListener('click', async () => {
+      if (!currentLessonId) return;
+      const ok = window.confirm('Publish this draft as the live prompt?\n\nThe current live prompt will be saved to version history.');
+      if (!ok) return;
+      try {
+        const draftText = $('draftTextarea').value;
+        await postJson(`/api/admin/lessons/${encodeURIComponent(currentLessonId)}/prompts/publish`, { draftText });
+        showToast('ok', 'Published', 'Draft is now live.');
+        await loadLessonPrompts(currentLessonId);
+        showDraftPanel(false);
+        $('draftTextarea').value = '';
+      } catch (e) {
+        showToast('error', 'Publish failed', e.message || String(e));
+      }
+    });
+
+    $('discardBtn').addEventListener('click', async () => {
+      if (!currentLessonId) return;
+      const ok = window.confirm('Discard this draft? This will clear the saved draft in the database.');
+      if (!ok) return;
+      try {
+        await postJson(`/api/admin/lessons/${encodeURIComponent(currentLessonId)}/prompts/draft`, { draftText: '' });
+        $('draftTextarea').value = '';
+        showDraftPanel(false);
+        resetPreview();
+        showToast('ok', 'Draft discarded', 'Saved draft cleared.');
+        await loadLessonPrompts(currentLessonId);
+      } catch (e) {
+        showToast('error', 'Discard failed', e.message || String(e));
+      }
+    });
+
+    $('lessonSelect').addEventListener('change', async () => {
+      const id = $('lessonSelect').value;
+      if (!id) return;
+      try {
+        await loadLessonPrompts(id);
+      } catch (e) {
+        showToast('error', 'Load failed', e.message || String(e));
+      }
+    });
+
+    $('signOutBtn').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/login';
+    });
+
+    async function init() {
+      setActiveNav();
+      try {
+        lessons = await fetchLessons();
+        renderLessonSelect();
+        if (currentLessonId) await loadLessonPrompts(currentLessonId);
+      } catch (e) {
+        showToast('error', 'Init failed', e.message || String(e));
+        $('lessonSelect').innerHTML = '<option value="">Failed to load lessons</option>';
+        $('liveTextarea').value = '';
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
+

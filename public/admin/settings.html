@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · App Settings — Pre-Sold Authority</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/style-premium.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .admin-shell { min-height: 100vh; }
+
+    /* Top nav (copy identical across all admin pages) */
+    .admin-topbar {
+      width: 100%;
+      background: #18181b;
+      border-top: 3px solid #fbbf24;
+      border-bottom: 1px solid #27272a;
+    }
+    .admin-topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      box-sizing: border-box;
+    }
+    .admin-wordmark {
+      color: #fbbf24;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    .admin-nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+      flex: 1;
+    }
+    .admin-nav a {
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 2px 8px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s ease;
+    }
+    .admin-nav a:hover { color: var(--color-text-primary); }
+    .admin-nav a.active { border-bottom-color: #fbbf24; color: var(--color-text-primary); }
+    .admin-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+    .admin-badge {
+      background: #fbbf24;
+      color: #09090b;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .admin-email {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .admin-signout {
+      background: transparent;
+      border: 1px solid #3f3f46;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .admin-signout:hover { border-color: #ef4444; color: #ef4444; }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 18px 48px;
+      box-sizing: border-box;
+    }
+    .page h1 {
+      font-size: 26px;
+      font-weight: 800;
+      margin: 0 0 6px;
+      letter-spacing: -0.02em;
+    }
+    .sub {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      margin: 0 0 18px;
+    }
+
+    .panel {
+      background: var(--color-bg-surface);
+      border: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 18px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead th {
+      text-align: left;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #71717a;
+      padding: 12px 10px;
+      border-bottom: 1px solid #27272a;
+    }
+    tbody td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #27272a;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .key-cell { color: var(--color-text-secondary); }
+    .desc-cell { color: #d4d4d8; }
+
+    .value-input {
+      width: 100%;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      color: #e4e4e7;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    .value-input:focus { border-color: #71717a; }
+
+    .btn-save {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.15s ease, opacity 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn-save:hover { background: #1d4ed8; }
+    .btn-save:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .status-text {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 12px;
+      color: #71717a;
+      min-height: 16px;
+    }
+    .status-ok { color: #4ade80; }
+    .status-err { color: #f87171; }
+
+    .flash-ok { background: rgba(74, 222, 128, 0.08); }
+    .flash-err { background: rgba(248, 113, 113, 0.08); }
+
+    .muted { color: #71717a; }
+
+    @media (max-width: 820px) {
+      .admin-topbar-inner { flex-wrap: wrap; justify-content: center; }
+      .admin-right { width: 100%; justify-content: center; }
+      thead { display: none; }
+      table, tbody, tr, td { display: block; width: 100%; }
+      tbody tr { border-bottom: 1px solid #27272a; padding: 10px 0; }
+      tbody tr:last-child { border-bottom: none; }
+      tbody td { border: none; padding: 8px 0; }
+      .mobile-label { display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #71717a; margin-bottom: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+
+    <script>
+      (async () => {
+        const res = await fetch('/api/auth/check');
+        if (!res.ok) { window.location.href = '/login'; return; }
+        const data = await res.json();
+        if (data.role !== 'admin') { window.location.href = '/dashboard'; return; }
+        document.getElementById('adminEmail').textContent = data.email || '';
+      })();
+    </script>
+
+    <header class="admin-topbar">
+      <div class="admin-topbar-inner">
+        <div class="admin-wordmark">PSA Admin</div>
+        <nav class="admin-nav" aria-label="Admin">
+          <a href="/admin/students.html">Students</a>
+          <a href="/admin/prompts.html">Prompts</a>
+          <a href="/admin/settings.html" class="active">Settings</a>
+          <a href="/admin/events.html">Events</a>
+          <a href="/admin/analytics.html">Analytics</a>
+        </nav>
+        <div class="admin-right">
+          <span class="admin-badge">Admin</span>
+          <span class="admin-email" id="adminEmail"></span>
+          <button class="admin-signout" id="signOutBtn" type="button">Sign Out</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="page">
+      <h1>App Settings</h1>
+      <p class="sub">Edit global configuration values. Changes take effect immediately.</p>
+
+      <div class="panel">
+        <div id="loading" class="muted" style="padding: 8px 2px;">Loading settings…</div>
+        <div id="error" class="muted" style="display:none;padding: 8px 2px;color:#f87171;"></div>
+        <div style="overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 22%;">Key</th>
+                <th style="width: 28%;">Description</th>
+                <th style="width: 28%;">Value</th>
+                <th style="width: 14%;">Last Updated</th>
+                <th style="width: 8%;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="settingsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function fmtDate(s) {
+      if (!s) return '—';
+      const d = new Date(s);
+      if (Number.isNaN(d.getTime())) return String(s);
+      return d.toLocaleString();
+    }
+
+    function describeKey(key) {
+      if (key === 'vsl_embed_url') return 'VSL Embed URL (sales page video)';
+      if (key === 'support_email') return 'Support Email Address';
+      if (key === 'checkout_headline') return 'Checkout Page Headline';
+      if (key === 'checkout_description') return 'Checkout Page Description';
+      const m = key.match(/^lesson_(\d+)_video_url$/);
+      if (m) return `Lesson ${m[1]} Video URL`;
+      return key;
+    }
+
+    function flashRow(tr, klass) {
+      tr.classList.add(klass);
+      setTimeout(() => tr.classList.remove(klass), 650);
+    }
+
+    function renderRow(setting) {
+      const tr = document.createElement('tr');
+      tr.dataset.key = setting.key;
+
+      const val = setting.value === null ? '' : String(setting.value);
+      const placeholder = setting.value === null ? 'null' : '';
+
+      tr.innerHTML = `
+        <td class="key-cell mono">
+          <span class="mobile-label">Key</span>
+          ${escapeHtml(setting.key)}
+        </td>
+        <td class="desc-cell">
+          <span class="mobile-label">Description</span>
+          ${escapeHtml(describeKey(setting.key))}
+        </td>
+        <td>
+          <span class="mobile-label">Value</span>
+          <input class="value-input" type="text" value="${escapeAttr(val)}" placeholder="${escapeAttr(placeholder)}" />
+          <div class="status-text" aria-live="polite"></div>
+        </td>
+        <td class="muted">
+          <span class="mobile-label">Last Updated</span>
+          <span class="updated-at">${escapeHtml(fmtDate(setting.updated_at))}</span>
+        </td>
+        <td>
+          <span class="mobile-label">Action</span>
+          <button class="btn-save" type="button">Save</button>
+        </td>
+      `;
+
+      const input = tr.querySelector('input');
+      const btn = tr.querySelector('button');
+      const status = tr.querySelector('.status-text');
+      const updated = tr.querySelector('.updated-at');
+
+      btn.addEventListener('click', async () => {
+        const key = tr.dataset.key;
+        const value = input.value;
+        btn.disabled = true;
+        status.className = 'status-text';
+        status.textContent = 'Saving…';
+        try {
+          const res = await fetch(`/api/admin/settings/${encodeURIComponent(key)}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ value })
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            const msg = data && (data.message || data.error) ? (data.message || data.error) : 'Save failed';
+            throw new Error(msg);
+          }
+
+          flashRow(tr, 'flash-ok');
+          status.classList.add('status-ok');
+          status.textContent = 'Saved ✓';
+          updated.textContent = fmtDate(new Date().toISOString());
+          setTimeout(() => {
+            status.textContent = '';
+            status.className = 'status-text';
+          }, 2000);
+        } catch (err) {
+          flashRow(tr, 'flash-err');
+          status.classList.add('status-err');
+          status.textContent = err && err.message ? err.message : 'Save failed';
+        } finally {
+          btn.disabled = false;
+        }
+      });
+
+      return tr;
+    }
+
+    function escapeHtml(s) {
+      return String(s || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function escapeAttr(s) {
+      return escapeHtml(s).replaceAll('\n', '&#10;');
+    }
+
+    async function loadSettings() {
+      $('loading').style.display = 'block';
+      $('error').style.display = 'none';
+      $('settingsBody').innerHTML = '';
+
+      try {
+        const res = await fetch('/api/admin/settings');
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const msg = data && (data.message || data.error) ? (data.message || data.error) : 'Failed to load settings';
+          throw new Error(msg);
+        }
+
+        const settings = Array.isArray(data.settings) ? data.settings : [];
+        for (const s of settings) {
+          $('settingsBody').appendChild(renderRow(s));
+        }
+        if (settings.length === 0) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td colspan="5" class="muted" style="padding: 14px 10px;">No settings found.</td>`;
+          $('settingsBody').appendChild(tr);
+        }
+      } catch (err) {
+        $('error').style.display = 'block';
+        $('error').textContent = err && err.message ? err.message : 'Failed to load settings';
+      } finally {
+        $('loading').style.display = 'none';
+      }
+    }
+
+    $('signOutBtn').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/login';
+    });
+
+    loadSettings();
+  </script>
+</body>
+</html>
+

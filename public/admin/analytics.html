@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · Analytics — Pre-Sold Authority</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/style-premium.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .admin-shell { min-height: 100vh; }
+
+    /* Top nav (copy identical across all admin pages) */
+    .admin-topbar {
+      width: 100%;
+      background: #18181b;
+      border-top: 3px solid #fbbf24;
+      border-bottom: 1px solid #27272a;
+    }
+    .admin-topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      box-sizing: border-box;
+    }
+    .admin-wordmark {
+      color: #fbbf24;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    .admin-nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+      flex: 1;
+    }
+    .admin-nav a {
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 2px 8px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s ease;
+    }
+    .admin-nav a:hover { color: var(--color-text-primary); }
+    .admin-nav a.active { border-bottom-color: #fbbf24; color: var(--color-text-primary); }
+    .admin-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+    .admin-badge {
+      background: #fbbf24;
+      color: #09090b;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .admin-email {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .admin-signout {
+      background: transparent;
+      border: 1px solid #3f3f46;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .admin-signout:hover { border-color: #ef4444; color: #ef4444; }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 18px 48px;
+      box-sizing: border-box;
+    }
+    h1 { font-size: 26px; font-weight: 800; margin: 0 0 6px; letter-spacing: -0.02em; }
+    .sub { color: var(--color-text-secondary); font-size: 14px; margin: 0 0 18px; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 1100px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 560px) { .stats { grid-template-columns: 1fr; } }
+    .stat-card {
+      background: var(--color-bg-surface);
+      border: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 14px 14px;
+    }
+    .stat-label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #71717a;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .stat-value { font-size: 22px; font-weight: 900; }
+
+    .panel {
+      background: var(--color-bg-surface);
+      border: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 16px;
+      overflow: hidden;
+      margin-top: 14px;
+    }
+    h2 { font-size: 16px; font-weight: 900; margin: 0 0 12px; letter-spacing: -0.01em; }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      text-align: left;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #71717a;
+      padding: 10px 10px;
+      border-bottom: 1px solid #27272a;
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 10px 10px;
+      border-bottom: 1px solid #27272a;
+      font-size: 13px;
+      vertical-align: top;
+      color: #d4d4d8;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    .muted { color: #a1a1aa; }
+
+    .rate {
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .rate-green { color: #4ade80; background: rgba(74,222,128,0.10); border-color: rgba(74,222,128,0.20); }
+    .rate-amber { color: #fbbf24; background: rgba(251,191,36,0.10); border-color: rgba(251,191,36,0.22); }
+    .rate-red { color: #f87171; background: rgba(248,113,113,0.10); border-color: rgba(248,113,113,0.22); }
+
+    .empty { color: #a1a1aa; padding: 10px 10px; }
+
+    select {
+      background-color: #18181b;
+      color: #f4f4f5;
+      border: 1px solid #3f3f46;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 14px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    select option {
+      background-color: #18181b;
+      color: #f4f4f5;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #fbbf24;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+
+    <script>
+      (async () => {
+        const res = await fetch('/api/auth/check');
+        if (!res.ok) { window.location.href = '/login'; return; }
+        const data = await res.json();
+        if (data.role !== 'admin') { window.location.href = '/dashboard'; return; }
+        document.getElementById('adminEmail').textContent = data.email || '';
+      })();
+    </script>
+
+    <header class="admin-topbar">
+      <div class="admin-topbar-inner">
+        <div class="admin-wordmark">PSA Admin</div>
+        <nav class="admin-nav" aria-label="Admin">
+          <a href="/admin/students.html">Students</a>
+          <a href="/admin/prompts.html">Prompts</a>
+          <a href="/admin/settings.html">Settings</a>
+          <a href="/admin/events.html">Events</a>
+          <a href="/admin/analytics.html" class="active">Analytics</a>
+        </nav>
+        <div class="admin-right">
+          <span class="admin-badge">Admin</span>
+          <span class="admin-email" id="adminEmail"></span>
+          <button class="admin-signout" id="signOutBtn" type="button">Sign Out</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="page">
+      <h1>Analytics</h1>
+      <p class="sub">Platform metrics and usage data.</p>
+
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-label">Total Students</div>
+          <div class="stat-value" id="statTotal">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Last 30 Days</div>
+          <div class="stat-value" id="statActive30">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pending Activation</div>
+          <div class="stat-value" id="statPending">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Suspended</div>
+          <div class="stat-value" id="statSuspended">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Downloads</div>
+          <div class="stat-value" id="statDownloads">—</div>
+        </div>
+      </div>
+
+      <section class="panel">
+        <h2>Lesson Completion Funnel</h2>
+        <div style="overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Lesson</th>
+                <th>Students Started</th>
+                <th>Students Completed</th>
+                <th>Completion Rate %</th>
+              </tr>
+            </thead>
+            <tbody id="funnelBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Builder Usage</h2>
+        <div style="overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Lesson</th>
+                <th>Total Generations</th>
+                <th>Saves</th>
+                <th>Regenerations</th>
+                <th>Top Regen Reason</th>
+              </tr>
+            </thead>
+            <tbody id="builderBody"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="builderEmpty" style="display:none;">No builder usage recorded yet.</div>
+      </section>
+
+      <section class="panel">
+        <h2>Asset Downloads</h2>
+        <div style="overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Asset Type</th>
+                <th>Total Downloads</th>
+                <th>Unique Students</th>
+              </tr>
+            </thead>
+            <tbody id="downloadsBody"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="downloadsEmpty" style="display:none;">No downloads recorded yet.</div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function escapeHtml(s) {
+      return String(s || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function pct(completed, started) {
+      const s = Number(started || 0);
+      const c = Number(completed || 0);
+      if (!s) return 0;
+      return Math.round((c / s) * 100);
+    }
+
+    function rateChip(p) {
+      const n = Number(p || 0);
+      if (n >= 70) return `<span class="rate rate-green">${n}%</span>`;
+      if (n >= 40) return `<span class="rate rate-amber">${n}%</span>`;
+      return `<span class="rate rate-red">${n}%</span>`;
+    }
+
+    async function getJson(url) {
+      const res = await fetch(url, { credentials: 'include' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+      return data;
+    }
+
+    function lessonLabel(row) {
+      const num = row && row.lesson_number != null ? String(row.lesson_number) : '';
+      const title = row && row.title != null ? String(row.title) : '';
+      if (num && title) return `Lesson ${num} — ${title}`;
+      return title || (row && row.id ? String(row.id) : '—');
+    }
+
+    function renderFunnel(rows) {
+      const body = $('funnelBody');
+      body.innerHTML = '';
+      const list = Array.isArray(rows) ? rows : [];
+      for (const r of list) {
+        const started = Number(r.started || 0);
+        const completed = Number(r.completed || 0);
+        const p = pct(completed, started);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${escapeHtml(lessonLabel(r))}</td>
+          <td class="muted">${started}</td>
+          <td class="muted">${completed}</td>
+          <td>${rateChip(p)}</td>
+        `;
+        body.appendChild(tr);
+      }
+    }
+
+    function renderBuilder(rows) {
+      const body = $('builderBody');
+      body.innerHTML = '';
+      const list = Array.isArray(rows) ? rows : [];
+      $('builderEmpty').style.display = list.length ? 'none' : 'block';
+      if (!list.length) return;
+      for (const r of list) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${escapeHtml(lessonLabel(r))}</td>
+          <td class="muted">${Number(r.generations || 0)}</td>
+          <td class="muted">${Number(r.saves || 0)}</td>
+          <td class="muted">${Number(r.regenerations || 0)}</td>
+          <td class="muted">${escapeHtml(r.top_regen_reason || '—')}</td>
+        `;
+        body.appendChild(tr);
+      }
+    }
+
+    function renderDownloads(rows) {
+      const body = $('downloadsBody');
+      body.innerHTML = '';
+      const list = Array.isArray(rows) ? rows : [];
+      $('downloadsEmpty').style.display = list.length ? 'none' : 'block';
+      if (!list.length) return;
+      for (const r of list) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${escapeHtml(r.asset_type || '—')}</td>
+          <td class="muted">${Number(r.total || 0)}</td>
+          <td class="muted">${Number(r.unique_students || 0)}</td>
+        `;
+        body.appendChild(tr);
+      }
+    }
+
+    async function init() {
+      const data = await getJson('/api/admin/analytics');
+      $('statTotal').textContent = data.total_students ?? '0';
+      $('statActive30').textContent = data.active_last_30_days ?? '0';
+      $('statPending').textContent = data.pending_activation ?? '0';
+      $('statSuspended').textContent = data.suspended ?? '0';
+      $('statDownloads').textContent = data.total_downloads ?? '0';
+
+      renderFunnel(data.lesson_funnel);
+      renderBuilder(data.builder_usage);
+      renderDownloads(data.asset_downloads);
+    }
+
+    $('signOutBtn').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/login';
+    });
+
+    init().catch((e) => {
+      $('statTotal').textContent = '—';
+      $('statActive30').textContent = '—';
+      $('statPending').textContent = '—';
+      $('statSuspended').textContent = '—';
+      $('statDownloads').textContent = '—';
+      $('funnelBody').innerHTML = `<tr><td colspan="4" class="muted" style="padding: 14px 10px; color:#f87171;">Failed to load analytics: ${escapeHtml(e.message || String(e))}</td></tr>`;
+      $('builderEmpty').style.display = 'block';
+      $('downloadsEmpty').style.display = 'block';
+    });
+  </script>
+</body>
+</html>
+

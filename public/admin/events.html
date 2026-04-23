@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · System Events — Pre-Sold Authority</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/style-premium.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .admin-shell { min-height: 100vh; }
+
+    /* Top nav (copy identical across all admin pages) */
+    .admin-topbar {
+      width: 100%;
+      background: #18181b;
+      border-top: 3px solid #fbbf24;
+      border-bottom: 1px solid #27272a;
+    }
+    .admin-topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      box-sizing: border-box;
+    }
+    .admin-wordmark {
+      color: #fbbf24;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    .admin-nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+      flex: 1;
+    }
+    .admin-nav a {
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 2px 8px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s ease;
+    }
+    .admin-nav a:hover { color: var(--color-text-primary); }
+    .admin-nav a.active { border-bottom-color: #fbbf24; color: var(--color-text-primary); }
+    .admin-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+    .admin-badge {
+      background: #fbbf24;
+      color: #09090b;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .admin-email {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .admin-signout {
+      background: transparent;
+      border: 1px solid #3f3f46;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .admin-signout:hover { border-color: #ef4444; color: #ef4444; }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 18px 48px;
+      box-sizing: border-box;
+    }
+    h1 { font-size: 26px; font-weight: 800; margin: 0 0 6px; letter-spacing: -0.02em; }
+    .sub { color: var(--color-text-secondary); font-size: 14px; margin: 0 0 18px; }
+
+    .panel {
+      background: var(--color-bg-surface);
+      border: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 820px) { .filters { grid-template-columns: 1fr; } }
+    .field label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #71717a;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+    select {
+      width: 100%;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      color: #e4e4e7;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s ease;
+      box-sizing: border-box;
+    }
+    select:focus { border-color: #71717a; }
+
+    .btn {
+      border: 1px solid #3f3f46;
+      background: transparent;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn:hover { border-color: #71717a; color: var(--color-text-primary); }
+    .btn-primary { background: #2563eb; border-color: transparent; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; color: #fff; }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      text-align: left;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #71717a;
+      padding: 10px 10px;
+      border-bottom: 1px solid #27272a;
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 10px 10px;
+      border-bottom: 1px solid #27272a;
+      font-size: 13px;
+      vertical-align: top;
+      color: #d4d4d8;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .muted { color: #a1a1aa; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .pill-red { color: #f87171; background: rgba(248,113,113,0.10); border-color: rgba(248,113,113,0.22); }
+    .pill-amber { color: #fbbf24; background: rgba(251,191,36,0.10); border-color: rgba(251,191,36,0.22); }
+    .pill-gray { color: #a1a1aa; background: rgba(161,161,170,0.10); border-color: rgba(161,161,170,0.22); }
+
+    .resolved-row { opacity: 0.55; }
+
+    .empty {
+      display: none;
+      padding: 20px 14px;
+      border: 1px solid rgba(74,222,128,0.25);
+      background: rgba(74,222,128,0.06);
+      border-radius: 14px;
+      margin-top: 12px;
+      color: #4ade80;
+      font-weight: 800;
+    }
+    .empty.visible { display: block; }
+
+    .last-refreshed {
+      margin-top: 10px;
+      color: #71717a;
+      font-size: 12px;
+    }
+
+    select {
+      background-color: #18181b;
+      color: #f4f4f5;
+      border: 1px solid #3f3f46;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 14px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    select option {
+      background-color: #18181b;
+      color: #f4f4f5;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #fbbf24;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+
+    <script>
+      (async () => {
+        const res = await fetch('/api/auth/check');
+        if (!res.ok) { window.location.href = '/login'; return; }
+        const data = await res.json();
+        if (data.role !== 'admin') { window.location.href = '/dashboard'; return; }
+        document.getElementById('adminEmail').textContent = data.email || '';
+      })();
+    </script>
+
+    <header class="admin-topbar">
+      <div class="admin-topbar-inner">
+        <div class="admin-wordmark">PSA Admin</div>
+        <nav class="admin-nav" aria-label="Admin">
+          <a href="/admin/students.html">Students</a>
+          <a href="/admin/prompts.html">Prompts</a>
+          <a href="/admin/settings.html">Settings</a>
+          <a href="/admin/events.html" class="active">Events</a>
+          <a href="/admin/analytics.html">Analytics</a>
+        </nav>
+        <div class="admin-right">
+          <span class="admin-badge">Admin</span>
+          <span class="admin-email" id="adminEmail"></span>
+          <button class="admin-signout" id="signOutBtn" type="button">Sign Out</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="page">
+      <h1>System Events</h1>
+      <p class="sub">Operational failures and alerts. Unresolved events shown by default.</p>
+
+      <section class="panel">
+        <div class="filters">
+          <div class="field">
+            <label for="typeSelect">Event Type</label>
+            <select id="typeSelect">
+              <option value="">All</option>
+              <option value="webhook_failed">webhook_failed</option>
+              <option value="email_failed">email_failed</option>
+              <option value="ai_gen_failed">ai_gen_failed</option>
+              <option value="pdf_failed">pdf_failed</option>
+              <option value="activation_failed">activation_failed</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="resolvedSelect">Resolved</label>
+            <select id="resolvedSelect">
+              <option value="false">Unresolved</option>
+              <option value="true">Resolved</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button id="refreshBtn" class="btn btn-primary" type="button">Refresh</button>
+          </div>
+        </div>
+
+        <div id="loading" class="muted" style="padding: 8px 2px;">Loading…</div>
+        <div id="error" class="muted" style="display:none;padding: 8px 2px;color:#f87171;"></div>
+
+        <div style="overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>User ID</th>
+                <th>Reference</th>
+                <th>Error Message</th>
+                <th>Timestamp</th>
+                <th>Resolved</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="eventsBody"></tbody>
+          </table>
+        </div>
+
+        <div class="empty" id="emptyState">✓ No events found. The system is healthy.</div>
+        <div class="last-refreshed" id="lastRefreshed">Last refreshed: —</div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function escapeHtml(s) {
+      return String(s || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function fmtTime(s) {
+      if (!s) return '—';
+      const d = new Date(s);
+      if (Number.isNaN(d.getTime())) return String(s);
+      return d.toLocaleString();
+    }
+
+    function typeBadge(type) {
+      if (type === 'webhook_failed' || type === 'activation_failed') return `<span class="pill pill-red">${escapeHtml(type)}</span>`;
+      if (type === 'email_failed' || type === 'ai_gen_failed' || type === 'pdf_failed') return `<span class="pill pill-amber">${escapeHtml(type)}</span>`;
+      return `<span class="pill pill-gray">${escapeHtml(type || 'unknown')}</span>`;
+    }
+
+    async function getJson(url) {
+      const res = await fetch(url, { credentials: 'include' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+      return data;
+    }
+
+    async function patchJson(url, body) {
+      const res = await fetch(url, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body || {})
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+      return data;
+    }
+
+    function setLastRefreshed() {
+      const d = new Date();
+      const t = d.toLocaleTimeString();
+      $('lastRefreshed').textContent = `Last refreshed: ${t}`;
+    }
+
+    async function loadEvents() {
+      $('loading').style.display = 'block';
+      $('error').style.display = 'none';
+      $('eventsBody').innerHTML = '';
+      $('emptyState').classList.remove('visible');
+
+      try {
+        const params = new URLSearchParams();
+        if ($('typeSelect').value) params.set('event_type', $('typeSelect').value);
+        params.set('is_resolved', $('resolvedSelect').value || 'false');
+        params.set('limit', '50');
+        const data = await getJson(`/api/admin/system-events?${params.toString()}`);
+        const list = Array.isArray(data.events) ? data.events : [];
+        render(list);
+        setLastRefreshed();
+      } catch (e) {
+        $('error').style.display = 'block';
+        $('error').textContent = e.message || String(e);
+      } finally {
+        $('loading').style.display = 'none';
+      }
+    }
+
+    function render(events) {
+      const body = $('eventsBody');
+      body.innerHTML = '';
+      if (!events.length) {
+        $('emptyState').classList.add('visible');
+        return;
+      }
+
+      for (const ev of events) {
+        const tr = document.createElement('tr');
+        const resolved = ev.is_resolved ? true : false;
+        if (resolved) tr.classList.add('resolved-row');
+        tr.innerHTML = `
+          <td>${typeBadge(ev.event_type)}</td>
+          <td class="mono muted">${escapeHtml(ev.user_id || '—')}</td>
+          <td class="mono muted">${escapeHtml(ev.reference_id || '—')}</td>
+          <td class="muted" style="max-width: 520px; overflow-wrap: anywhere;">${escapeHtml(ev.error_message || '—')}</td>
+          <td class="muted">${escapeHtml(fmtTime(ev.created_at))}</td>
+          <td class="muted">${resolved ? 'true' : 'false'}</td>
+          <td>
+            ${resolved
+              ? `<span class="muted">Resolved ✓</span>`
+              : `<button class="btn" type="button" data-resolve="${escapeHtml(ev.id)}">Mark Resolved</button>`
+            }
+          </td>
+        `;
+
+        const btn = tr.querySelector('[data-resolve]');
+        if (btn) {
+          btn.addEventListener('click', async () => {
+            btn.disabled = true;
+            try {
+              await patchJson(`/api/admin/system-events/${encodeURIComponent(ev.id)}`, { is_resolved: true });
+              tr.classList.add('resolved-row');
+              tr.querySelector('td:nth-child(6)').textContent = 'true';
+              tr.querySelector('td:nth-child(7)').innerHTML = '<span class="muted">Resolved ✓</span>';
+            } catch (e) {
+              btn.disabled = false;
+              alert(e.message || 'Failed to update event');
+            }
+          });
+        }
+
+        body.appendChild(tr);
+      }
+    }
+
+    $('typeSelect').addEventListener('change', loadEvents);
+    $('resolvedSelect').addEventListener('change', loadEvents);
+    $('refreshBtn').addEventListener('click', loadEvents);
+
+    $('signOutBtn').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/login';
+    });
+
+    loadEvents();
+    setInterval(loadEvents, 60000);
+  </script>
+</body>
+</html>
+

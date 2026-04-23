@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · Students — Pre-Sold Authority</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/style-premium.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .admin-shell { min-height: 100vh; }
+
+    /* Top nav (copy identical across all admin pages) */
+    .admin-topbar {
+      width: 100%;
+      background: #18181b;
+      border-top: 3px solid #fbbf24;
+      border-bottom: 1px solid #27272a;
+    }
+    .admin-topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      box-sizing: border-box;
+    }
+    .admin-wordmark {
+      color: #fbbf24;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    .admin-nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+      flex: 1;
+    }
+    .admin-nav a {
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 2px 8px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s ease;
+    }
+    .admin-nav a:hover { color: var(--color-text-primary); }
+    .admin-nav a.active { border-bottom-color: #fbbf24; color: var(--color-text-primary); }
+    .admin-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+    .admin-badge {
+      background: #fbbf24;
+      color: #09090b;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .admin-email {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .admin-signout {
+      background: transparent;
+      border: 1px solid #3f3f46;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .admin-signout:hover { border-color: #ef4444; color: #ef4444; }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 18px 48px;
+      box-sizing: border-box;
+    }
+    h1 { font-size: 26px; font-weight: 800; margin: 0 0 6px; letter-spacing: -0.02em; }
+    .sub { color: var(--color-text-secondary); font-size: 14px; margin: 0 0 18px; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 980px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 560px) { .stats { grid-template-columns: 1fr; } }
+    .stat-card {
+      background: var(--color-bg-surface);
+      border: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 14px 14px;
+    }
+    .stat-label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #71717a;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .stat-value { font-size: 22px; font-weight: 900; }
+
+    .panel {
+      background: var(--color-bg-surface);
+      border: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr 0.8fr auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 980px) {
+      .filters { grid-template-columns: 1fr 1fr; }
+      .filters .span2 { grid-column: span 2; }
+    }
+    .field label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #71717a;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+    .input, select {
+      width: 100%;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      color: #e4e4e7;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s ease;
+      box-sizing: border-box;
+    }
+    .input:focus, select:focus { border-color: #71717a; }
+
+    .btn {
+      border: 1px solid #3f3f46;
+      background: transparent;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn:hover { border-color: #71717a; color: var(--color-text-primary); }
+    .btn-primary { background: #2563eb; border-color: transparent; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; color: #fff; }
+    .btn-danger { border-color: rgba(248,113,113,0.35); color: #f87171; }
+    .btn-danger:hover { border-color: rgba(248,113,113,0.7); color: #f87171; }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      text-align: left;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #71717a;
+      padding: 10px 10px;
+      border-bottom: 1px solid #27272a;
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 10px 10px;
+      border-bottom: 1px solid #27272a;
+      font-size: 13px;
+      vertical-align: top;
+      color: #d4d4d8;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .muted { color: #a1a1aa; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .pill-green { color: #4ade80; background: rgba(74,222,128,0.10); border-color: rgba(74,222,128,0.20); }
+    .pill-amber { color: #fbbf24; background: rgba(251,191,36,0.10); border-color: rgba(251,191,36,0.22); }
+    .pill-red { color: #f87171; background: rgba(248,113,113,0.10); border-color: rgba(248,113,113,0.22); }
+
+    .detail {
+      background: rgba(9,9,11,0.35);
+      border: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 14px;
+      margin: 10px 0;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 980px) { .detail-grid { grid-template-columns: 1fr; } }
+    .detail h3 {
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #a1a1aa;
+      font-weight: 900;
+      margin: 0 0 10px;
+    }
+    .kv { display: grid; grid-template-columns: 170px 1fr; gap: 8px 10px; font-size: 13px; }
+    @media (max-width: 560px) { .kv { grid-template-columns: 1fr; } }
+    .kv .k { color: #71717a; font-weight: 800; }
+    .kv .v { color: #d4d4d8; overflow-wrap: anywhere; }
+
+    .lesson-list { display: grid; gap: 8px; }
+    .lesson-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      background: #09090b;
+    }
+    .lesson-item .title { font-weight: 800; font-size: 13px; color: #e4e4e7; }
+    .lesson-item .marks { display: flex; gap: 8px; align-items: center; color: #a1a1aa; font-size: 12px; white-space: nowrap; }
+    .mark-ok { color: #4ade80; font-weight: 900; }
+    .mark-no { color: #a1a1aa; font-weight: 900; }
+
+    .assets-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+    @media (max-width: 980px) { .assets-grid { grid-template-columns: 1fr; } }
+    .asset-card {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .asset-type { font-weight: 900; font-size: 13px; color: #e4e4e7; }
+    .asset-meta { color: #a1a1aa; font-size: 12px; margin-top: 6px; line-height: 1.45; }
+
+    .pager {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+      color: #a1a1aa;
+      font-size: 13px;
+    }
+    .pager .btn { padding: 8px 10px; border-radius: 10px; }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      max-width: 520px;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: #e4e4e7;
+      display: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      z-index: 50;
+    }
+    .toast.visible { display: block; }
+    .toast-title { font-weight: 900; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .toast-msg { font-size: 13px; color: #d4d4d8; margin-top: 6px; line-height: 1.5; white-space: pre-wrap; }
+    .toast.error { border-color: rgba(248,113,113,0.35); }
+    .toast.error .toast-title { color: #f87171; }
+    .toast.ok { border-color: rgba(74,222,128,0.25); }
+    .toast.ok .toast-title { color: #4ade80; }
+
+    select {
+      background-color: #18181b;
+      color: #f4f4f5;
+      border: 1px solid #3f3f46;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 14px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    select option {
+      background-color: #18181b;
+      color: #f4f4f5;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #fbbf24;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+
+    <script>
+      (async () => {
+        const res = await fetch('/api/auth/check');
+        if (!res.ok) { window.location.href = '/login'; return; }
+        const data = await res.json();
+        if (data.role !== 'admin') { window.location.href = '/dashboard'; return; }
+        document.getElementById('adminEmail').textContent = data.email || '';
+      })();
+    </script>
+
+    <header class="admin-topbar">
+      <div class="admin-topbar-inner">
+        <div class="admin-wordmark">PSA Admin</div>
+        <nav class="admin-nav" aria-label="Admin">
+          <a href="/admin/students.html" class="active">Students</a>
+          <a href="/admin/prompts.html">Prompts</a>
+          <a href="/admin/settings.html">Settings</a>
+          <a href="/admin/events.html">Events</a>
+          <a href="/admin/analytics.html">Analytics</a>
+        </nav>
+        <div class="admin-right">
+          <span class="admin-badge">Admin</span>
+          <span class="admin-email" id="adminEmail"></span>
+          <button class="admin-signout" id="signOutBtn" type="button">Sign Out</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="page">
+      <h1>Students</h1>
+      <p class="sub">Search, review, and manage student access.</p>
+
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-label">Total Students</div>
+          <div class="stat-value" id="statTotal">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Last 30 Days</div>
+          <div class="stat-value" id="statActive30">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pending Activation</div>
+          <div class="stat-value" id="statPending">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Suspended</div>
+          <div class="stat-value" id="statSuspended">—</div>
+        </div>
+      </div>
+
+      <section class="panel">
+        <div class="filters">
+          <div class="field span2">
+            <label for="searchInput">Search</label>
+            <input id="searchInput" class="input" type="text" placeholder="Search by email…" />
+          </div>
+          <div class="field">
+            <label for="statusSelect">Status</label>
+            <select id="statusSelect">
+              <option value="">All</option>
+              <option value="active">active</option>
+              <option value="pending_activation">pending_activation</option>
+              <option value="suspended">suspended</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="tierSelect">Tier</label>
+            <select id="tierSelect">
+              <option value="">All</option>
+              <option value="free">free</option>
+              <option value="founder">founder</option>
+              <option value="pro">pro</option>
+              <option value="dwyw">dwyw</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button id="refreshBtn" class="btn btn-primary" type="button">Refresh</button>
+          </div>
+        </div>
+
+        <div id="loading" class="muted" style="padding: 8px 2px;">Loading…</div>
+        <div id="error" class="muted" style="display:none;padding: 8px 2px;color:#f87171;"></div>
+
+        <div style="overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Tier</th>
+                <th>Status</th>
+                <th>Lessons Complete</th>
+                <th>Assets Generated</th>
+                <th>Last Active</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersBody"></tbody>
+          </table>
+        </div>
+
+        <div class="pager">
+          <div id="pagerText">—</div>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <button class="btn" id="prevBtn" type="button">Prev</button>
+            <button class="btn" id="nextBtn" type="button">Next</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast">
+    <div class="toast-title" id="toastTitle"></div>
+    <div class="toast-msg" id="toastMsg"></div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const LIMIT = 25;
+
+    function showToast(type, title, msg, ms = 3500) {
+      const t = $('toast');
+      t.className = `toast visible ${type}`;
+      $('toastTitle').textContent = title;
+      $('toastMsg').textContent = msg || '';
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => { t.className = 'toast'; }, ms);
+    }
+
+    function escapeHtml(s) {
+      return String(s || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function fmtDate(s) {
+      if (!s) return '—';
+      const d = new Date(s);
+      if (Number.isNaN(d.getTime())) return String(s);
+      return d.toLocaleString();
+    }
+
+    function statusPill(status) {
+      if (status === 'active') return '<span class="pill pill-green">active</span>';
+      if (status === 'pending_activation') return '<span class="pill pill-amber">pending</span>';
+      if (status === 'suspended') return '<span class="pill pill-red">suspended</span>';
+      return `<span class="pill">${escapeHtml(status || '—')}</span>`;
+    }
+
+    async function getJson(url) {
+      const res = await fetch(url, { credentials: 'include' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+      return data;
+    }
+
+    async function postJson(url, body) {
+      const res = await fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body || {})
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+      return data;
+    }
+
+    let page = 1;
+    let total = 0;
+    let lastQueryKey = '';
+    let lessonsTitleById = {};
+    let expandedUserId = null;
+
+    async function loadLessonTitles() {
+      try {
+        const data = await getJson('/api/lessons');
+        const list = [];
+        const modules = data && data.modules ? data.modules : {};
+        Object.keys(modules).forEach(mk => {
+          const arr = Array.isArray(modules[mk]) ? modules[mk] : [];
+          for (const l of arr) list.push(l);
+        });
+        const map = {};
+        for (const l of list) map[l.id] = l.title || l.id;
+        lessonsTitleById = map;
+      } catch {
+        lessonsTitleById = {};
+      }
+    }
+
+    async function loadStats() {
+      try {
+        const data = await getJson('/api/admin/analytics');
+        $('statTotal').textContent = data.total_students ?? '0';
+        $('statActive30').textContent = data.active_last_30_days ?? '0';
+        $('statPending').textContent = data.pending_activation ?? '0';
+        $('statSuspended').textContent = data.suspended ?? '0';
+      } catch {
+        $('statTotal').textContent = '—';
+        $('statActive30').textContent = '—';
+        $('statPending').textContent = '—';
+        $('statSuspended').textContent = '—';
+      }
+    }
+
+    function buildQuery() {
+      const search = $('searchInput').value.trim();
+      const status = $('statusSelect').value.trim();
+      const tier = $('tierSelect').value.trim();
+      const p = new URLSearchParams();
+      p.set('page', String(page));
+      p.set('limit', String(LIMIT));
+      if (search) p.set('search', search);
+      if (status) p.set('status', status);
+      if (tier) p.set('tier', tier);
+      return p.toString();
+    }
+
+    async function loadUsers() {
+      $('loading').style.display = 'block';
+      $('error').style.display = 'none';
+      $('usersBody').innerHTML = '';
+      expandedUserId = null;
+
+      try {
+        const qs = buildQuery();
+        const queryKey = qs;
+        lastQueryKey = queryKey;
+        const data = await getJson(`/api/admin/users?${qs}`);
+        if (lastQueryKey !== queryKey) return;
+
+        const users = Array.isArray(data.users) ? data.users : [];
+        total = Number(data.total || 0);
+        renderUsers(users);
+        renderPager(users.length);
+      } catch (e) {
+        $('error').style.display = 'block';
+        $('error').textContent = e.message || String(e);
+      } finally {
+        $('loading').style.display = 'none';
+      }
+    }
+
+    function renderPager(currentCount) {
+      const start = total === 0 ? 0 : ((page - 1) * LIMIT + 1);
+      const end = Math.min((page - 1) * LIMIT + currentCount, total);
+      $('pagerText').textContent = `Showing ${start}–${end} of ${total} students.`;
+      $('prevBtn').disabled = page <= 1;
+      $('nextBtn').disabled = end >= total;
+    }
+
+    function renderUsers(users) {
+      const body = $('usersBody');
+      body.innerHTML = '';
+      if (!users.length) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="8" class="muted" style="padding: 14px 10px;">No students found.</td>`;
+        body.appendChild(tr);
+        return;
+      }
+
+      for (const u of users) {
+        const tr = document.createElement('tr');
+        tr.dataset.userId = u.id;
+        tr.innerHTML = `
+          <td class="mono">${escapeHtml(u.email || '')}</td>
+          <td>${escapeHtml(u.full_name || '')}</td>
+          <td class="muted">${escapeHtml(u.subscription_tier || '')}</td>
+          <td>${statusPill(u.user_status)}</td>
+          <td class="muted">${Number(u.lessons_complete || 0)}</td>
+          <td class="muted">${Number(u.assets_generated || 0)}</td>
+          <td class="muted">${escapeHtml(fmtDate(u.last_active_at))}</td>
+          <td>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn" type="button" data-view="${escapeHtml(u.id)}">View</button>
+              ${u.user_status === 'active'
+                ? `<button class="btn btn-danger" type="button" data-revoke="${escapeHtml(u.id)}">Revoke Access</button>`
+                : ''}
+              ${u.user_status === 'suspended'
+                ? `<button class="btn btn-primary" type="button" data-grant="${escapeHtml(u.id)}">Grant Access</button>`
+                : ''}
+            </div>
+          </td>
+        `;
+
+        tr.querySelector('[data-view]').addEventListener('click', async () => {
+          const id = u.id;
+          if (expandedUserId === id) {
+            expandedUserId = null;
+            removeDetailRow(id);
+            return;
+          }
+          expandedUserId = id;
+          await showDetailsBelowRow(tr, id);
+        });
+
+        const revokeBtn = tr.querySelector('[data-revoke]');
+        if (revokeBtn) {
+          revokeBtn.addEventListener('click', async () => {
+            const ok = window.confirm('Revoke access for this user? This will suspend the account and clear all active sessions.');
+            if (!ok) return;
+            try {
+              await postJson(`/api/admin/users/${encodeURIComponent(u.id)}/revoke`, {});
+              showToast('ok', 'Access revoked', 'User suspended and sessions cleared.');
+              await loadUsers();
+            } catch (e) {
+              showToast('error', 'Revoke failed', e.message || String(e));
+            }
+          });
+        }
+
+        const grantBtn = tr.querySelector('[data-grant]');
+        if (grantBtn) {
+          grantBtn.addEventListener('click', async () => {
+            try {
+              await postJson(`/api/admin/users/${encodeURIComponent(u.id)}/grant`, {});
+              showToast('ok', 'Access granted', 'User reactivated.');
+              await loadUsers();
+            } catch (e) {
+              showToast('error', 'Grant failed', e.message || String(e));
+            }
+          });
+        }
+
+        body.appendChild(tr);
+      }
+    }
+
+    function removeDetailRow(userId) {
+      const row = document.querySelector(`tr[data-detail-for="${CSS.escape(userId)}"]`);
+      if (row && row.parentNode) row.parentNode.removeChild(row);
+    }
+
+    async function showDetailsBelowRow(anchorRow, userId) {
+      removeDetailRow(userId);
+      document.querySelectorAll('tr[data-detail-for]').forEach(r => r.parentNode.removeChild(r));
+
+      const detailTr = document.createElement('tr');
+      detailTr.dataset.detailFor = userId;
+      const td = document.createElement('td');
+      td.colSpan = 8;
+      td.style.padding = '10px 10px 16px';
+      td.innerHTML = `<div class="detail"><div class="muted">Loading details…</div></div>`;
+      detailTr.appendChild(td);
+
+      anchorRow.parentNode.insertBefore(detailTr, anchorRow.nextSibling);
+
+      try {
+        const data = await getJson(`/api/admin/users/${encodeURIComponent(userId)}`);
+        const user = data.user || {};
+        const progress = Array.isArray(data.lessonProgress) ? data.lessonProgress : [];
+        const assets = Array.isArray(data.assets) ? data.assets : [];
+
+        const progressByLesson = {};
+        for (const p of progress) progressByLesson[p.lesson_id] = p;
+
+        const lessonItems = Object.keys(lessonsTitleById).length
+          ? Object.keys(lessonsTitleById).map(id => ({ id, title: lessonsTitleById[id] }))
+          : ['lesson-1','lesson-2','lesson-3','lesson-4','lesson-5','lesson-6','lesson-7','lesson-8'].map(id => ({ id, title: id }));
+
+        const lessonHtml = lessonItems.map(l => {
+          const lp = progressByLesson[l.id] || {};
+          const complete = lp.is_complete ? true : false;
+          const builder = lp.builder_completed ? true : false;
+          return `
+            <div class="lesson-item">
+              <div class="title">${escapeHtml(l.title)}</div>
+              <div class="marks">
+                <span>Complete</span><span class="${complete ? 'mark-ok' : 'mark-no'}">${complete ? '✓' : '○'}</span>
+                <span style="opacity:0.6;">|</span>
+                <span>Builder</span><span class="${builder ? 'mark-ok' : 'mark-no'}">${builder ? '✓' : '○'}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        const groupedAssets = {};
+        for (const a of assets) {
+          const t = a.asset_type || 'unknown';
+          if (!groupedAssets[t]) groupedAssets[t] = [];
+          groupedAssets[t].push(a);
+        }
+
+        const assetCards = Object.keys(groupedAssets).length
+          ? Object.keys(groupedAssets).map(type => {
+              const arr = groupedAssets[type] || [];
+              const versions = arr.map(x => Number(x.version || 0)).filter(n => n > 0);
+              const maxV = versions.length ? Math.max(...versions) : arr.length;
+              const mostRecent = arr[0]?.updated_at || arr[0]?.created_at || null;
+              return `
+                <div class="asset-card">
+                  <div class="asset-type">${escapeHtml(type)}</div>
+                  <div class="asset-meta">
+                    Versions: <b>${escapeHtml(String(maxV || 1))}</b><br/>
+                    Most recent: <b>${escapeHtml(fmtDate(mostRecent))}</b>
+                  </div>
+                </div>
+              `;
+            }).join('')
+          : `<div class="muted" style="margin-top: 10px;">No generated assets.</div>`;
+
+        td.innerHTML = `
+          <div class="detail">
+            <div class="detail-grid">
+              <div>
+                <h3>Account Info</h3>
+                <div class="kv">
+                  <div class="k">Email</div><div class="v mono">${escapeHtml(user.email || '')}</div>
+                  <div class="k">Full name</div><div class="v">${escapeHtml(user.full_name || '—')}</div>
+                  <div class="k">Tier</div><div class="v">${escapeHtml(user.subscription_tier || '—')}</div>
+                  <div class="k">Status</div><div class="v">${statusPill(user.user_status)}</div>
+                  <div class="k">Account created</div><div class="v">${escapeHtml(fmtDate(user.created_at))}</div>
+                  <div class="k">Activated</div><div class="v">${escapeHtml(fmtDate(user.access_granted_at))}</div>
+                  <div class="k">Last active</div><div class="v">${escapeHtml(fmtDate(user.last_active_at))}</div>
+                  <div class="k">Stripe customer</div><div class="v mono">${escapeHtml(user.stripe_customer_id || '—')}</div>
+                </div>
+              </div>
+              <div>
+                <h3>Lesson Progress</h3>
+                <div class="lesson-list">${lessonHtml}</div>
+              </div>
+            </div>
+            <div style="margin-top: 14px;">
+              <h3 style="margin-bottom: 10px;">Generated Assets</h3>
+              <div class="assets-grid">${assetCards}</div>
+            </div>
+            <div style="display:flex;justify-content:flex-end;margin-top: 12px;">
+              <button class="btn" type="button" id="closeDetailBtn">Close</button>
+            </div>
+          </div>
+        `;
+
+        td.querySelector('#closeDetailBtn').addEventListener('click', () => {
+          expandedUserId = null;
+          removeDetailRow(userId);
+        });
+      } catch (e) {
+        td.innerHTML = `<div class="detail"><div class="muted" style="color:#f87171;">Failed to load details: ${escapeHtml(e.message || String(e))}</div></div>`;
+      }
+    }
+
+    function debounce(fn, ms) {
+      let t = null;
+      return (...args) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...args), ms);
+      };
+    }
+
+    const debouncedSearch = debounce(async () => {
+      page = 1;
+      await loadUsers();
+    }, 500);
+
+    $('searchInput').addEventListener('input', debouncedSearch);
+    $('searchInput').addEventListener('keydown', async (e) => {
+      if (e.key === 'Enter') {
+        page = 1;
+        await loadUsers();
+      }
+    });
+    $('statusSelect').addEventListener('change', async () => { page = 1; await loadUsers(); });
+    $('tierSelect').addEventListener('change', async () => { page = 1; await loadUsers(); });
+    $('refreshBtn').addEventListener('click', async () => { await loadUsers(); });
+
+    $('prevBtn').addEventListener('click', async () => { if (page > 1) { page -= 1; await loadUsers(); } });
+    $('nextBtn').addEventListener('click', async () => { page += 1; await loadUsers(); });
+
+    $('signOutBtn').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/login';
+    });
+
+    async function init() {
+      await loadLessonTitles();
+      await loadStats();
+      await loadUsers();
+    }
+
+    init();
+  </script>
+</body>
+</html>
+
