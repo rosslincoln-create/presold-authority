@@ -11,6 +11,7 @@
     "db:reset": "rm -rf .wrangler/state/v3/d1 && npm run db:migrate:local"
   },
   "dependencies": {
+    "@cloudflare/puppeteer": "^1.1.0",
     "bcryptjs": "^2.4.3",
     "hono": "^4.12.9",
     "jose": "^5.9.6",
