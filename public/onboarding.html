@@ -551,11 +551,11 @@
         <div class="form-group">
           <label class="form-label" for="years_experience">Years of experience</label>
           ${sel('years_experience', [
-            ['less_than_1', 'Less than 1 year'],
-            ['1_to_3', '1–3 years'],
-            ['3_to_7', '3–7 years'],
-            ['7_to_15', '7–15 years'],
-            ['15_plus', '15+ years']
+            ['1-2', '1-2'],
+            ['3-5', '3-5'],
+            ['6-10', '6-10'],
+            ['11-20', '11-20'],
+            ['20+', '20+']
           ], d.years_experience)}
         </div>`
     }
@@ -578,11 +578,12 @@
         <div class="form-group">
           <label class="form-label" for="price_range">Typical price range</label>
           ${sel('price_range', [
-            ['under_500k', 'Under $500k'],
-            ['500k_1m', '$500k–$1M'],
-            ['1m_2m', '$1M–$2M'],
-            ['2m_5m', '$2M–$5M'],
-            ['5m_plus', '$5M+']
+            ['Under $300k', 'Under $300k'],
+            ['$300k-$500k', '$300k-$500k'],
+            ['$500k-$800k', '$500k-$800k'],
+            ['$800k-$1.2M', '$800k-$1.2M'],
+            ['$1.2M-$2M', '$1.2M-$2M'],
+            ['Over $2M', 'Over $2M']
           ], d.price_range)}
         </div>
         <div class="form-group">
@@ -658,12 +659,11 @@
         <div class="form-group">
           <label class="form-label" for="transactions_range">Transactions completed</label>
           ${sel('transactions_range', [
-            ['1_10', '1–10'],
-            ['10_25', '10–25'],
-            ['25_50', '25–50'],
-            ['50_100', '50–100'],
-            ['100_250', '100–250'],
-            ['250_plus', '250+']
+            ['Under 10', 'Under 10'],
+            ['10-25', '10-25'],
+            ['25-50', '25-50'],
+            ['50-100', '50-100'],
+            ['100+', '100+']
           ], d.transactions_range)}
         </div>
         <div class="form-group">
@@ -688,16 +688,12 @@
           </div>
           <div class="form-group">
             <label class="form-label" for="state_province">State / Province</label>
-            ${sel('state_province', [
-              ['QLD','QLD'],['NSW','NSW'],['VIC','VIC'],['SA','SA'],
-              ['WA','WA'],['TAS','TAS'],['NT','NT'],['ACT','ACT'],
-              ['NZ','NZ'],['other','Other']
-            ], d.state_province)}
+            ${inp('state_province', 'e.g. California, QLD, Ontario', d.state_province)}
           </div>
         </div>
         <div class="form-group">
           <label class="form-label" for="website_url">Website URL</label>
-          ${inp('website_url', 'e.g. https://rosslincoln.com.au', d.website_url, 'url')}
+          ${inp('website_url', 'e.g. https://morganrealty.com', d.website_url, 'url')}
         </div>
         <div class="form-group">
           <label class="form-label" for="social_profile_url">LinkedIn or primary social URL</label>

@@ -154,6 +154,14 @@ contextCard.post('/', async (c) => {
       userId
     ).run()
 
+    // Sync full_name to users table so dashboard greeting and account page
+    // reflect the canonical name. Only update when caller actually supplied it.
+    if (typeof body.full_name === 'string' && body.full_name.trim() !== '') {
+      await c.env.DB.prepare(
+        'UPDATE users SET full_name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?'
+      ).bind(body.full_name.trim(), userId).run()
+    }
+
     return c.json({ success: true, id: existing.id })
 
   } else {
@@ -200,6 +208,14 @@ contextCard.post('/', async (c) => {
       body.cta_next_step ?? null,
       body.is_complete ? 1 : 0
     ).run()
+
+    // Sync full_name to users table so dashboard greeting and account page
+    // reflect the canonical name. Only update when caller actually supplied it.
+    if (typeof body.full_name === 'string' && body.full_name.trim() !== '') {
+      await c.env.DB.prepare(
+        'UPDATE users SET full_name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?'
+      ).bind(body.full_name.trim(), userId).run()
+    }
 
     return c.json({ success: true, id })
   }

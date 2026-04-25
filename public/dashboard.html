@@ -172,6 +172,23 @@
     /* Loading state */
     .loading { color: #a1a1aa; font-size: 14px; padding: 20px 0; }
 
+    /* Footer */
+    .page-footer {
+      margin-top: 48px;
+      padding: 20px 40px;
+      border-top: 1px solid #27272a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #71717a;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a { color: #71717a; text-decoration: none; }
+    .footer-links a:hover { color: #a1a1aa; }
+
     /* Dashboard load error (API failures — do not redirect to login) */
     .dashboard-error {
       display: none;
@@ -193,6 +210,11 @@
       .main { margin-left: 0; padding: 20px; max-width: 100vw; }
       .lessons-grid { grid-template-columns: 1fr; }
       .progress-stats { flex-wrap: wrap; gap: 8px; }
+      .page-footer {
+        padding: 16px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
@@ -354,6 +376,15 @@
       <div class="loading">Loading lessons...</div>
     </div>
 
+    <footer class="page-footer">
+      <span>© <span id="footer-year"></span> Lincoln Digital Media · Pre-Sold Authority System</span>
+      <span class="footer-links">
+        <a href="/legal/terms">Terms</a>
+        <a href="/legal/privacy">Privacy</a>
+        <a href="mailto:support@presoldauthority.com">Support</a>
+      </span>
+    </footer>
+
   </main>
 
   <script>
@@ -435,7 +466,8 @@
             + lesson.video_watch_percent + '%"></div></div>' : '';
         return '<a class="lesson-card" href="/lessons/lesson.html?id=' + lesson.id + '">'
           + '<div class="lesson-card-top">'
-          + '<span class="module-badge">Module ' + lesson.module_number + '</span>'
+          + '<span class="module-badge">Module ' + lesson.module_number
+          + ' · Lesson ' + lesson.lesson_number + '</span>'
           + status
           + '</div>'
           + '<div class="lesson-title">' + lesson.title + '</div>'
@@ -512,6 +544,7 @@
       window.location.href = '/login';
     }
 
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
     loadDashboard();
   </script>
 

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service — Pre-Sold Authority System</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/style-premium.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-bg-primary: #09090b;
+      --color-bg-surface: #18181b;
+      --color-text-primary: #f4f4f5;
+      --color-text-secondary: #a1a1aa;
+      --color-text-muted: #71717a;
+      --color-border: #27272a;
+      --color-brand-blue: #2563eb;
+    }
+    body {
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      font-family: 'Satoshi', 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+    }
+
+    /* ─── Top bar ─── */
+    .topbar {
+      height: 60px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--color-text-primary);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+    }
+    .topbar-brand img { height: 28px; width: auto; }
+    .topbar-link {
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      transition: all 0.15s;
+    }
+    .topbar-link:hover {
+      color: var(--color-text-primary);
+      border-color: #3f3f46;
+    }
+
+    /* ─── Page content ─── */
+    .page-wrap {
+      flex: 1;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+    .legal-card {
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 48px;
+    }
+    .legal-card h1 {
+      font-family: 'Cabinet Grotesk', 'Inter', system-ui, sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+    .last-updated {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-bottom: 28px;
+    }
+    .legal-card p {
+      color: var(--color-text-secondary);
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+    .legal-card h2 {
+      font-family: 'Cabinet Grotesk', 'Inter', system-ui, sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-top: 32px;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+    .legal-card .intro {
+      color: var(--color-text-primary);
+      margin-bottom: 12px;
+    }
+    .legal-card .intro-strong {
+      color: var(--color-text-primary);
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .legal-card a {
+      color: var(--color-brand-blue);
+      text-decoration: none;
+    }
+    .legal-card a:hover { text-decoration: underline; }
+    .legal-card .clause {
+      color: var(--color-text-secondary);
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+    .legal-card .clause-num {
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-right: 4px;
+    }
+
+    /* ─── Footer ─── */
+    .page-footer {
+      margin-top: 48px;
+      padding: 20px 40px;
+      border-top: 1px solid #27272a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #71717a;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a { color: #71717a; text-decoration: none; }
+    .footer-links a:hover { color: #a1a1aa; }
+
+    @media (max-width: 768px) {
+      .topbar { padding: 0 20px; }
+      .page-wrap { padding: 20px; }
+      .legal-card { padding: 24px; }
+      .legal-card h1 { font-size: 24px; }
+      .legal-card h2 { font-size: 18px; }
+      .page-footer {
+        padding: 16px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a href="/" class="topbar-brand">
+      <img src="/assets/brand/logo-mark.png" alt="PSA">
+      <span>Pre-Sold Authority</span>
+    </a>
+    <a href="/login" class="topbar-link">Login</a>
+  </header>
+
+  <div class="page-wrap">
+    <article class="legal-card">
+      <h1>Pre-Sold Authority System — Terms of Service</h1>
+      <p class="last-updated">Last updated: <span id="terms-date"></span></p>
+
+      <p class="intro">These Terms of Service ("Terms") govern your access to and use of the Pre-Sold Authority System web application located at app.presoldauthority.com ("the Platform"), operated by Iseek Property Pty Ltd (ABN 34 151 052 309) trading as Lincoln Digital Media ("we", "us", "our").</p>
+
+      <p class="intro-strong">By purchasing access to or using the Platform, you agree to be bound by these Terms. If you do not agree, do not use the Platform.</p>
+
+      <h2>1. Account and Access</h2>
+      <p class="clause"><span class="clause-num">1.1.</span>Access to the Platform is granted upon successful payment and account activation. Your account is personal to you and may not be shared with or transferred to any other person.</p>
+      <p class="clause"><span class="clause-num">1.2.</span>You are responsible for maintaining the confidentiality of your password and for all activity that occurs under your account. You must notify us immediately at <a href="mailto:support@presoldauthority.com">support@presoldauthority.com</a> if you become aware of any unauthorized use of your account.</p>
+      <p class="clause"><span class="clause-num">1.3.</span>We reserve the right to suspend or terminate your account if we reasonably believe you have violated these Terms, including but not limited to sharing account credentials, attempting to reverse-engineer the Platform, or using the Platform for any unlawful purpose.</p>
+
+      <h2>2. The Platform and Services</h2>
+      <p class="clause"><span class="clause-num">2.1.</span>The Pre-Sold Authority System is a guided implementation platform that helps real estate agents develop authority positioning, content, and business development assets through a structured curriculum and AI-assisted content generation tools.</p>
+      <p class="clause"><span class="clause-num">2.2.</span>The Platform includes 8 lessons with interactive builders, an asset library with downloadable outputs, and supporting tools. The specific features available to you depend on your subscription tier.</p>
+      <p class="clause"><span class="clause-num">2.3.</span>AI-generated content on the Platform is produced using third-party artificial intelligence services (currently OpenAI). Your agent context data (market, positioning inputs, business details) is sent to these AI services to generate your outputs. No sensitive personal identification data (government IDs, financial account numbers) is collected or transmitted. See our <a href="/legal/privacy">Privacy Policy</a> for full details on data handling.</p>
+      <p class="clause"><span class="clause-num">2.4.</span>All AI-generated outputs are starting points. You are solely responsible for reviewing all generated content for accuracy, compliance with your state or territory's real estate advertising regulations, and alignment with your brokerage's guidelines before deploying any content publicly. We do not guarantee that AI-generated outputs will be compliant with any specific regulatory framework.</p>
+
+      <h2>3. Purchases and Payment</h2>
+      <p class="clause"><span class="clause-num">3.1.</span>The Founder Access tier is a one-time payment of USD $147 (or the price displayed at the time of purchase). Payment is processed securely through Stripe. We do not store your credit card details on our servers.</p>
+      <p class="clause"><span class="clause-num">3.2.</span>Subscription tiers, if and when offered, will be billed at the intervals and amounts specified at the time of subscription. You may manage your subscription through the Platform's billing interface.</p>
+
+      <h2>4. Refund Policy — 14-Day Blueprint-First Guarantee</h2>
+      <p class="clause"><span class="clause-num">4.1.</span>We offer a 14-day refund window from the date of purchase. To be eligible for a refund, you must have completed the Lesson 4 builder (Authority Positioning Generator) and found the output not useful for your business.</p>
+      <p class="clause"><span class="clause-num">4.2.</span>Refund requests must be submitted to <a href="mailto:support@presoldauthority.com">support@presoldauthority.com</a> within 14 days of purchase. We may review your account activity to confirm the builder was completed.</p>
+      <p class="clause"><span class="clause-num">4.3.</span>Upon refund, your access to the Platform will be revoked immediately. You will no longer be able to log in, generate new content, or download assets. Any PDF files you have already downloaded to your device prior to the refund remain yours.</p>
+      <p class="clause"><span class="clause-num">4.4.</span>Refunds are processed through Stripe and typically appear within 5–10 business days depending on your financial institution.</p>
+
+      <h2>5. Intellectual Property</h2>
+      <p class="clause"><span class="clause-num">5.1.</span>The Platform, including its design, code, curriculum content, lesson materials, prompt templates, and all supporting documentation, is the intellectual property of Iseek Property Pty Ltd trading as Lincoln Digital Media. All rights are reserved.</p>
+      <p class="clause"><span class="clause-num">5.2.</span>Content you generate using the Platform's builders (your positioning statements, profile copy, posts, DM flows, boundary language, and other outputs) is yours to use freely for your business purposes. We do not claim ownership of your generated outputs.</p>
+      <p class="clause"><span class="clause-num">5.3.</span>Your Agent Context Card data (the information you provide about your business, market, and positioning) remains your property. We use it solely to generate your outputs and improve the Platform as described in our Privacy Policy.</p>
+      <p class="clause"><span class="clause-num">5.4.</span>You may not reproduce, distribute, modify, or create derivative works from the Platform's curriculum, lesson content, AI prompt templates, or design system without our prior written consent.</p>
+
+      <h2>6. Acceptable Use</h2>
+      <p class="clause"><span class="clause-num">6.1.</span>You agree to use the Platform only for its intended purpose: developing authority positioning and business development assets for your real estate practice.</p>
+      <p class="clause"><span class="clause-num">6.2.</span>You may not: (a) share your account credentials with others; (b) attempt to extract, reverse-engineer, or copy the AI prompt templates used by the Platform; (c) use the Platform to generate content that is misleading, fraudulent, or in violation of any applicable law or regulation; (d) use automated tools to access the Platform or circumvent rate limits; (e) resell, sublicense, or redistribute any Platform content or generated outputs as a competing product or service.</p>
+
+      <h2>7. Limitation of Liability</h2>
+      <p class="clause"><span class="clause-num">7.1.</span>The Platform and all content, tools, and outputs are provided "as is" and "as available" without warranties of any kind, either express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, or non-infringement.</p>
+      <p class="clause"><span class="clause-num">7.2.</span>We do not guarantee any specific business outcomes, including but not limited to increased leads, higher commissions, client acquisition, or revenue growth, from using the Platform or deploying its generated outputs.</p>
+      <p class="clause"><span class="clause-num">7.3.</span>To the maximum extent permitted by law, our total liability to you for any claims arising from your use of the Platform shall not exceed the amount you paid for access to the Platform in the 12 months preceding the claim.</p>
+      <p class="clause"><span class="clause-num">7.4.</span>We shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or business opportunities, arising from your use of or inability to use the Platform.</p>
+
+      <h2>8. AI Services and Third-Party Dependencies</h2>
+      <p class="clause"><span class="clause-num">8.1.</span>The Platform relies on third-party services including OpenAI (AI content generation), Stripe (payment processing), Resend (email delivery), and Cloudflare (hosting and infrastructure). We are not responsible for outages, changes, or discontinuation of these third-party services, though we will make reasonable efforts to maintain Platform availability.</p>
+      <p class="clause"><span class="clause-num">8.2.</span>AI-generated content may occasionally contain errors, inaccuracies, or content that does not align with your expectations. The regeneration feature is provided for this purpose. We do not warrant the accuracy or suitability of any AI-generated output.</p>
+
+      <h2>9. Modifications to Terms</h2>
+      <p class="clause"><span class="clause-num">9.1.</span>We may update these Terms from time to time. If we make material changes, we will notify you via the email address associated with your account. Your continued use of the Platform after such notification constitutes acceptance of the updated Terms.</p>
+
+      <h2>10. Governing Law</h2>
+      <p class="clause"><span class="clause-num">10.1.</span>These Terms are governed by the laws of Queensland, Australia. Any disputes arising under these Terms shall be subject to the exclusive jurisdiction of the courts of Queensland, Australia.</p>
+
+      <h2>11. Contact</h2>
+      <p class="clause">For questions about these Terms, contact us at: <a href="mailto:support@presoldauthority.com">support@presoldauthority.com</a></p>
+      <p class="clause">Iseek Property Pty Ltd (ABN 34 151 052 309) trading as Lincoln Digital Media.</p>
+    </article>
+
+    <footer class="page-footer">
+      <span>© <span id="footer-year"></span> Lincoln Digital Media · Pre-Sold Authority System</span>
+      <span class="footer-links">
+        <a href="/legal/terms">Terms</a>
+        <a href="/legal/privacy">Privacy</a>
+        <a href="mailto:support@presoldauthority.com">Support</a>
+      </span>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('terms-date').textContent = new Date().toLocaleDateString('en-US', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    });
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

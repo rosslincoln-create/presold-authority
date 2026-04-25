@@ -9,6 +9,7 @@ import assessments from './routes/assessments'
 import builder from './routes/builder'
 import admin from './routes/admin'
 import assets from './routes/assets'
+import account from './routes/account'
 
 export type Env = {
   DB: D1Database
@@ -57,6 +58,7 @@ app.route('/api/assessments', assessments)
 app.route('/api/builder', builder)
 app.route('/api/admin', admin)
 app.route('/api/assets', assets)
+app.route('/api/account', account)
 
 // ─── Protected Routes ─────────────────────────────────────────────────────────
 app.get('/dashboard', authMiddleware, (c) => c.redirect('/dashboard.html'))
@@ -67,6 +69,6 @@ app.get('/lessons/:id', authMiddleware, (c) => {
   return c.redirect(`/lessons/lesson.html?id=${id}`)
 })
 app.get('/assets', authMiddleware, (c) => c.redirect('/assets.html'))
-app.get('/account', authMiddleware, (c) => c.text('Account — Sprint 5'))
+app.get('/account', authMiddleware, (c) => c.redirect('/account.html'))
 
 export default app

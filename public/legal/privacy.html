@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — Pre-Sold Authority System</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/style-premium.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-bg-primary: #09090b;
+      --color-bg-surface: #18181b;
+      --color-text-primary: #f4f4f5;
+      --color-text-secondary: #a1a1aa;
+      --color-text-muted: #71717a;
+      --color-border: #27272a;
+      --color-brand-blue: #2563eb;
+    }
+    body {
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      font-family: 'Satoshi', 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+    }
+
+    /* ─── Top bar ─── */
+    .topbar {
+      height: 60px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--color-text-primary);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+    }
+    .topbar-brand img { height: 28px; width: auto; }
+    .topbar-link {
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      transition: all 0.15s;
+    }
+    .topbar-link:hover {
+      color: var(--color-text-primary);
+      border-color: #3f3f46;
+    }
+
+    /* ─── Page content ─── */
+    .page-wrap {
+      flex: 1;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+    .legal-card {
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 48px;
+    }
+    .legal-card h1 {
+      font-family: 'Cabinet Grotesk', 'Inter', system-ui, sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+    .last-updated {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-bottom: 28px;
+    }
+    .legal-card p {
+      color: var(--color-text-secondary);
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+    .legal-card h2 {
+      font-family: 'Cabinet Grotesk', 'Inter', system-ui, sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-top: 32px;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+    .legal-card .intro {
+      color: var(--color-text-primary);
+      margin-bottom: 24px;
+    }
+    .legal-card a {
+      color: var(--color-brand-blue);
+      text-decoration: none;
+    }
+    .legal-card a:hover { text-decoration: underline; }
+    .legal-card .clause {
+      color: var(--color-text-secondary);
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+    .legal-card .clause-num {
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-right: 4px;
+    }
+    .legal-card .third-party-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 14px;
+    }
+    .legal-card .third-party-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .legal-card .third-party-list li:last-child { border-bottom: none; }
+    .legal-card .third-party-list strong {
+      color: var(--color-text-primary);
+      font-weight: 700;
+    }
+
+    /* ─── Footer ─── */
+    .page-footer {
+      margin-top: 48px;
+      padding: 20px 40px;
+      border-top: 1px solid #27272a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #71717a;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a { color: #71717a; text-decoration: none; }
+    .footer-links a:hover { color: #a1a1aa; }
+
+    @media (max-width: 768px) {
+      .topbar { padding: 0 20px; }
+      .page-wrap { padding: 20px; }
+      .legal-card { padding: 24px; }
+      .legal-card h1 { font-size: 24px; }
+      .legal-card h2 { font-size: 18px; }
+      .page-footer {
+        padding: 16px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a href="/" class="topbar-brand">
+      <img src="/assets/brand/logo-mark.png" alt="PSA">
+      <span>Pre-Sold Authority</span>
+    </a>
+    <a href="/login" class="topbar-link">Login</a>
+  </header>
+
+  <div class="page-wrap">
+    <article class="legal-card">
+      <h1>Pre-Sold Authority System — Privacy Policy</h1>
+      <p class="last-updated">Last updated: <span id="privacy-date"></span></p>
+
+      <p class="intro">This Privacy Policy explains how Iseek Property Pty Ltd (ABN 34 151 052 309) trading as Lincoln Digital Media ("we", "us", "our") collects, uses, stores, and protects your information when you use the Pre-Sold Authority System web application at app.presoldauthority.com ("the Platform").</p>
+
+      <h2>1. Information We Collect</h2>
+      <p class="clause"><span class="clause-num">1.1.</span><strong>Account Information:</strong> When you purchase access and create your account, we collect your email address and the password you set during activation. Your name is collected during onboarding or account setup.</p>
+      <p class="clause"><span class="clause-num">1.2.</span><strong>Payment Information:</strong> Payments are processed by Stripe. We receive your Stripe customer ID and transaction details (amount, date, status) but do not receive or store your credit card number, CVV, or full billing address. Stripe's privacy policy governs their handling of your payment data.</p>
+      <p class="clause"><span class="clause-num">1.3.</span><strong>Agent Context Card Data:</strong> During onboarding, you provide business information including your market location, client types, years of experience, strengths, values, process descriptions, boundary statements, brokerage name, phone number, website, social profile URL, licence number, state/province, tone preferences, and proof points. This data is used to generate your personalized outputs.</p>
+      <p class="clause"><span class="clause-num">1.4.</span><strong>Platform Usage Data:</strong> We record your lesson progress, builder completions, generated asset versions, download events, assessment responses, and personal notes entered within lessons. This data is stored in our database to provide your personalized experience and track your progress.</p>
+      <p class="clause"><span class="clause-num">1.5.</span><strong>Technical Data:</strong> Cloudflare, our hosting provider, may collect standard technical data including IP addresses, browser type, and access timestamps as part of their infrastructure services. We use Cloudflare Web Analytics, which is privacy-first and does not use cookies or track individual users across sites.</p>
+
+      <h2>2. How We Use Your Information</h2>
+      <p class="clause"><span class="clause-num">2.1.</span><strong>To provide the Platform:</strong> Your Context Card data is used to generate personalized authority positioning, content, and business development assets through the Platform's AI-powered builders.</p>
+      <p class="clause"><span class="clause-num">2.2.</span><strong>AI content generation:</strong> Your Context Card data is sent to OpenAI's API to generate your builder outputs. This data includes your business information (market, positioning, strengths, brokerage details) but does not include your email address, password, or payment information. OpenAI's data usage policy governs their handling of data received through their API. As of the date of this policy, OpenAI states that data sent through their API is not used to train their models.</p>
+      <p class="clause"><span class="clause-num">2.3.</span><strong>To communicate with you:</strong> We send transactional emails (account activation, progress milestones, re-engagement reminders) to the email address associated with your account using Resend as our email delivery provider. We do not send marketing emails to third parties using your email address.</p>
+      <p class="clause"><span class="clause-num">2.4.</span><strong>To improve the Platform:</strong> We analyze aggregated, anonymized usage data (lesson completion rates, builder usage patterns, regeneration reasons) to improve the curriculum, AI prompt quality, and user experience. Individual usage data is visible to the Platform administrator for support and product improvement purposes.</p>
+      <p class="clause"><span class="clause-num">2.5.</span><strong>To process payments and manage access:</strong> We use your Stripe customer ID to manage your subscription status, process refunds, and verify access rights.</p>
+
+      <h2>3. How We Store and Protect Your Information</h2>
+      <p class="clause"><span class="clause-num">3.1.</span>Your data is stored using Cloudflare's infrastructure: D1 (database), KV (session storage), and R2 (file storage). All data is encrypted in transit (HTTPS enforced on all connections). Cloudflare provides enterprise-grade security and global distribution.</p>
+      <p class="clause"><span class="clause-num">3.2.</span>Your password is stored as a one-way hash. We cannot retrieve your original password. If you forget your password, you must reset it through the password reset flow.</p>
+      <p class="clause"><span class="clause-num">3.3.</span>Session tokens are stored in Cloudflare KV with expiration times. Sessions are invalidated on logout and on access revocation.</p>
+      <p class="clause"><span class="clause-num">3.4.</span>Generated PDF assets are rendered on demand and are not permanently cached. Your generated content is stored in our database and rendered to PDF at the time of download.</p>
+
+      <h2>4. Third-Party Services</h2>
+      <p class="clause">We use the following third-party services that may process your data:</p>
+      <ul class="third-party-list">
+        <li><strong>Stripe</strong> — Payment processing — Data shared: Email, payment details — Privacy: <a href="https://stripe.com/privacy" target="_blank" rel="noopener">stripe.com/privacy</a></li>
+        <li><strong>OpenAI</strong> — AI content generation — Data shared: Context Card business data (no email, no password, no payment data) — Privacy: <a href="https://openai.com/privacy" target="_blank" rel="noopener">openai.com/privacy</a></li>
+        <li><strong>Resend</strong> — Email delivery — Data shared: Email address, email content — Privacy: <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener">resend.com/legal/privacy-policy</a></li>
+        <li><strong>Cloudflare</strong> — Hosting, CDN, infrastructure — Data shared: All Platform data (encrypted) — Privacy: <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">cloudflare.com/privacypolicy</a></li>
+        <li><strong>Bunny.net</strong> — Video hosting — Data shared: Standard video playback data — Privacy: <a href="https://bunny.net/privacy" target="_blank" rel="noopener">bunny.net/privacy</a></li>
+      </ul>
+
+      <h2>5. Your Rights</h2>
+      <p class="clause"><span class="clause-num">5.1.</span><strong>Access:</strong> You can view all of your stored data through the Platform — your Context Card, generated assets, lesson progress, and account information are all visible to you within your account.</p>
+      <p class="clause"><span class="clause-num">5.2.</span><strong>Correction:</strong> You can update your Context Card and profile information at any time through the Platform.</p>
+      <p class="clause"><span class="clause-num">5.3.</span><strong>Deletion:</strong> You may request deletion of your account and all associated data by contacting <a href="mailto:support@presoldauthority.com">support@presoldauthority.com</a>. Upon receiving a verified deletion request, we will delete your account data from our database within 30 days. Data that has already been processed by third-party services (e.g., Stripe transaction records, previously sent emails) is subject to those services' own retention policies.</p>
+      <p class="clause"><span class="clause-num">5.4.</span><strong>Data Export:</strong> You can download all of your generated assets as PDF files from the Asset Library at any time while your account is active.</p>
+      <p class="clause"><span class="clause-num">5.5.</span><strong>Refund and Access Revocation:</strong> If you receive a refund, your access to the Platform is revoked immediately. Your account data is retained for 90 days following revocation (for dispute resolution purposes) and then deleted unless a legal obligation requires longer retention.</p>
+
+      <h2>6. Cookies and Tracking</h2>
+      <p class="clause"><span class="clause-num">6.1.</span>The Platform uses a single httpOnly session cookie for authentication. This cookie is essential for the Platform to function and cannot be disabled while using the Platform.</p>
+      <p class="clause"><span class="clause-num">6.2.</span>We do not use advertising cookies, tracking pixels, or third-party analytics cookies. Cloudflare Web Analytics does not use cookies.</p>
+      <p class="clause"><span class="clause-num">6.3.</span>Stripe may set cookies on their hosted checkout page during the payment process, governed by Stripe's cookie policy.</p>
+
+      <h2>7. Children's Privacy</h2>
+      <p class="clause">The Platform is designed for professional real estate agents and is not intended for use by anyone under the age of 18. We do not knowingly collect data from minors.</p>
+
+      <h2>8. Data Retention</h2>
+      <p class="clause"><span class="clause-num">8.1.</span><strong>Active accounts:</strong> Your data is retained for as long as your account is active.</p>
+      <p class="clause"><span class="clause-num">8.2.</span><strong>Revoked accounts (refund):</strong> Data retained for 90 days post-revocation, then deleted.</p>
+      <p class="clause"><span class="clause-num">8.3.</span><strong>Inactive accounts:</strong> If your account has had no login activity for 24 months, we may contact you before archiving or deleting your account data.</p>
+      <p class="clause"><span class="clause-num">8.4.</span><strong>Transaction records:</strong> Payment records through Stripe are retained as required by applicable financial regulations.</p>
+
+      <h2>9. International Data</h2>
+      <p class="clause"><span class="clause-num">9.1.</span>The Platform is hosted on Cloudflare's global network. Your data may be processed in data centers located in various countries. Cloudflare provides appropriate data protection safeguards for international transfers.</p>
+      <p class="clause"><span class="clause-num">9.2.</span>AI content generation requests are processed by OpenAI, whose servers are primarily located in the United States.</p>
+
+      <h2>10. Changes to This Policy</h2>
+      <p class="clause">We may update this Privacy Policy from time to time. If we make material changes, we will notify you via the email address associated with your account. The "Last updated" date at the top of this policy indicates when it was last revised.</p>
+
+      <h2>11. Australian Privacy Act</h2>
+      <p class="clause">If you are an Australian resident, you may have additional rights under the Australian Privacy Act 1988 (Cth) and the Australian Privacy Principles (APPs). To make a complaint about a breach of the APPs, you may contact us at <a href="mailto:support@presoldauthority.com">support@presoldauthority.com</a> or lodge a complaint with the Office of the Australian Information Commissioner (OAIC) at <a href="https://www.oaic.gov.au/" target="_blank" rel="noopener">oaic.gov.au</a>.</p>
+
+      <h2>12. Contact</h2>
+      <p class="clause">For questions about this Privacy Policy or to exercise your data rights, contact us at: <a href="mailto:support@presoldauthority.com">support@presoldauthority.com</a></p>
+      <p class="clause">Iseek Property Pty Ltd (ABN 34 151 052 309) trading as Lincoln Digital Media.</p>
+    </article>
+
+    <footer class="page-footer">
+      <span>© <span id="footer-year"></span> Lincoln Digital Media · Pre-Sold Authority System</span>
+      <span class="footer-links">
+        <a href="/legal/terms">Terms</a>
+        <a href="/legal/privacy">Privacy</a>
+        <a href="mailto:support@presoldauthority.com">Support</a>
+      </span>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('privacy-date').textContent = new Date().toLocaleDateString('en-US', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    });
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

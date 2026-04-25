@@ -246,6 +246,29 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.35);
     }
     .toast.visible { display: block; }
+
+    .page-footer {
+      margin-top: 48px;
+      padding: 20px 40px;
+      border-top: 1px solid #27272a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #71717a;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a { color: #71717a; text-decoration: none; }
+    .footer-links a:hover { color: #a1a1aa; }
+    @media (max-width: 768px) {
+      .page-footer {
+        padding: 16px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
   </style>
 </head>
 <body>
@@ -426,7 +449,7 @@
               </div>
               <div class="form-group">
                 <label class="form-label" for="state_province">State / Province</label>
-                <input class="input" id="state_province" type="text" />
+                <input class="input" id="state_province" type="text" placeholder="e.g. California, QLD, Ontario" />
               </div>
             </div>
 
@@ -490,7 +513,7 @@
                   Comment keyword
                 </label>
                 <label class="choice-item">
-                  <input type="radio" name="cta_preference" value="link" />
+                  <input type="radio" name="cta_preference" value="direct_link" />
                   Direct link
                 </label>
               </div>
@@ -508,6 +531,15 @@
           </div>
         </form>
       </div>
+
+      <footer class="page-footer">
+        <span>© <span id="footer-year"></span> Lincoln Digital Media · Pre-Sold Authority System</span>
+        <span class="footer-links">
+          <a href="/legal/terms">Terms</a>
+          <a href="/legal/privacy">Privacy</a>
+          <a href="mailto:support@presoldauthority.com">Support</a>
+        </span>
+      </footer>
     </main>
   </div>
 
@@ -516,7 +548,18 @@
       function setValue(id, value) {
         var el = document.getElementById(id);
         if (!el) return;
-        el.value = value == null ? '' : String(value);
+        var assign = value == null ? '' : String(value);
+        el.value = assign;
+
+        // Verification: <select> silently falls back to the empty option if
+        // the requested value is not present. Surface drift so we can fix the
+        // saved data or option list rather than failing silently.
+        if (el.tagName === 'SELECT' && assign !== '' && el.value !== assign) {
+          console.warn(
+            'Dropdown value mismatch for ' + id +
+            ': expected "' + assign + '" but no matching option exists.'
+          );
+        }
       }
 
       function setRadio(name, value) {
@@ -715,6 +758,9 @@
         ev.preventDefault();
         saveContextCard();
       });
+
+      var fyEl = document.getElementById('footer-year');
+      if (fyEl) fyEl.textContent = new Date().getFullYear();
 
       init();
     })();

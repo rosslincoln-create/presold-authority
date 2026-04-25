@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account — Pre-Sold Authority</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/style-premium.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-text-primary: #f4f4f5;
+      --color-text-secondary: #a1a1aa;
+    }
+    body {
+      background: #09090b; color: var(--color-text-primary);
+      font-family: 'Inter', system-ui, sans-serif;
+      display: flex; min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px; min-height: 100vh;
+      background: #111113; border-right: 1px solid #27272a;
+      display: flex; flex-direction: column;
+      padding: 24px 16px; position: fixed; top: 0; left: 0; bottom: 0;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 8px;
+      color: #a1a1aa; text-decoration: none; font-size: 14px;
+      font-weight: 500; margin-bottom: 4px;
+      transition: all 0.15s;
+    }
+    .nav-item:hover { background: #18181b; color: #f4f4f5; }
+    .nav-item.active {
+      background: #1c1917; color: #fbbf24;
+      border-left: 3px solid #fbbf24; padding-left: 9px;
+    }
+    .nav-icon { width: 18px; height: 18px; opacity: 0.8; }
+    .sidebar-footer { margin-top: auto; padding-top: 16px; }
+    .btn-logout {
+      width: 100%; padding: 10px 12px; background: transparent;
+      border: 1px solid #3f3f46; color: #a1a1aa; border-radius: 8px;
+      cursor: pointer; font-size: 13px; text-align: left;
+      transition: all 0.15s;
+    }
+    .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
+
+    .main {
+      margin-left: 240px; flex: 1; padding: 40px;
+      max-width: calc(100vw - 240px);
+    }
+
+    .welcome-header { margin-bottom: 28px; }
+    .welcome-header h1 { font-size: 28px; font-weight: 700; color: #f4f4f5; }
+    .welcome-header p { color: var(--color-text-secondary); margin-top: 4px; font-size: 15px; }
+
+    .account-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      max-width: 760px;
+    }
+
+    .card {
+      background: #18181b; border: 1px solid #27272a;
+      border-radius: 12px; padding: 24px;
+    }
+    .card-danger { border-color: #7f1d1d; }
+    .card-title {
+      font-size: 16px; font-weight: 600; color: #f4f4f5;
+      margin-bottom: 16px;
+    }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label {
+      display: block; font-size: 13px; font-weight: 600;
+      color: #e4e4e7; margin-bottom: 8px;
+    }
+    .form-note {
+      font-size: 12px; color: #71717a;
+      margin-top: 6px; line-height: 1.5;
+    }
+    .form-note a { color: #fbbf24; text-decoration: none; }
+    .form-note a:hover { text-decoration: underline; }
+
+    .input {
+      width: 100%; padding: 10px 12px;
+      background: #09090b; border: 1px solid #3f3f46;
+      border-radius: 8px; color: #f4f4f5; font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+    .input:focus { outline: none; border-color: #fbbf24; }
+    .input[readonly] {
+      background: #111113; color: #a1a1aa; cursor: not-allowed;
+    }
+
+    .read-only-text {
+      padding: 10px 12px;
+      background: #111113;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #a1a1aa;
+      min-height: 40px;
+    }
+    .read-only-text.muted-empty { color: #71717a; font-style: italic; }
+
+    .btn {
+      padding: 10px 18px; border-radius: 8px; font-size: 14px;
+      font-weight: 600; cursor: pointer; transition: all 0.15s;
+      border: none; font-family: inherit;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #fbbf24, #fcd34d);
+      color: #09090b;
+    }
+    .btn-primary:hover:not(:disabled) { filter: brightness(1.05); }
+    .btn-primary:disabled {
+      background: #27272a; color: #71717a; cursor: not-allowed;
+      filter: none;
+    }
+
+    .form-actions {
+      display: flex; align-items: center; gap: 12px;
+      margin-top: 8px;
+    }
+
+    .inline-feedback {
+      font-size: 13px; line-height: 1.4;
+      display: none;
+    }
+    .inline-feedback.success { color: #4ade80; }
+    .inline-feedback.error { color: #fca5a5; }
+    .inline-feedback.visible { display: inline-block; }
+
+    .plan-row {
+      display: flex; align-items: center; gap: 12px;
+      flex-wrap: wrap; margin-bottom: 12px;
+    }
+    .plan-name {
+      font-size: 16px; font-weight: 600; color: #f4f4f5;
+    }
+    .badge-active {
+      font-size: 11px; font-weight: 700;
+      background: #fbbf24; color: #09090b;
+      padding: 3px 10px; border-radius: 99px;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .plan-meta {
+      font-size: 13px; color: #a1a1aa; margin-bottom: 12px;
+    }
+    .plan-note {
+      font-size: 13px; color: #d4d4d8; line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .plan-future {
+      font-size: 12px; color: #71717a; line-height: 1.5;
+    }
+
+    .help-text {
+      font-size: 14px; color: #d4d4d8; line-height: 1.55;
+      margin-bottom: 10px;
+    }
+    .help-link {
+      color: #fbbf24; font-weight: 600;
+      text-decoration: none; font-size: 14px;
+    }
+    .help-link:hover { text-decoration: underline; }
+    .help-note {
+      font-size: 12px; color: #71717a; margin-top: 8px;
+    }
+
+    .page-error {
+      display: none;
+      background: #1c1214;
+      border: 1px solid #7f1d1d;
+      border-left: 4px solid #ef4444;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      color: #fecaca;
+      font-size: 14px;
+    }
+    .page-error.visible { display: block; }
+
+    .loading { color: var(--color-text-secondary); font-size: 14px; padding: 20px 0; }
+
+    /* Footer */
+    .page-footer {
+      margin-top: 48px;
+      padding: 20px 40px;
+      border-top: 1px solid #27272a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #71717a;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a { color: #71717a; text-decoration: none; }
+    .footer-links a:hover { color: #a1a1aa; }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 20px; max-width: 100vw; }
+      .page-footer {
+        padding: 16px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <script>
+    (function() {
+      fetch('/api/auth/check', { credentials: 'include' })
+        .then(function(r) {
+          if (r.status === 401 || r.status === 403) {
+            window.location.href = '/login';
+          }
+        })
+        .catch(function() {});
+    })();
+  </script>
+
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <img src="/assets/brand/logo-mark.png" alt="PSA">
+      <span class="sidebar-logo-text">Pre-Sold<br>Authority</span>
+    </div>
+    <a href="/dashboard" class="nav-item">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z
+                 M14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z
+                 M4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z
+                 M14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+      </svg>
+      Dashboard
+    </a>
+    <a href="/lessons" class="nav-item">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0
+                 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      Lessons
+    </a>
+    <a href="/assets" class="nav-item">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0
+                 0l-4-4m4 4V4"/>
+      </svg>
+      My Assets
+    </a>
+    <a href="/account" class="nav-item active">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7
+                 7 0 00-7-7z"/>
+      </svg>
+      Account
+    </a>
+    <div class="sidebar-footer">
+      <button class="btn-logout" type="button" onclick="handleLogout()">Sign out</button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="page-error" id="pageError" role="alert"></div>
+
+    <div class="welcome-header">
+      <h1>My Account</h1>
+      <p>Manage your profile and account settings.</p>
+    </div>
+
+    <div id="accountRoot">
+      <p class="loading" id="accountLoading">Loading account…</p>
+    </div>
+
+    <div class="account-grid" id="accountSections" style="display:none;">
+
+      <!-- Profile -->
+      <section class="card">
+        <h2 class="card-title">Profile</h2>
+
+        <div class="form-group">
+          <label class="form-label" for="fullName">Full Name</label>
+          <input class="input" id="fullName" type="text" autocomplete="name" maxlength="100" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <input class="input" id="email" type="email" readonly />
+          <p class="form-note">
+            To change your email address, contact
+            <a href="mailto:support@presoldauthority.com">support@presoldauthority.com</a>
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Market / Location</label>
+          <div class="read-only-text" id="marketLocation"></div>
+          <p class="form-note">
+            Update via your <a href="/context-card-edit.html">Context Card</a>
+          </p>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" id="btnSaveProfile">Save Profile</button>
+          <span class="inline-feedback" id="profileFeedback" aria-live="polite"></span>
+        </div>
+      </section>
+
+      <!-- Password -->
+      <section class="card">
+        <h2 class="card-title">Password</h2>
+
+        <form id="passwordForm" autocomplete="off">
+          <div class="form-group">
+            <label class="form-label" for="currentPassword">Current Password</label>
+            <input class="input" id="currentPassword" type="password" autocomplete="current-password" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newPassword">New Password</label>
+            <input class="input" id="newPassword" type="password" autocomplete="new-password" minlength="8" />
+            <p class="form-note">Minimum 8 characters.</p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="confirmPassword">Confirm New Password</label>
+            <input class="input" id="confirmPassword" type="password" autocomplete="new-password" minlength="8" />
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="btnSavePassword">Update Password</button>
+            <span class="inline-feedback" id="passwordFeedback" aria-live="polite"></span>
+          </div>
+        </form>
+      </section>
+
+      <!-- Plan -->
+      <section class="card">
+        <h2 class="card-title">Your Plan</h2>
+
+        <div class="plan-row">
+          <span class="plan-name">Founder Access — Lifetime</span>
+          <span class="badge-active">Active</span>
+        </div>
+        <div class="plan-meta" id="planPurchaseDate"></div>
+        <p class="plan-note">
+          You have lifetime access to all 8 lessons, all builders, and your
+          complete asset library.
+        </p>
+        <p class="plan-future">
+          Authority Pro and Done-With-You subscription tiers coming soon —
+          existing Founder members receive preferential upgrade pricing.
+        </p>
+      </section>
+
+      <!-- Need Help -->
+      <section class="card card-danger">
+        <h2 class="card-title">Need Help?</h2>
+        <p class="help-text">
+          If you need to close your account or have a billing question,
+          contact us directly:
+        </p>
+        <a href="mailto:support@presoldauthority.com" class="help-link">
+          support@presoldauthority.com
+        </a>
+        <p class="help-note">We aim to respond within 1 business day.</p>
+      </section>
+
+    </div>
+
+    <footer class="page-footer">
+      <span>© <span id="footer-year"></span> Lincoln Digital Media · Pre-Sold Authority System</span>
+      <span class="footer-links">
+        <a href="/legal/terms">Terms</a>
+        <a href="/legal/privacy">Privacy</a>
+        <a href="mailto:support@presoldauthority.com">Support</a>
+      </span>
+    </footer>
+  </main>
+
+  <script>
+    var accountState = {
+      fullName: '',
+      email: '',
+      marketLocation: null,
+      accessGrantedAt: null
+    };
+
+    function showPageError(msg) {
+      var el = document.getElementById('pageError');
+      el.textContent = msg;
+      el.classList.add('visible');
+    }
+
+    function hidePageError() {
+      var el = document.getElementById('pageError');
+      el.classList.remove('visible');
+    }
+
+    function showFeedback(elId, type, message, autoHide) {
+      var el = document.getElementById(elId);
+      if (!el) return;
+      el.textContent = message;
+      el.className = 'inline-feedback visible ' + type;
+      if (autoHide) {
+        setTimeout(function() {
+          el.className = 'inline-feedback';
+          el.textContent = '';
+        }, autoHide);
+      }
+    }
+
+    function clearFeedback(elId) {
+      var el = document.getElementById(elId);
+      if (!el) return;
+      el.className = 'inline-feedback';
+      el.textContent = '';
+    }
+
+    function formatPurchaseDate(iso) {
+      if (!iso) return '';
+      try {
+        var d = new Date(iso.indexOf('T') === -1 ? iso.replace(' ', 'T') + 'Z' : iso);
+        if (isNaN(d.getTime())) return '';
+        return 'Purchased ' + d.toLocaleDateString('en-GB', {
+          day: 'numeric', month: 'long', year: 'numeric'
+        });
+      } catch (e) { return ''; }
+    }
+
+    async function handleLogout() {
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+      window.location.href = '/login';
+    }
+
+    async function loadAccount() {
+      try {
+        var res = await fetch('/api/account', { credentials: 'include' });
+        if (res.status === 401 || res.status === 403) {
+          window.location.href = '/login';
+          return;
+        }
+        if (!res.ok) {
+          showPageError('We could not load your account. Please refresh and try again.');
+          var loading = document.getElementById('accountLoading');
+          if (loading) loading.remove();
+          return;
+        }
+
+        var data = await res.json();
+        accountState.fullName = data.fullName || '';
+        accountState.email = data.email || '';
+        accountState.marketLocation = data.marketLocation;
+        accountState.accessGrantedAt = data.accessGrantedAt;
+
+        var loadingEl = document.getElementById('accountLoading');
+        if (loadingEl) loadingEl.remove();
+        document.getElementById('accountSections').style.display = '';
+
+        document.getElementById('fullName').value = accountState.fullName;
+        document.getElementById('email').value = accountState.email;
+
+        var ml = document.getElementById('marketLocation');
+        if (accountState.marketLocation) {
+          ml.textContent = accountState.marketLocation;
+          ml.classList.remove('muted-empty');
+        } else {
+          ml.textContent = 'Not set yet — add it in your Context Card';
+          ml.classList.add('muted-empty');
+        }
+
+        document.getElementById('planPurchaseDate').textContent =
+          formatPurchaseDate(accountState.accessGrantedAt);
+      } catch (err) {
+        console.error('account load error', err);
+        showPageError('We could not reach the server. Check your connection and refresh.');
+        var loadingErr = document.getElementById('accountLoading');
+        if (loadingErr) loadingErr.remove();
+      }
+    }
+
+    async function saveProfile() {
+      var btn = document.getElementById('btnSaveProfile');
+      var nameInput = document.getElementById('fullName');
+      var fullName = (nameInput.value || '').trim();
+
+      clearFeedback('profileFeedback');
+
+      if (!fullName) {
+        showFeedback('profileFeedback', 'error', 'Full name is required');
+        return;
+      }
+      if (fullName.length > 100) {
+        showFeedback('profileFeedback', 'error', 'Full name must be 100 characters or fewer');
+        return;
+      }
+
+      btn.disabled = true;
+      try {
+        var res = await fetch('/api/account/profile', {
+          method: 'PATCH',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fullName: fullName })
+        });
+        var data = await res.json().catch(function() { return {}; });
+        if (!res.ok) {
+          showFeedback('profileFeedback', 'error', data.error || 'Could not save profile');
+          return;
+        }
+        accountState.fullName = fullName;
+        showFeedback('profileFeedback', 'success', 'Saved ✓', 2000);
+      } catch (err) {
+        console.error('save profile error', err);
+        showFeedback('profileFeedback', 'error', 'Network error — please try again');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function changePassword(ev) {
+      ev.preventDefault();
+
+      var btn = document.getElementById('btnSavePassword');
+      var current = document.getElementById('currentPassword').value;
+      var next = document.getElementById('newPassword').value;
+      var confirm = document.getElementById('confirmPassword').value;
+
+      clearFeedback('passwordFeedback');
+
+      if (!current || !next || !confirm) {
+        showFeedback('passwordFeedback', 'error', 'All password fields are required');
+        return;
+      }
+      if (next.length < 8) {
+        showFeedback('passwordFeedback', 'error', 'New password must be at least 8 characters');
+        return;
+      }
+      if (next !== confirm) {
+        showFeedback('passwordFeedback', 'error', 'New password and confirmation do not match');
+        return;
+      }
+
+      btn.disabled = true;
+      try {
+        var res = await fetch('/api/account/change-password', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ currentPassword: current, newPassword: next })
+        });
+        var data = await res.json().catch(function() { return {}; });
+        if (!res.ok) {
+          showFeedback('passwordFeedback', 'error', data.error || 'Could not update password');
+          return;
+        }
+        document.getElementById('currentPassword').value = '';
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+        showFeedback('passwordFeedback', 'success', 'Password updated ✓', 3000);
+      } catch (err) {
+        console.error('change password error', err);
+        showFeedback('passwordFeedback', 'error', 'Network error — please try again');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    document.getElementById('btnSaveProfile').addEventListener('click', saveProfile);
+    document.getElementById('passwordForm').addEventListener('submit', changePassword);
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    loadAccount();
+  </script>
+</body>
+</html>

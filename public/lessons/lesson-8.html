@@ -642,6 +642,28 @@
       line-height: 1.65;
       color: #d4d4d8;
     }
+    .page-footer {
+      margin-top: 48px;
+      padding: 20px 40px;
+      border-top: 1px solid #27272a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #71717a;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a { color: #71717a; text-decoration: none; }
+    .footer-links a:hover { color: #a1a1aa; }
+    @media (max-width: 768px) {
+      .page-footer {
+        padding: 16px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
   </style>
 </head>
 <body>
@@ -895,6 +917,15 @@
       <a href="/lessons/lesson-7.html" class="nav-btn">← Lesson 7: Post Generator + DM Flow</a>
       <a href="/assets" class="nav-btn next-btn">View My Asset Library →</a>
     </div>
+
+    <footer class="page-footer">
+      <span>© <span id="footer-year"></span> Lincoln Digital Media · Pre-Sold Authority System</span>
+      <span class="footer-links">
+        <a href="/legal/terms">Terms</a>
+        <a href="/legal/privacy">Privacy</a>
+        <a href="mailto:support@presoldauthority.com">Support</a>
+      </span>
+    </footer>
 
   </main>
 </div>
@@ -1568,6 +1599,10 @@
     });
 
 })();
+</script>
+
+<script>
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
 </script>
 
 </body>
